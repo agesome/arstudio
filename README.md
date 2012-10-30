@@ -1,4 +1,4 @@
 cvdbg
 =====
 
-Image processing algorithm debugging tool
+Computer vision algorithm debugging tool.
