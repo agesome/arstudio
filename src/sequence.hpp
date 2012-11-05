@@ -2,13 +2,14 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 
-namespace Sequence
+namespace Workspace
 {
 
 class Item {};
-typedef std::pair< int, boost::shared_ptr<Item> > item_mmap_t;
+typedef boost::shared_ptr<Item> item_ptr;
+typedef std::pair<int, item_ptr> item_map_t;
 
-enum
+enum item_type
 {
 	ITEM_TYPE_CAMERA
 };
@@ -16,9 +17,14 @@ enum
 class Sequence
 {
 public:
-	std::multimap< int, boost::shared_ptr<Item> > items;
+	item_type type;
+	std::map < int, item_ptr > items;
 
-	void addItem (int type, boost::shared_ptr<Item> p);
+	Sequence (item_type);
+	void addItem (int, item_ptr);
 };
+
+typedef boost::shared_ptr<Sequence> seq_ptr;
+typedef std::pair<int, seq_ptr> seq_map_t;
 
 }

@@ -1,12 +1,17 @@
 #include <sequence.hpp>
 
-namespace Sequence
+namespace Workspace
 {
 
-void
-Sequence::addItem (int type, boost::shared_ptr<Item> p)
+Sequence::Sequence (item_type t)
 {
-	items.insert (item_mmap_t (type, p));
+	type = t;
+}
+
+void
+Sequence::addItem (int nframe, item_ptr p)
+{
+	items.insert (item_map_t (nframe, p));
 }
 
 }
