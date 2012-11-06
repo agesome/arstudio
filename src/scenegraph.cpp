@@ -7,8 +7,8 @@ Workspace::Scenegraph::Scenegraph(std::list<std::string> params, QMainWindow *Ma
 {
     this->setObjectName(QString::fromUtf8("TimeLine"));
     this->setGeometry(QRect(20, 30, 400, 90));
-    layout = new QVBoxLayout(this);
-    boxes = new QCheckBox[params.size()];
+    layout = boost::make_shared<QVBoxLayout> (this);
+    boxes = boost::shared_array<QCheckBox>(new QCheckBox[params.size()]);
     std::list<std::string>::iterator i;
     int j = 0;
     for(i = params.begin(); i!= params.end(); ++i){

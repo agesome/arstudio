@@ -1,7 +1,9 @@
 #include <stdlib.h>
 #include <iostream>
+#include <QApplication>
 
 #include <repository.hpp>
+#include <scenegraph.hpp>
 
 int
 main (int argc, char * argv[])
@@ -36,10 +38,17 @@ main (int argc, char * argv[])
 
 	unsigned char it = r.getItemTypes ();
 
+	std::list<std::string> sc_args;
 	std::cout << "Item types in repository:" << std::endl;
 	for (int i = 0; i < Workspace::ITEM_TYPE_LEN_; i++)
 		if (it & (1 << i))
-			std::cout << "\t" << Workspace::itemTypeNames[i] << std::endl;
+			{
+				std::cout << "\t" << Workspace::itemTypeNames[i] << std::endl;
+				sc_args.push_back (Workspace::itemTypeNames[i]);
+			}
 
-	return EXIT_SUCCESS;
+	QApplication app (argc, argv);
+	Workspace::Scenegraph s (sc_args, NULL);
+	s.show ();
+	return app.exec ();
 }
