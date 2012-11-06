@@ -19,10 +19,10 @@ enum item_type
 	ITEM_TYPE_LEN_
 };
 
-static std::wstring itemTypeNames [ITEM_TYPE_LEN_] = {
-	std::wstring (L"Camera"),
-	std::wstring (L"Point cloud"),
-	std::wstring (L"FP Vector")
+static std::string itemTypeNames [ITEM_TYPE_LEN_] = {
+	std::string ("Camera"),
+	std::string ("Point cloud"),
+	std::string ("FP Vector")
 };
 
 class Sequence
