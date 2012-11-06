@@ -32,14 +32,14 @@ main (int argc, char * argv[])
 
 	std::cout << "List of item types:" << std::endl;
 	for (int i = 0; i < Workspace::ITEM_TYPE_LEN_; i++)
-		std::wcout << "\t" << Workspace::itemTypeNames[i] << std::endl;
+		std::cout << "\t" << Workspace::itemTypeNames[i] << std::endl;
 
 	unsigned char it = r.getItemTypes ();
 
 	std::cout << "Item types in repository:" << std::endl;
 	for (int i = 0; i < Workspace::ITEM_TYPE_LEN_; i++)
 		if (it & (1 << i))
-			std::wcout << "\t" << Workspace::itemTypeNames[i] << std::endl;
+			std::cout << "\t" << Workspace::itemTypeNames[i] << std::endl;
 
 	return EXIT_SUCCESS;
 }
