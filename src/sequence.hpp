@@ -29,7 +29,7 @@ class Sequence
 {
 public:
 	item_type type;
-	std::map < int, item_ptr > items;
+	std::map <int, item_ptr> items;
 
 	Sequence (item_type);
 	void addItem (int, item_ptr);
