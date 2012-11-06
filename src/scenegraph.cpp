@@ -1,4 +1,4 @@
-#include "scenegraph.h"
+#include <scenegraph.hpp>
 #include <QVariant>
 
 

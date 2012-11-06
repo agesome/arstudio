@@ -1,4 +1,4 @@
-#include "timeline.h"
+#include <timeline.hpp>
 #include <qapplication.h>
 TimeLine::TimeLine(int max, QMainWindow *MainWindow) :
     QWidget(MainWindow)
