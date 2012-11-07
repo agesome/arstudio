@@ -4,6 +4,7 @@
 
 #include <repository.hpp>
 #include <scenegraph.hpp>
+#include <thread>
 
 int
 main (int argc, char * argv[])
@@ -23,6 +24,10 @@ main (int argc, char * argv[])
 	sp->addItem (2, boost::make_shared<Workspace::Item>());
 	sp->addItem (3, boost::make_shared<Workspace::Item>());
 	r.addSequence (13, sp);
+	sp = boost::make_shared<Workspace::Sequence> (Workspace::ITEM_TYPE_PCLOUD);
+	sp->addItem (2, boost::make_shared<Workspace::Item>());
+	sp->addItem (3, boost::make_shared<Workspace::Item>());
+	r.addSequence (12, sp);
 
 	for (auto it: r.sequences)
 		{
@@ -38,17 +43,29 @@ main (int argc, char * argv[])
 
 	unsigned char it = r.getItemTypes ();
 
-	std::list<std::string> sc_args;
+	QApplication app (argc, argv);
+	Workspace::Scenegraph s;
+
 	std::cout << "Item types in repository:" << std::endl;
 	for (int i = 0; i < Workspace::ITEM_TYPE_LEN_; i++)
 		if (it & (1 << i))
 			{
 				std::cout << "\t" << Workspace::itemTypeNames[i] << std::endl;
-				sc_args.push_back (Workspace::itemTypeNames[i]);
+				s.addCheckbox (i);
 			}
-
-	QApplication app (argc, argv);
-	Workspace::Scenegraph s (sc_args, NULL);
 	s.show ();
+
+	std::thread load ([&r, &s]()
+		{
+			sleep (4);
+			std::cout << "Loading data." << std::endl;
+			for (auto it: r.sequences)
+				s.addSequence (it.second);
+			std::cout << "Filtered sequences:" << std::endl;
+			for (auto it: s.sequences)
+				std::cout << "\t" << Workspace::itemTypeNames[it->type] << std::endl;
+		});
+	load.detach ();
+
 	return app.exec ();
 }

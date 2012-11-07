@@ -1,20 +1,30 @@
 #include <scenegraph.hpp>
-#include <QVariant>
 
-
-Workspace::Scenegraph::Scenegraph(std::list<std::string> params, QMainWindow *MainWindow):
-     QWidget(MainWindow)
+namespace Workspace
 {
-    this->setObjectName(QString::fromUtf8("TimeLine"));
-    this->setGeometry(QRect(20, 30, 400, 90));
-    layout = boost::make_shared<QVBoxLayout> (this);
-    boxes = boost::shared_array<QCheckBox>(new QCheckBox[params.size()]);
-    std::list<std::string>::iterator i;
-    int j = 0;
-    for(i = params.begin(); i!= params.end(); ++i){
-        boxes[j].setText(QString::fromStdString(*i));
-        layout->addWidget(&boxes[j]);
-        j++;
-    }
+
+Scenegraph::Scenegraph (QMainWindow * MainWindow) : QWidget(MainWindow)
+{
+	layout = boost::make_shared<QVBoxLayout> (this);
+}
+
+void
+Scenegraph::addCheckbox (int t)
+{
+	qbox_ptr box = boost::make_shared<QCheckBox>
+								(QString::fromStdString (itemTypeNames[t]));
+	boxes.push_back (std::pair< int, qbox_ptr >(t, box));
+	layout->addWidget (box.get ());
+}
+
+void
+Scenegraph::addSequence (seq_ptr seq)
+{
+	for (auto it: boxes)
+		{
+			if (it.first == seq->type && it.second->isChecked ())
+				sequences.push_back (seq);
+		}
+}
 
 }

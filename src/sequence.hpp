@@ -1,3 +1,5 @@
+#ifndef SEQUENCE_H
+#define SEQUENCE_H
 #include <map>
 #include <string>
 #include <boost/shared_ptr.hpp>
@@ -39,3 +41,4 @@ typedef boost::shared_ptr<Sequence> seq_ptr;
 typedef std::pair<int, seq_ptr> seq_map_t;
 
 }
+#endif // SEQUENCE_H
