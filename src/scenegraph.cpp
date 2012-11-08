@@ -18,11 +18,11 @@ Scenegraph::addCheckbox (int t)
 }
 
 void
-Scenegraph::addSequence (seq_ptr seq)
+Scenegraph::addSequence (Sequence::ptr seq)
 {
 	for (auto it: boxes)
 		{
-			if (it.first == seq->type && it.second->isChecked ())
+			if (it.first == seq->getType () && it.second->isChecked ())
 				sequences.push_back (seq);
 		}
 }

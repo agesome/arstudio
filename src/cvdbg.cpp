@@ -12,7 +12,7 @@ main (int argc, char * argv[])
 	std::cout << __FUNCTION__ << std::endl;
 
 // testing code for Sequence/Repository
-	Workspace::seq_ptr sp;
+	Workspace::Sequence::ptr sp;
 	Workspace::Repository r;
 
 // add some sequences
@@ -29,11 +29,11 @@ main (int argc, char * argv[])
 	sp->addItem (3, boost::make_shared<Workspace::Item>());
 	r.addSequence (12, sp);
 
-	for (auto & it: r.sequences)
+	for (auto & it: r.getSequences ())
 		{
-			std::cout << "sequence type: \t" << it.second->type << std::endl;
+			std::cout << "sequence type: \t" << it.second->getType () << std::endl;
 			std::cout << "sequence id: \t" << it.first << std::endl;
-			for (auto & i: it.second->items)
+			for (auto & i: it.second->getItems ())
 				std::cout << "\titem id: " << i.first << std::endl;
 		}
 
@@ -59,11 +59,11 @@ main (int argc, char * argv[])
 		{
 			sleep (4);
 			std::cout << "Loading data." << std::endl;
-			for (auto & it: r.sequences)
+			for (auto & it: r.getSequences ())
 				s.addSequence (it.second);
 			std::cout << "Filtered sequences:" << std::endl;
-			for (auto & it: s.sequences)
-				std::cout << "\t" << Workspace::itemTypeNames[it->type] << std::endl;
+			for (auto & it: s.	sequences)
+				std::cout << "\t" << Workspace::itemTypeNames[it->getType ()] << std::endl;
 		});
 	load.detach ();
 

@@ -14,18 +14,19 @@
 
 namespace Workspace
 {
-typedef boost::shared_ptr<QCheckBox> qbox_ptr;
 
 class Scenegraph : public QWidget
 {
+	typedef boost::shared_ptr<QCheckBox> qbox_ptr;
+
 	Q_OBJECT
 public:
 	Scenegraph(QMainWindow * MainWindow = nullptr);
 
 	void addCheckbox (int);
-	void addSequence (seq_ptr);
+	void addSequence (Sequence::ptr);
 
-	std::list<seq_ptr> sequences;
+	std::list<Sequence::ptr> sequences;
 private:
 	boost::shared_ptr<QVBoxLayout> layout;
 	std::list< std::pair<int, qbox_ptr> > boxes;

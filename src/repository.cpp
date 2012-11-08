@@ -4,9 +4,9 @@ namespace Workspace
 {
 
 void
-Repository::addSequence (int id, seq_ptr p)
+Repository::addSequence (int id, Sequence::ptr p)
 {
-	sequences.insert (seq_map_t (id, p));
+	sequences.insert (Sequence::pair (id, p));
 }
 
 unsigned char
@@ -16,9 +16,15 @@ Repository::getItemTypes (void)
 
 	for (auto it: sequences)
 		{
-			r |= (1 << it.second->type);
+			r |= (1 << it.second->getType ());
 		}
 	return r;
+}
+
+const Repository::map &
+Repository::getSequences (void)
+{
+	return sequences;
 }
 
 }

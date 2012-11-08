@@ -9,9 +9,21 @@ Sequence::Sequence (item_type t)
 }
 
 void
-Sequence::addItem (int nframe, item_ptr p)
+Sequence::addItem (int nframe, Item::ptr p)
 {
-	items.insert (item_map_t (nframe, p));
+	items.insert (Item::pair (nframe, p));
+}
+
+const Sequence::map &
+Sequence::getItems (void)
+{
+	return items;
+}
+
+item_type
+Sequence::getType (void)
+{
+	return type;
 }
 
 }
