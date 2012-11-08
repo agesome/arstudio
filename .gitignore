@@ -21,3 +21,6 @@ cvdbg
 # Qt stuff
 moc_*.cpp
 *_automoc.cpp
+
+# Sublime text project files
+*.sublime-*
