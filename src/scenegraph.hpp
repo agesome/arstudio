@@ -31,9 +31,9 @@ private:
 	boost::shared_ptr<QVBoxLayout> layout;
 	std::list< std::pair<int, qbox_ptr> > boxes;
 signals:
-	
+
 public slots:
-	
+
 };
 
 }

@@ -17,14 +17,15 @@ public:
 
 enum item_type
 {
-	ITEM_TYPE_CAMERA,
-	ITEM_TYPE_PCLOUD,
-	ITEM_TYPE_FPVEC,
+    ITEM_TYPE_CAMERA,
+    ITEM_TYPE_PCLOUD,
+    ITEM_TYPE_FPVEC,
 
-	ITEM_TYPE_LEN_
+    ITEM_TYPE_LEN_
 };
 
-static std::string itemTypeNames [ITEM_TYPE_LEN_] = {
+static std::string itemTypeNames [ITEM_TYPE_LEN_] =
+{
 	std::string ("Camera"),
 	std::string ("Point cloud"),
 	std::string ("FP Vector")

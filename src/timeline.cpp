@@ -48,7 +48,8 @@ TimeLine::TimeLine(int max, QMainWindow *MainWindow) :
 	QMetaObject::connectSlotsByName(MainWindow);
 }
 
-void TimeLine::onSliderValueChanged(int value){
+void TimeLine::onSliderValueChanged(int value)
+{
 	spinBox->setValue(value);
 	onOkPressed();
 }
@@ -63,21 +64,23 @@ void TimeLine::onSpinBoxEditFinished()
 
 void TimeLine::onNextButtonPressed()
 {
-	if(spinBox->value() < spinBox->maximum()){
-		spinBox->setValue(spinBox->value()+1);
-		horizontalSlider->setValue(spinBox->value());
+	if(spinBox->value() < spinBox->maximum())
+		{
+			spinBox->setValue(spinBox->value()+1);
+			horizontalSlider->setValue(spinBox->value());
 
-	}
+		}
 
 }
 
 
 void TimeLine::onPrevButtonPressed()
 {
-	if(spinBox->value() > spinBox->minimum()){
-		spinBox->setValue(spinBox->value()-1);
-		horizontalSlider->setValue(spinBox->value());
-	}
+	if(spinBox->value() > spinBox->minimum())
+		{
+			spinBox->setValue(spinBox->value()-1);
+			horizontalSlider->setValue(spinBox->value());
+		}
 
 }
 
@@ -91,21 +94,22 @@ void TimeLine::setMax(int value)
 void TimeLine::onDrawed()
 {
 	if(loop_flag)
-	{
-		if(horizontalSlider->value() == horizontalSlider->maximum())
 		{
-			onStopPressed();
-			return;
-		}
-		horizontalSlider->setValue(horizontalSlider->value()+1);
-		emit nextFrame(horizontalSlider->value());
+			if(horizontalSlider->value() == horizontalSlider->maximum())
+				{
+					onStopPressed();
+					return;
+				}
+			horizontalSlider->setValue(horizontalSlider->value()+1);
+			emit nextFrame(horizontalSlider->value());
 
-	}
+		}
 
 }
 
 void TimeLine::onPlayPressed()
-{   qDebug()<<"play";
+{
+	qDebug()<<"play";
 	toolButton_next->setEnabled(false);
 	toolButton_prev->setEnabled(false);
 	loop_flag = true;
@@ -116,11 +120,11 @@ void TimeLine::onPlayPressed()
 void TimeLine::onStopPressed()
 {
 	if(loop_flag)
-	{
-		loop_flag = false;
-		toolButton_next->setEnabled(true);
-		toolButton_prev->setEnabled(true);
-	}
+		{
+			loop_flag = false;
+			toolButton_next->setEnabled(true);
+			toolButton_prev->setEnabled(true);
+		}
 }
 
 

@@ -56,15 +56,15 @@ main (int argc, char * argv[])
 	s.show ();
 
 	std::thread load ([&r, &s]()
-		{
-			sleep (4);
-			std::cout << "Loading data." << std::endl;
-			for (auto & it: r.getSequences ())
-				s.addSequence (it.second);
-			std::cout << "Filtered sequences:" << std::endl;
-			for (auto & it: s.	sequences)
-				std::cout << "\t" << Workspace::itemTypeNames[it->getType ()] << std::endl;
-		});
+	{
+		sleep (4);
+		std::cout << "Loading data." << std::endl;
+		for (auto & it: r.getSequences ())
+			s.addSequence (it.second);
+		std::cout << "Filtered sequences:" << std::endl;
+		for (auto & it: s.	sequences)
+			std::cout << "\t" << Workspace::itemTypeNames[it->getType ()] << std::endl;
+	});
 	load.detach ();
 
 	return app.exec ();

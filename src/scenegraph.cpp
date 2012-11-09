@@ -12,7 +12,7 @@ void
 Scenegraph::addCheckbox (int t)
 {
 	qbox_ptr box = boost::make_shared<QCheckBox>
-								(QString::fromStdString (itemTypeNames[t]));
+	               (QString::fromStdString (itemTypeNames[t]));
 	boxes.push_back (std::pair< int, qbox_ptr >(t, box));
 	layout->addWidget (box.get ());
 }
