@@ -1,39 +1,27 @@
 #ifndef SCENEGRAPH_H
 #define SCENEGRAPH_H
 
-#include <QMainWindow>
-#include <QtGui/QCheckBox>
-#include <QWidget>
-#include <QVBoxLayout>
-#include <QVariant>
-#include <string>
+#include <list>
 #include <boost/shared_ptr.hpp>
 #include <boost/shared_array.hpp>
 #include <boost/make_shared.hpp>
 #include <sequence.hpp>
+#include <scenegraph_selector.hpp>
 
 namespace Workspace
 {
 
-class Scenegraph : public QWidget
+class Scenegraph
 {
-	typedef boost::shared_ptr<QCheckBox> qbox_ptr;
-
-	Q_OBJECT
 public:
-	Scenegraph(QMainWindow * MainWindow = nullptr);
+	typedef std::list<Sequence::ptr> list;
 
-	void addCheckbox (int);
+	Scenegraph (ScenegraphSelector::ptr);
 	void addSequence (Sequence::ptr);
-
-	std::list<Sequence::ptr> sequences;
+	const list & getSequences (void);
 private:
-	boost::shared_ptr<QVBoxLayout> layout;
-	std::list< std::pair<int, qbox_ptr> > boxes;
-signals:
-
-public slots:
-
+	list sequences;
+	ScenegraphSelector::ptr selector;
 };
 
 }

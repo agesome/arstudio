@@ -14,7 +14,7 @@ public:
 
 	void addSequence (int, Sequence::ptr);
 	// may have to switch to int with >8 item types
-	unsigned char getItemTypes (void);
+	Item::typemask getItemTypes (void);
 	const map & getSequences (void);
 private:
 	map sequences;

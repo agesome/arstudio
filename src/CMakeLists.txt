@@ -9,6 +9,7 @@ set(cvdbg_sources
 	sequence.cpp
 	repository.cpp
 	scenegraph.cpp
+	scenegraph_selector.cpp
 	timeline.cpp)
 
 set(Boost_USE_MULTITHREADED ON)

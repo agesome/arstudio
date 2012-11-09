@@ -13,22 +13,18 @@ class Item
 public:
 	typedef boost::shared_ptr<Item> ptr;
 	typedef std::pair<int, ptr> pair;
-};
+	typedef unsigned char typemask;
 
-enum item_type
-{
-    ITEM_TYPE_CAMERA,
-    ITEM_TYPE_PCLOUD,
-    ITEM_TYPE_FPVEC,
+	enum type
+	{
+	    CAMERA,
+	    PCLOUD,
+	    FPVEC,
 
-    ITEM_TYPE_LEN_
-};
+	    LEN_
+	};
 
-static std::string itemTypeNames [ITEM_TYPE_LEN_] =
-{
-	std::string ("Camera"),
-	std::string ("Point cloud"),
-	std::string ("FP Vector")
+	static const std::string typeNames[LEN_];
 };
 
 class Sequence
@@ -38,13 +34,13 @@ public:
 	typedef std::pair<int, ptr> pair;
 	typedef std::map <int, Item::ptr> map;
 
-	Sequence (item_type);
+	Sequence (Item::type);
 	void addItem (int, Item::ptr);
 	const map & getItems (void);
-	item_type getType (void);
+	Item::type getType (void);
 
 private:
-	item_type type;
+	Item::type type;
 	map items;
 };
 
