@@ -1,3 +1,6 @@
+#ifndef REPOSITORY_H
+#define REPOSITORY_H
+
 #include <sequence.hpp>
 
 namespace Workspace
@@ -18,3 +21,5 @@ private:
 };
 
 }
+
+#endif // REPOSITORY_H
