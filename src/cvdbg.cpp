@@ -31,6 +31,9 @@ main (int argc, char * argv[])
 	sp->addItem (3, boost::make_shared<Item>());
 	r.addSequence (12, sp);
 
+	r.addItem (15, Item::FPVEC, 0, boost::make_shared<Item>());
+	r.addItem (13, Item::FPVEC, 0, boost::make_shared<Item>());
+
 	for (auto & it: r.getSequences ())
 		{
 			std::cout << "sequence type: \t" << it.second->getType () << std::endl;
