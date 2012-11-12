@@ -32,11 +32,11 @@ main (int argc, char * argv[])
 	sp->addItem (3, boost::make_shared<Item>());
 	r.addSequence (12, sp);
 
-	for (auto & it: r.getSequences ())
+for (auto & it: r.getSequences ())
 		{
 			std::cout << "sequence type: \t" << it.second->getType () << std::endl;
 			std::cout << "sequence id: \t" << it.first << std::endl;
-			for (auto & i: it.second->getItems ())
+for (auto & i: it.second->getItems ())
 				std::cout << "\titem id: " << i.first << std::endl;
 		}
 
@@ -63,15 +63,15 @@ main (int argc, char * argv[])
 	{
 		sleep (4);
 		std::cout << "Loading data." << std::endl;
-		for (auto & it: r.getSequences ())
+for (auto & it: r.getSequences ())
 			g.addSequence (it.second);
 		std::cout << "Filtered sequences:" << std::endl;
-		for (auto & it: g.getSequences ())
+for (auto & it: g.getSequences ())
 			std::cout << "\t" << Item::typeNames[it->getType ()] << std::endl;
 	});
 	load.detach ();
 
-	Window3D window3d;
+	Window3D window3d (&g);
 	window3d.show();
 
 	return app.exec ();
