@@ -10,7 +10,9 @@ set(cvdbg_sources
 	repository.cpp
 	scenegraph.cpp
 	scenegraph_selector.cpp
-	timeline.cpp)
+        timeline.cpp
+        logger.cpp
+)
 
 set(Boost_USE_MULTITHREADED ON)
 find_package(Boost REQUIRED)
