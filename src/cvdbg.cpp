@@ -4,6 +4,7 @@
 
 #include <repository.hpp>
 #include <scenegraph.hpp>
+#include <window3d.hpp>
 #include <thread>
 
 using namespace Workspace;
@@ -72,6 +73,9 @@ main (int argc, char * argv[])
 			std::cout << "\t" << Item::typeNames[it->getType ()] << std::endl;
 	});
 	load.detach ();
+
+	Window3D window3d (&g);
+	window3d.show();
 
 	return app.exec ();
 }
