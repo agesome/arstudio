@@ -9,10 +9,10 @@ Repository::addSequence (int id, Sequence::ptr p)
 	sequences.insert (Sequence::pair (id, p));
 }
 
-unsigned char
+Item::typemask
 Repository::getItemTypes (void)
 {
-	unsigned char r = 0;
+	Item::typemask r = 0;
 
 	for (auto it: sequences)
 		{

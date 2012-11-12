@@ -9,10 +9,11 @@ set(cvdbg_sources
 	sequence.cpp
 	repository.cpp
 	scenegraph.cpp
-        timeline.cpp
         window3d.cpp
         camera.cpp
-        point3d.cpp)
+        point3d.cpp
+	scenegraph_selector.cpp
+        timeline.cpp)
 
 set(Boost_USE_MULTITHREADED ON)
 find_package(Boost REQUIRED)

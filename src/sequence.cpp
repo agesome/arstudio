@@ -3,7 +3,14 @@
 namespace Workspace
 {
 
-Sequence::Sequence (item_type t)
+const std::string Item::typeNames[] =
+{
+	std::string ("Camera"),
+	std::string ("Point cloud"),
+	std::string ("FP Vector")
+};
+
+Sequence::Sequence (Item::type t)
 {
 	type = t;
 }
@@ -20,7 +27,7 @@ Sequence::getItems (void)
 	return items;
 }
 
-item_type
+Item::type
 Sequence::getType (void)
 {
 	return type;

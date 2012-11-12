@@ -7,27 +7,29 @@
 #include <window3d.hpp>
 #include <thread>
 
+using namespace Workspace;
+
 int
 main (int argc, char * argv[])
 {
 	std::cout << __FUNCTION__ << std::endl;
 
 // testing code for Sequence/Repository
-	Workspace::Sequence::ptr sp;
-	Workspace::Repository r;
+	Sequence::ptr sp;
+	Repository r;
 
 // add some sequences
-	sp = boost::make_shared<Workspace::Sequence> (Workspace::ITEM_TYPE_CAMERA);
-	sp->addItem (0, boost::make_shared<Workspace::Item>());
-	sp->addItem (1, boost::make_shared<Workspace::Item>());
+	sp = boost::make_shared<Sequence> (Item::CAMERA);
+	sp->addItem (0, boost::make_shared<Item>());
+	sp->addItem (1, boost::make_shared<Item>());
 	r.addSequence (14, sp);
-	sp = boost::make_shared<Workspace::Sequence> (Workspace::ITEM_TYPE_FPVEC);
-	sp->addItem (2, boost::make_shared<Workspace::Item>());
-	sp->addItem (3, boost::make_shared<Workspace::Item>());
+	sp = boost::make_shared<Sequence> (Item::FPVEC);
+	sp->addItem (2, boost::make_shared<Item>());
+	sp->addItem (3, boost::make_shared<Item>());
 	r.addSequence (13, sp);
-	sp = boost::make_shared<Workspace::Sequence> (Workspace::ITEM_TYPE_PCLOUD);
-	sp->addItem (2, boost::make_shared<Workspace::Item>());
-	sp->addItem (3, boost::make_shared<Workspace::Item>());
+	sp = boost::make_shared<Sequence> (Item::PCLOUD);
+	sp->addItem (2, boost::make_shared<Item>());
+	sp->addItem (3, boost::make_shared<Item>());
 	r.addSequence (12, sp);
 
 	for (auto & it: r.getSequences ())
@@ -39,32 +41,33 @@ main (int argc, char * argv[])
 		}
 
 	std::cout << "List of item types:" << std::endl;
-	for (int i = 0; i < Workspace::ITEM_TYPE_LEN_; i++)
-		std::cout << "\t" << Workspace::itemTypeNames[i] << std::endl;
+	for (int i = 0; i < Item::LEN_; i++)
+		std::cout << "\t" << Item::typeNames[i] << std::endl;
 
-	unsigned char it = r.getItemTypes ();
+	Item::typemask it = r.getItemTypes ();
 
 	QApplication app (argc, argv);
-	Workspace::Scenegraph s;
+	ScenegraphSelector::ptr s = boost::make_shared<ScenegraphSelector> ();
+	Scenegraph g (s);
 
 	std::cout << "Item types in repository:" << std::endl;
-	for (int i = 0; i < Workspace::ITEM_TYPE_LEN_; i++)
+	for (int i = 0; i < Item::LEN_; i++)
 		if (it & (1 << i))
 			{
-				std::cout << "\t" << Workspace::itemTypeNames[i] << std::endl;
-				s.addCheckbox (i);
+				std::cout << "\t" << Item::typeNames[i] << std::endl;
+				s->addCheckbox (static_cast<Item::type>(i));
 			}
-	s.show ();
+	s->show ();
 
-	std::thread load ([&r, &s]()
+	std::thread load ([&r, &s, &g]()
 	{
 		sleep (4);
 		std::cout << "Loading data." << std::endl;
 		for (auto & it: r.getSequences ())
-			s.addSequence (it.second);
+			g.addSequence (it.second);
 		std::cout << "Filtered sequences:" << std::endl;
-		for (auto & it: s.	sequences)
-			std::cout << "\t" << Workspace::itemTypeNames[it->getType ()] << std::endl;
+		for (auto & it: g.getSequences ())
+			std::cout << "\t" << Item::typeNames[it->getType ()] << std::endl;
 	});
 	load.detach ();
 
