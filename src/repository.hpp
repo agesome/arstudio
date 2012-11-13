@@ -13,6 +13,7 @@ public:
 	typedef std::map <int, Sequence::ptr> map;
 
 	void addSequence (int, Sequence::ptr);
+	void addItem (int, Item::type, int, Item::ptr);
 	// may have to switch to int with >8 item types
 	Item::typemask getItemTypes (void);
 	const map & getSequences (void);

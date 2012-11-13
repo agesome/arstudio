@@ -9,16 +9,16 @@ using namespace Workspace;
 class Camera: public Item
 {
 public:
-    Camera();
+	Camera();
 
 private:
-    GLfloat tx;
-    GLfloat ty;
-    GLfloat tz;
+	GLfloat tx;
+	GLfloat ty;
+	GLfloat tz;
 
-    GLfloat rx;
-    GLfloat ry;
-    GLfloat rz;
+	GLfloat rx;
+	GLfloat ry;
+	GLfloat rz;
 };
 
 #endif // CAMERA_H

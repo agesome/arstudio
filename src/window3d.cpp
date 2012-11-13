@@ -385,40 +385,48 @@ void Window3D::draw()
 
 
 	Sequence::ptr temp;
+	<<<<<<< HEAD
 	Item::ptr item;
 	for(Scenegraph::list::const_iterator iter=sg->getSequences().begin();
 	    iter!=sg->getSequences ().end();
 	    iter++
 	    /*auto & iter : sg->getSequences()*/)
-		{
-			temp = *iter;
+		=======
 
 
-			if (temp->getItems().find(currNframe)!=temp->getItems().end())
-				{
+		  for(Scenegraph::list::const_iterator iter=sg->getSequences ().begin();
+		      iter!=sg->getSequences ().end();
+		      iter++)
+			  >>>>>>> d2aab5d55ba7046fd6ba950e7cb31dcf34284ff6
+			{
+				temp = *iter;
 
-					const Sequence::map m = temp->getItems();
-					item = temp->getItems().find(currNframe)->second;
-					//item = m.equal_range(currNframe).first;
+
+				if (temp->getItems().find(currNframe)!=temp->getItems().end())
+					{
+
+						const Sequence::map m = temp->getItems();
+						item = temp->getItems().find(currNframe)->second;
+						//item = m.equal_range(currNframe).first;
 //		    item = *temp->getItems().equal_range(currNframe).first;
 
-					switch(temp->getType())
-						{
-						case Item::CAMERA:
-							drawCam(0,0,0,0.02,0,-90,0);
-							break;
+						switch(temp->getType())
+							{
+							case Item::CAMERA:
+								drawCam(0,0,0,0.02,0,-90,0);
+								break;
 
-						case Item::FPVEC:
-							rgbp=new Point3d(0,0,0,0,0,0);
-							drawPoint3D(*rgbp,20);
-							break;
+							case Item::FPVEC:
+								rgbp=new Point3d(0,0,0,0,0,0);
+								drawPoint3D(*rgbp,20);
+								break;
 
-						}
-				}
+							}
+					}
 
-			qDebug()<<"type = "<<temp->getType();
+				qDebug()<<"type = "<<temp->getType();
 
-		}
+			}
 
 
 	//drawPoint3D(*rgbp,20);

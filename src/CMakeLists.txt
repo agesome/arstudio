@@ -13,6 +13,7 @@ set(cvdbg_sources
         camera.cpp
         point3d.cpp
 	scenegraph_selector.cpp
+        logger.cpp
         timeline.cpp)
 
 set(Boost_USE_MULTITHREADED ON)
