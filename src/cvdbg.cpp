@@ -6,6 +6,7 @@
 #include <scenegraph.hpp>
 #include <window3d.hpp>
 #include <thread>
+#include <point3d.hpp>
 
 using namespace Workspace;
 
@@ -17,6 +18,7 @@ main (int argc, char * argv[])
 // testing code for Sequence/Repository
 	Sequence::ptr sp;
 	Repository r;
+
 
 // add some sequences
 	sp = boost::make_shared<Sequence> (Item::CAMERA);
@@ -59,18 +61,40 @@ for (auto & i: it.second->getItems ())
 			}
 	s->show ();
 
-	std::thread load ([&r, &s, &g]()
-	{
-		sleep (4);
-		std::cout << "Loading data." << std::endl;
+//	std::thread load ([&r, &s, &g]()
+//	{
+//		sleep (4000);
+	std::cout << "Loading data." << std::endl;
 for (auto & it: r.getSequences ())
-			g.addSequence (it.second);
-		std::cout << "Filtered sequences:" << std::endl;
+		g.addSequence (it.second);
+	std::cout << "Filtered sequences:" << std::endl;
 for (auto & it: g.getSequences ())
-			std::cout << "\t" << Item::typeNames[it->getType ()] << std::endl;
-	});
-	load.detach ();
+		std::cout << "\t" << Item::typeNames[it->getType ()] << std::endl;
 
+
+
+
+
+
+//});
+//	load.detach ();
+
+
+	/******************************************************************************/
+	//ScenegraphSelector::ptr ssTest = boost::make_shared<ScenegraphSelector> ();
+	Scenegraph sgTest(s);
+	Sequence::ptr seqTest;
+
+
+	seqTest = boost::make_shared<Sequence> (Item::FPVEC);
+	seqTest->addItem(0, boost::make_shared<Point3d>(0,0,0,0,0,0));
+	seqTest->addItem(1, boost::make_shared<Point3d>(1,0,0,1,0,0));
+	seqTest->addItem(2, boost::make_shared<Point3d>(0,1,0,0,0,1));
+	seqTest->addItem(3, boost::make_shared<Point3d>());
+
+	sgTest.addSequence(seqTest);
+	/****************************************************************************/
+	qDebug()<<(int)s->getSelections();
 	Window3D window3d (&g);
 	window3d.show();
 

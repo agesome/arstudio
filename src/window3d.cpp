@@ -7,6 +7,7 @@
 #include <sequence.hpp>
 #include <scenegraph.hpp>
 
+
 const static float pi=3.141593, k=pi/180;
 
 using namespace std;
@@ -16,6 +17,8 @@ using namespace Workspace;
 GLfloat VertexArray[12][3];
 GLfloat ColorArray[12][3];
 GLubyte IndexArray[20][3];
+int currNframe;
+
 
 Window3D::Window3D(Scenegraph *s, QWidget* parent) : QGLWidget(parent)
 {
@@ -42,11 +45,6 @@ Window3D::Window3D(Scenegraph *s, QWidget* parent) : QGLWidget(parent)
 	StepPuzzlRot = 1.0;
 	ShiftF=0;
 
-
-	rgbp = new RgbPoint3d;
-	rgbp->x=0.2;
-	rgbp->y=0.3;
-	rgbp->z=0.4;
 
 	//ДАННЫЕ БУДУТ БРАТЬСЯ ИЗ ПОЛУЧЕННОГО Sequance
 	std::ifstream fConfig("config.txt");//читаем с Sequense SG
@@ -387,42 +385,57 @@ void Window3D::draw()
 
 
 	Sequence::ptr temp;
-
-
-	for(Scenegraph::list::const_iterator iter=sg->getSequences ().begin();
+	Item::ptr item;
+	for(Scenegraph::list::const_iterator iter=sg->getSequences().begin();
 	    iter!=sg->getSequences ().end();
-	    iter++)
+	    iter++
+	    /*auto & iter : sg->getSequences()*/)
 		{
 			temp = *iter;
 
 
-			switch(temp->getType ())
+			if (temp->getItems().find(currNframe)!=temp->getItems().end())
 				{
-				case 1:
-					drawCam(1,0,0,0.02,0,-90,0);
-					break;
-				case 2:
-					drawPoint3D(*rgbp,20);
-					break;
+
+					const Sequence::map m = temp->getItems();
+					item = temp->getItems().find(currNframe)->second;
+					//item = m.equal_range(currNframe).first;
+//		    item = *temp->getItems().equal_range(currNframe).first;
+
+					switch(temp->getType())
+						{
+						case Item::CAMERA:
+							drawCam(0,0,0,0.02,0,-90,0);
+							break;
+
+						case Item::FPVEC:
+							rgbp=new Point3d(0,0,0,0,0,0);
+							drawPoint3D(*rgbp,20);
+							break;
+
+						}
 				}
+
+			qDebug()<<"type = "<<temp->getType();
 
 		}
 
-	drawPoint3D(*rgbp,20);
-	drawPointCloud();
+
+	//drawPoint3D(*rgbp,20);
+	//drawPointCloud();
 
 	qApp->processEvents();
 }
 
 
 //рисуем точки из полученного Sequence
-void Window3D::drawPoint3D(RgbPoint3d & p, GLfloat size)
+void Window3D::drawPoint3D(Point3d & p, GLfloat size)
 {
 
 	glPointSize(size);
 	glTranslatef(0,0,0);
+	glColor3f(p.r,p.g,p.b);
 	glBegin(GL_POINTS);
-	glColor3f((int)(10*p.x)%2,(int)(10*p.y)%2,(int)(10*p.z)%2);
 	glVertex3d(p.x, p.y, p.z);
 	glColor3f(1,1,1);
 	glEnd();
@@ -534,7 +547,13 @@ void Window3D::update(int nframe)
 	this->params[0].xPuzzlRot+=20;
 	this->params[0].xPuzzlTra+=0.05;
 	rgbp->x=0.1*nframe;
+	rgbp->y=0.1*nframe;
+	rgbp->z=0.1*nframe;
 	this->updateGL();
+
+	currNframe = nframe;
+
+
 
 
 	emit drawed();

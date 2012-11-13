@@ -13,6 +13,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/shared_array.hpp>
 #include <boost/make_shared.hpp>
+#include <point3d.hpp>
 
 
 using namespace std;
@@ -57,7 +58,8 @@ public:
 private:
 
 	Scenegraph * sg;
-	RgbPoint3d * rgbp;
+	//RgbPoint3d * rgbp;
+	Point3d * rgbp;
 	QVector <RgbPoint3d> *points;
 	GLfloat xRot;
 	GLfloat yRot;
@@ -92,7 +94,7 @@ private:
 	void draw();
 	void drawCube(double x, double y, double z, double a);
 	void drawCam(double x, double y, double z, double a, double rx, double ry, double rz );
-	void drawPoint3D(RgbPoint3d &,GLfloat);
+	void drawPoint3D(Point3d &,GLfloat);
 	void drawPointCloud();
 protected:
 	void initializeGL();

@@ -13,6 +13,7 @@ ScenegraphSelector::addCheckbox (Item::type t)
 {
 	qbox_ptr box = boost::make_shared<QCheckBox>
 	               (QString::fromStdString (Item::typeNames[t]));
+	box.get()->setChecked(true);
 	boxes.push_back (std::pair<Item::type, qbox_ptr>(t, box));
 	layout->addWidget (box.get ());
 }
@@ -22,7 +23,7 @@ ScenegraphSelector::getSelections (void)
 {
 	Item::typemask m = 0;
 
-	for (auto it: boxes)
+for (auto it: boxes)
 		{
 			if (it.second->isChecked ())
 				m |= (1 << it.first);

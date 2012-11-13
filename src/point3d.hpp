@@ -8,16 +8,18 @@ using namespace Workspace;
 class Point3d : public Item
 {
 public:
-    Point3d();
+	Point3d();
 
-private:
-    GLfloat x;
-    GLfloat y;
-    GLfloat z;
+	Point3d(GLfloat,GLfloat,GLfloat,GLfloat,GLfloat,GLfloat);
 
-    GLfloat r;
-    GLfloat g;
-    GLfloat b;
+public:
+	GLfloat x;
+	GLfloat y;
+	GLfloat z;
+
+	GLfloat r;
+	GLfloat g;
+	GLfloat b;
 
 
 };
