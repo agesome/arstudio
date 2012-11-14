@@ -16,12 +16,12 @@ class Scenegraph
 public:
 	typedef std::list<Sequence::ptr> list;
 
-	Scenegraph (ScenegraphSelector::ptr);
+    Scenegraph (ScenegraphSelector *);
 	void addSequence (Sequence::ptr);
 	const list & getSequences (void);
 private:
 	list sequences;
-	ScenegraphSelector::ptr selector;
+    ScenegraphSelector * selector;
 };
 
 }

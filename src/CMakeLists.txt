@@ -14,7 +14,8 @@ set(cvdbg_sources
         point3d.cpp
 	scenegraph_selector.cpp
         logger.cpp
-        timeline.cpp)
+        timeline.cpp
+        core.cpp)
 
 set(Boost_USE_MULTITHREADED ON)
 find_package(Boost REQUIRED)

@@ -4,8 +4,9 @@ TimeLine::TimeLine(int max, QMainWindow *MainWindow) :
 	QWidget(MainWindow)
 {
 	this->setObjectName(QString::fromUtf8("TimeLine"));
-	this->setGeometry(QRect(20, 30, 400, 90));
-	loop_flag = false;
+    loop_flag = false;
+    this->setMinimumHeight(90);
+    this->setMaximumHeight(90);
 	layout = new QGridLayout(this);
 	horizontalSlider = new QSlider(this);
 	layout->addWidget(horizontalSlider, 0, 0, 0, 6, 0);
@@ -100,6 +101,7 @@ void TimeLine::onDrawed()
 					onStopPressed();
 					return;
 				}
+            qApp->processEvents();
 			horizontalSlider->setValue(horizontalSlider->value()+1);
 			emit nextFrame(horizontalSlider->value());
 

@@ -19,17 +19,25 @@ GLfloat ColorArray[12][3];
 GLubyte IndexArray[20][3];
 int currNframe;
 
+void Window3D::update(int nframe)
+{
+    qDebug()<<nframe<<"awdawdaw";
 
+    currNframe = nframe;
+    this->updateGL();
+
+    emit drawed();
+}
 Window3D::Window3D(Scenegraph *s, QWidget* parent) : QGLWidget(parent)
 {
 
 
-	TimeLine *tl = new TimeLine(10);
-	tl->setMax(10);
-	tl->show();
+    //TimeLine *tl = new TimeLine(10);
+    //tl->setMax(10);
+    //tl->show();
 
-	connect(tl,SIGNAL(nextFrame(int)),this,SLOT(update(int)));
-	connect(this,SIGNAL(drawed()),tl,SLOT(onDrawed()));
+    //connect(tl,SIGNAL(nextFrame(int)),this,SLOT(update(int)));
+    //connect(this,SIGNAL(drawed()),tl,SLOT(onDrawed()));
 
 	sg = s;
 	xRot=180;
@@ -173,7 +181,7 @@ void Window3D::wheelEvent(QWheelEvent* pe)
 	if ((pe->delta())>0) scale_plus();
 	else if ((pe->delta())<0) scale_minus();
 
-	updateGL();
+    updateGL();
 }
 
 void Window3D::keyPressEvent(QKeyEvent* pe)
@@ -424,8 +432,7 @@ void Window3D::draw()
 		}
 
 
-	qApp->processEvents();
-}
+    }
 
 
 //рисуем точки из полученного Sequence
@@ -541,24 +548,7 @@ update() на newFrame(int nframe)-> вызывает draw
 */
 
 
-//ДЕЙСТВИЯ ПОСЛЕ ПОЛУЧЕНИЯ СИГНАЛА
-void Window3D::update(int nframe)
-{
-	qDebug()<<nframe<<"awdawdaw";
 
-//	this->params[0].xPuzzlRot+=20;
-//	this->params[0].xPuzzlTra+=0.05;
-
-
-	currNframe = nframe;
-	this->updateGL();
-
-
-
-
-
-	emit drawed();
-}
 
 
 

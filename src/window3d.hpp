@@ -46,10 +46,7 @@ class Window3D : public QGLWidget
 
 	Q_OBJECT
 
-signals:
-	void drawed();
-public slots:
-	void update(int);
+
 
 public:
 	RotTraParam *params;
@@ -106,9 +103,12 @@ protected:
 	void wheelEvent(QWheelEvent* pe);
 	void keyPressEvent(QKeyEvent* pe);
 
+signals:
+    void drawed();
+public slots:
+    void update(int);
 public:
 	Window3D(Scenegraph *, QWidget *parent=0);
-
 
 };
 #endif

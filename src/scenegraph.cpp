@@ -3,7 +3,7 @@
 namespace Workspace
 {
 
-Scenegraph::Scenegraph (ScenegraphSelector::ptr s)
+Scenegraph::Scenegraph (ScenegraphSelector * s)
 {
 	selector = s;
 }

@@ -19,17 +19,14 @@ class ScenegraphSelector : public QWidget
 {
 	Q_OBJECT
 public:
-	typedef boost::shared_ptr<ScenegraphSelector> ptr;
-
-	ScenegraphSelector (QMainWindow * MainWindow = nullptr);
+    ScenegraphSelector (QWidget * MainWindow = nullptr);
 
 	void addCheckbox (Item::type);
 	Item::typemask getSelections (void);
 private:
-	typedef boost::shared_ptr<QCheckBox> qbox_ptr;
 
-	boost::shared_ptr<QVBoxLayout> layout;
-	std::list< std::pair<Item::type, qbox_ptr> > boxes;
+    QVBoxLayout * layout;
+    std::list< std::pair<Item::type, QCheckBox *> > boxes;
 signals:
 
 public slots:

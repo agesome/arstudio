@@ -3,19 +3,19 @@
 namespace Workspace
 {
 
-ScenegraphSelector::ScenegraphSelector (QMainWindow * MainWindow) : QWidget(MainWindow)
+ScenegraphSelector::ScenegraphSelector (QWidget * MainWindow) : QWidget(MainWindow)
 {
-	layout = boost::make_shared<QVBoxLayout> (this);
+    layout = new QVBoxLayout (this);
 }
 
 void
 ScenegraphSelector::addCheckbox (Item::type t)
 {
-	qbox_ptr box = boost::make_shared<QCheckBox>
+    QCheckBox * box = new QCheckBox
 	               (QString::fromStdString (Item::typeNames[t]));
-	box.get()->setChecked(true);
-	boxes.push_back (std::pair<Item::type, qbox_ptr>(t, box));
-	layout->addWidget (box.get ());
+    box->setChecked(true);
+    boxes.push_back (std::pair<Item::type, QCheckBox *>(t, box));
+    layout->addWidget (box);
 }
 
 Item::typemask
