@@ -7,12 +7,14 @@
 #include <window3d.hpp>
 #include <thread>
 #include <point3d.hpp>
-
+#include "camera.hpp"
 using namespace Workspace;
 
 int
 main (int argc, char * argv[])
 {
+	QApplication app (argc, argv);
+
 	std::cout << __FUNCTION__ << std::endl;
 
 // testing code for Sequence/Repository
@@ -21,28 +23,40 @@ main (int argc, char * argv[])
 
 
 // add some sequences
-	sp = boost::make_shared<Sequence> (Item::CAMERA);
-	sp->addItem (0, boost::make_shared<Item>());
-	sp->addItem (1, boost::make_shared<Item>());
-	r.addSequence (14, sp);
-	sp = boost::make_shared<Sequence> (Item::FPVEC);
-	sp->addItem (2, boost::make_shared<Item>());
-	sp->addItem (3, boost::make_shared<Item>());
-	r.addSequence (13, sp);
-	sp = boost::make_shared<Sequence> (Item::PCLOUD);
-	sp->addItem (2, boost::make_shared<Item>());
-	sp->addItem (3, boost::make_shared<Item>());
-	r.addSequence (12, sp);
 
-	r.addItem (15, Item::FPVEC, 0, boost::make_shared<Item>());
-	r.addItem (13, Item::FPVEC, 0, boost::make_shared<Item>());
+	for (int i=1; i<11; i++)
+		{
+
+			//   boost::shared_ptr<Point3d> p2 = boost::static_pointer_cast<Point3d>(itemmm);
+
+			//   Item::ptr itemm2 = boost::make_shared<Point3d>();
+			boost::shared_ptr<Point3d> p2=boost::make_shared<Point3d>();;
+			p2->x=i*0.1;
+			p2->y=0;
+			p2->z=0;
+			p2->r=0;
+			p2->g=0;
+			p2->b=0;
+
+			boost::shared_ptr<Camera> p1=boost::make_shared<Camera>();;
+			p1->tx=0.05*i;
+			p1->ty=0;
+			p1->tz=0;
+
+			r.addItem (15, Item::FPVEC, i, p2);
+			r.addItem (13, Item::CAMERA, i,p1);
+
+
+
+		}
+
 
 for (auto & it: r.getSequences ())
 		{
 			std::cout << "sequence type: \t" << it.second->getType () << std::endl;
 			std::cout << "sequence id: \t" << it.first << std::endl;
 for (auto & i: it.second->getItems ())
-				std::cout << "\titem id: " << i.first << std::endl;
+				std::cout << "\titem nframe: " << i.first << std::endl;
 		}
 
 	std::cout << "List of item types:" << std::endl;
@@ -51,7 +65,6 @@ for (auto & i: it.second->getItems ())
 
 	Item::typemask it = r.getItemTypes ();
 
-	QApplication app (argc, argv);
 	ScenegraphSelector::ptr s = boost::make_shared<ScenegraphSelector> ();
 	Scenegraph g (s);
 
@@ -64,10 +77,8 @@ for (auto & i: it.second->getItems ())
 			}
 	s->show ();
 
-	<<<<<<< HEAD
-//	std::thread load ([&r, &s, &g]()
-//	{
-//		sleep (4000);
+
+
 	std::cout << "Loading data." << std::endl;
 for (auto & it: r.getSequences ())
 		g.addSequence (it.second);
@@ -79,39 +90,6 @@ for (auto & it: g.getSequences ())
 
 
 
-
-//});
-//	load.detach ();
-
-
-	/******************************************************************************/
-	//ScenegraphSelector::ptr ssTest = boost::make_shared<ScenegraphSelector> ();
-	Scenegraph sgTest(s);
-	Sequence::ptr seqTest;
-
-
-	seqTest = boost::make_shared<Sequence> (Item::FPVEC);
-	seqTest->addItem(0, boost::make_shared<Point3d>(0,0,0,0,0,0));
-	seqTest->addItem(1, boost::make_shared<Point3d>(1,0,0,1,0,0));
-	seqTest->addItem(2, boost::make_shared<Point3d>(0,1,0,0,0,1));
-	seqTest->addItem(3, boost::make_shared<Point3d>());
-	=======
-	  std::thread load ([&r, &s, &g]()
-	{
-		sleep (4);
-		std::cout << "Loading data." << std::endl;
-for (auto & it: r.getSequences ())
-			g.addSequence (it.second);
-		std::cout << "Filtered sequences:" << std::endl;
-for (auto & it: g.getSequences ())
-			std::cout << "\t" << Item::typeNames[it->getType ()] << std::endl;
-	});
-	load.detach ();
-	>>>>>>> d2aab5d55ba7046fd6ba950e7cb31dcf34284ff6
-
-	sgTest.addSequence(seqTest);
-	/****************************************************************************/
-	qDebug()<<(int)s->getSelections();
 	Window3D window3d (&g);
 	window3d.show();
 

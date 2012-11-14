@@ -6,7 +6,7 @@
 #include <list>
 #include <sequence.hpp>
 #include <scenegraph.hpp>
-
+#include "camera.hpp"
 
 const static float pi=3.141593, k=pi/180;
 
@@ -22,6 +22,7 @@ int currNframe;
 
 Window3D::Window3D(Scenegraph *s, QWidget* parent) : QGLWidget(parent)
 {
+
 
 	TimeLine *tl = new TimeLine(10);
 	tl->setMax(10);
@@ -44,7 +45,7 @@ Window3D::Window3D(Scenegraph *s, QWidget* parent) : QGLWidget(parent)
 	StepPuzzlTra = 0.01;
 	StepPuzzlRot = 1.0;
 	ShiftF=0;
-
+	currNframe=1;
 
 	//ДАННЫЕ БУДУТ БРАТЬСЯ ИЗ ПОЛУЧЕННОГО Sequance
 	std::ifstream fConfig("config.txt");//читаем с Sequense SG
@@ -385,52 +386,43 @@ void Window3D::draw()
 
 
 	Sequence::ptr temp;
-	<<<<<<< HEAD
 	Item::ptr item;
-	for(Scenegraph::list::const_iterator iter=sg->getSequences().begin();
+
+	for(Scenegraph::list::const_iterator iter=sg->getSequences ().begin();
 	    iter!=sg->getSequences ().end();
-	    iter++
-	    /*auto & iter : sg->getSequences()*/)
-		=======
+	    iter++)
+		{
+			temp = *iter;
 
+			if (temp->getItems().find(currNframe)!=temp->getItems().end())
+				{
 
-		  for(Scenegraph::list::const_iterator iter=sg->getSequences ().begin();
-		      iter!=sg->getSequences ().end();
-		      iter++)
-			  >>>>>>> d2aab5d55ba7046fd6ba950e7cb31dcf34284ff6
-			{
-				temp = *iter;
-
-
-				if (temp->getItems().find(currNframe)!=temp->getItems().end())
-					{
-
-						const Sequence::map m = temp->getItems();
-						item = temp->getItems().find(currNframe)->second;
-						//item = m.equal_range(currNframe).first;
+					const Sequence::map m = temp->getItems();
+					item = temp->getItems().find(currNframe)->second;
+					//item = m.equal_range(currNframe).first;
 //		    item = *temp->getItems().equal_range(currNframe).first;
 
-						switch(temp->getType())
-							{
-							case Item::CAMERA:
-								drawCam(0,0,0,0.02,0,-90,0);
-								break;
+					switch(temp->getType())
+						{
+							Point3d * p;
+							Camera * c;
+						case Item::CAMERA:
+							c = (Camera*)(item.get());
+							drawCam(c->tx,c->ty,c->tz,0.05,c->rx,c->ry,c->rz);
+							qDebug()<<currNframe<<c->tx<<c->ty<<c->tz;
+							break;
 
-							case Item::FPVEC:
-								rgbp=new Point3d(0,0,0,0,0,0);
-								drawPoint3D(*rgbp,20);
-								break;
+						case Item::FPVEC:
+							p = (Point3d *)(item.get());
+							drawPoint3D(*p,20);
+							break;
+						}
+				}
 
-							}
-					}
+			qDebug()<<"type = "<<temp->getType();
 
-				qDebug()<<"type = "<<temp->getType();
+		}
 
-			}
-
-
-	//drawPoint3D(*rgbp,20);
-	//drawPointCloud();
 
 	qApp->processEvents();
 }
@@ -552,14 +544,15 @@ update() на newFrame(int nframe)-> вызывает draw
 //ДЕЙСТВИЯ ПОСЛЕ ПОЛУЧЕНИЯ СИГНАЛА
 void Window3D::update(int nframe)
 {
-	this->params[0].xPuzzlRot+=20;
-	this->params[0].xPuzzlTra+=0.05;
-	rgbp->x=0.1*nframe;
-	rgbp->y=0.1*nframe;
-	rgbp->z=0.1*nframe;
-	this->updateGL();
+	qDebug()<<nframe<<"awdawdaw";
+
+//	this->params[0].xPuzzlRot+=20;
+//	this->params[0].xPuzzlTra+=0.05;
+
 
 	currNframe = nframe;
+	this->updateGL();
+
 
 
 

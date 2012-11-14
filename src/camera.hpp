@@ -11,7 +11,7 @@ class Camera: public Item
 public:
 	Camera();
 
-private:
+
 	GLfloat tx;
 	GLfloat ty;
 	GLfloat tz;
