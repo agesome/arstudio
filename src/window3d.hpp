@@ -54,7 +54,7 @@ public:
 
 private:
 
-	Scenegraph * sg;
+	Scenegraph::ptr sg;
 	//RgbPoint3d * rgbp;
 	Point3d * rgbp;
 	QVector <RgbPoint3d> *points;
@@ -108,7 +108,7 @@ signals:
 public slots:
     void update(int);
 public:
-	Window3D(Scenegraph *, QWidget *parent=0);
+	Window3D(Scenegraph::ptr, QWidget *parent=0);
 
 };
 #endif

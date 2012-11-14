@@ -7,6 +7,7 @@
 #include <boost/make_shared.hpp>
 #include <sequence.hpp>
 #include <scenegraph_selector.hpp>
+#include <climits>
 
 namespace Workspace
 {
@@ -14,11 +15,15 @@ namespace Workspace
 class Scenegraph
 {
 public:
+	typedef boost::shared_ptr<Scenegraph> ptr;
 	typedef std::list<Sequence::ptr> list;
 
     Scenegraph (ScenegraphSelector *);
+    static ptr make (ScenegraphSelector *);
 	void addSequence (Sequence::ptr);
 	const list & getSequences (void);
+	unsigned int getMinFrame (void);
+	unsigned int getMaxFrame (void);
 private:
 	list sequences;
     ScenegraphSelector * selector;

@@ -19,7 +19,7 @@ Core::Core() :
     scgr_sel->addCheckbox(Item::CAMERA);
     scgr_sel->addCheckbox(Item::FPVEC);
     mainsplitter->addWidget(scgr_sel);
-    scgr = new Workspace::Scenegraph(scgr_sel);
+    scgr = Workspace::Scenegraph::make(scgr_sel);
     wnd3d = new Window3D(scgr, central);
     wnd3d->setMinimumSize(300,300);
     winsplitter->addWidget(wnd3d);

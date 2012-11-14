@@ -28,17 +28,9 @@ void Window3D::update(int nframe)
 
     emit drawed();
 }
-Window3D::Window3D(Scenegraph *s, QWidget* parent) : QGLWidget(parent)
+
+Window3D::Window3D(Scenegraph::ptr s, QWidget* parent) : QGLWidget(parent)
 {
-
-
-    //TimeLine *tl = new TimeLine(10);
-    //tl->setMax(10);
-    //tl->show();
-
-    //connect(tl,SIGNAL(nextFrame(int)),this,SLOT(update(int)));
-    //connect(this,SIGNAL(drawed()),tl,SLOT(onDrawed()));
-
 	sg = s;
 	xRot=180;
 	yRot=0;

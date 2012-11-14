@@ -22,7 +22,7 @@ private:
     QGridLayout *layout;
     TimeLine *tmln;
     ScenegraphSelector * scgr_sel;
-    Workspace::Scenegraph *scgr;
+    Workspace::Scenegraph::ptr scgr;
     Window3D *wnd3d; //window3d
     QWidget *hynta; //right hyNta
     QPushButton *butt;

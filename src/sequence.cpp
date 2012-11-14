@@ -15,6 +15,12 @@ Sequence::Sequence (Item::type t)
 	type = t;
 }
 
+Sequence::ptr
+Sequence::make (Item::type t)
+{
+	return boost::make_shared<Sequence> (t);
+}
+
 void
 Sequence::addItem (int nframe, Item::ptr p)
 {
