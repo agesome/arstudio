@@ -36,7 +36,7 @@ TimeLine::TimeLine(int max, QMainWindow *MainWindow) :
 	layout->addWidget(toolButton_next, 1, 1, 0);
 	toolButton_next->setObjectName(QString::fromUtf8("toolButton_next"));
 	toolButton_next->setText(">");
-	setMax(max);
+    setMax(max);
 	connect(horizontalSlider, SIGNAL(valueChanged(int)), this, SLOT(onSliderValueChanged(int)));
 	connect(toolButton_prev, SIGNAL(clicked()), this, SLOT(onPrevButtonPressed()));
 	connect(toolButton_next, SIGNAL(clicked()), this, SLOT(onNextButtonPressed()));
@@ -46,7 +46,7 @@ TimeLine::TimeLine(int max, QMainWindow *MainWindow) :
 
 
 	//retranslateUi(MainWindow);
-	QMetaObject::connectSlotsByName(MainWindow);
+    QMetaObject::connectSlotsByName(MainWindow);
 }
 
 void TimeLine::onSliderValueChanged(int value)
@@ -95,17 +95,17 @@ void TimeLine::setMax(int value)
 void TimeLine::onDrawed()
 {
 	if(loop_flag)
-		{
-			if(horizontalSlider->value() == horizontalSlider->maximum())
-				{
-					onStopPressed();
-					return;
-				}
+        {
+            if(horizontalSlider->value() == horizontalSlider->maximum())
+                {
+                    onStopPressed();
+                    return;
+                }
             qApp->processEvents();
-			horizontalSlider->setValue(horizontalSlider->value()+1);
-			emit nextFrame(horizontalSlider->value());
+            horizontalSlider->setValue(horizontalSlider->value()+1);
+            if(horizontalSlider->value() -1== horizontalSlider->maximum()) emit nextFrame(horizontalSlider->value());
 
-		}
+        }
 
 }
 
@@ -121,10 +121,10 @@ void TimeLine::onPlayPressed()
 
 void TimeLine::onStopPressed()
 {
-	if(loop_flag)
+    if(loop_flag)
 		{
 			loop_flag = false;
-			toolButton_next->setEnabled(true);
+            toolButton_next->setEnabled(true);
 			toolButton_prev->setEnabled(true);
 		}
 }
