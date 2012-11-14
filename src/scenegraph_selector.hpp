@@ -22,7 +22,7 @@ public:
 	typedef boost::shared_ptr<ScenegraphSelector> ptr;
 
 	ScenegraphSelector (QMainWindow * MainWindow = nullptr);
-
+	static ptr make (QMainWindow * MainWindow = nullptr);
 	void addCheckbox (Item::type);
 	Item::typemask getSelections (void);
 private:

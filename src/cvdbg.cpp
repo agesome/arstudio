@@ -65,8 +65,8 @@ for (auto & i: it.second->getItems ())
 
 	Item::typemask it = r.getItemTypes ();
 
-	ScenegraphSelector::ptr s = boost::make_shared<ScenegraphSelector> ();
-	Scenegraph g (s);
+	ScenegraphSelector::ptr s = ScenegraphSelector::make ();
+	Scenegraph::ptr g = Scenegraph::make (s);
 
 	std::cout << "Item types in repository:" << std::endl;
 	for (int i = 0; i < Item::LEN_; i++)
@@ -81,16 +81,16 @@ for (auto & i: it.second->getItems ())
 
 	std::cout << "Loading data." << std::endl;
 for (auto & it: r.getSequences ())
-		g.addSequence (it.second);
+		g->addSequence (it.second);
 	std::cout << "Filtered sequences:" << std::endl;
-for (auto & it: g.getSequences ())
+for (auto & it: g->getSequences ())
 		std::cout << "\t" << Item::typeNames[it->getType ()] << std::endl;
 
 
 
 
 
-	Window3D window3d (&g);
+	Window3D window3d (g);
 	window3d.show();
 
 	return app.exec ();

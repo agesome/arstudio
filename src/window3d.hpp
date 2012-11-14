@@ -57,7 +57,7 @@ public:
 
 private:
 
-	Scenegraph * sg;
+	Scenegraph::ptr sg;
 	//RgbPoint3d * rgbp;
 	Point3d * rgbp;
 	QVector <RgbPoint3d> *points;
@@ -107,7 +107,7 @@ protected:
 	void keyPressEvent(QKeyEvent* pe);
 
 public:
-	Window3D(Scenegraph *, QWidget *parent=0);
+	Window3D(Scenegraph::ptr, QWidget *parent=0);
 
 
 };

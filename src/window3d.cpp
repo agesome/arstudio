@@ -20,7 +20,7 @@ GLubyte IndexArray[20][3];
 int currNframe;
 
 
-Window3D::Window3D(Scenegraph *s, QWidget* parent) : QGLWidget(parent)
+Window3D::Window3D(Scenegraph::ptr s, QWidget* parent) : QGLWidget(parent)
 {
 
 

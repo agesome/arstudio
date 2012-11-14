@@ -35,6 +35,7 @@ public:
 	typedef std::map <int, Item::ptr> map;
 
 	Sequence (Item::type);
+	static ptr make (Item::type);
 	void addItem (int, Item::ptr);
 	const map & getItems (void);
 	Item::type getType (void);

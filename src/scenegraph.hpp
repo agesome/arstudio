@@ -14,9 +14,11 @@ namespace Workspace
 class Scenegraph
 {
 public:
+	typedef boost::shared_ptr<Scenegraph> ptr;
 	typedef std::list<Sequence::ptr> list;
 
 	Scenegraph (ScenegraphSelector::ptr);
+	static ptr make (ScenegraphSelector::ptr);
 	void addSequence (Sequence::ptr);
 	const list & getSequences (void);
 private:

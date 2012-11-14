@@ -8,6 +8,12 @@ ScenegraphSelector::ScenegraphSelector (QMainWindow * MainWindow) : QWidget(Main
 	layout = boost::make_shared<QVBoxLayout> (this);
 }
 
+ScenegraphSelector::ptr
+ScenegraphSelector::make (QMainWindow * MainWindow)
+{
+	return boost::make_shared <ScenegraphSelector> (MainWindow);
+}
+
 void
 ScenegraphSelector::addCheckbox (Item::type t)
 {
