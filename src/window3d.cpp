@@ -25,7 +25,7 @@ Window3D::Window3D(Scenegraph::ptr s, QWidget* parent) : QGLWidget(parent)
 
 
 	TimeLine *tl = new TimeLine(10);
-	tl->setMax(10);
+	tl->setMax(s->getMaxFrame ());
 	tl->show();
 
 	connect(tl,SIGNAL(nextFrame(int)),this,SLOT(update(int)));

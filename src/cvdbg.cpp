@@ -24,7 +24,7 @@ main (int argc, char * argv[])
 
 // add some sequences
 
-	for (int i=1; i<11; i++)
+	for (int i=1; i<42; i++)
 		{
 
 			//   boost::shared_ptr<Point3d> p2 = boost::static_pointer_cast<Point3d>(itemmm);
@@ -86,9 +86,10 @@ for (auto & it: r.getSequences ())
 for (auto & it: g->getSequences ())
 		std::cout << "\t" << Item::typeNames[it->getType ()] << std::endl;
 
-
-
-
+	unsigned int mf = g->getMinFrame ();
+	std::cout << "min nframe: " << mf << std::endl;
+	mf = g->getMaxFrame ();
+	std::cout << "max nframe: " << mf << std::endl;
 
 	Window3D window3d (g);
 	window3d.show();

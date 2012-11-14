@@ -7,6 +7,7 @@
 #include <boost/make_shared.hpp>
 #include <sequence.hpp>
 #include <scenegraph_selector.hpp>
+#include <climits>
 
 namespace Workspace
 {
@@ -21,6 +22,8 @@ public:
 	static ptr make (ScenegraphSelector::ptr);
 	void addSequence (Sequence::ptr);
 	const list & getSequences (void);
+	unsigned int getMinFrame (void);
+	unsigned int getMaxFrame (void);
 private:
 	list sequences;
 	ScenegraphSelector::ptr selector;
