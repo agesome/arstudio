@@ -10,7 +10,7 @@ class Point3d : public Item
 public:
 	Point3d();
 
-	Point3d(GLfloat,GLfloat,GLfloat,GLfloat,GLfloat,GLfloat);
+	Point3d(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat);
 
 public:
 	GLfloat x;
@@ -20,8 +20,6 @@ public:
 	GLfloat r;
 	GLfloat g;
 	GLfloat b;
-
-
 };
 
 #endif // POINT3D_H

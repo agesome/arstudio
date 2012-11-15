@@ -2,7 +2,6 @@
 
 namespace Workspace
 {
-
 const std::string Item::typeNames[] =
 {
 	std::string ("Camera"),
@@ -38,5 +37,4 @@ Sequence::getType (void)
 {
 	return type;
 }
-
 }

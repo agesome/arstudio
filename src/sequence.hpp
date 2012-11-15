@@ -7,7 +7,6 @@
 
 namespace Workspace
 {
-
 class Item
 {
 public:
@@ -15,13 +14,12 @@ public:
 	typedef std::pair<int, ptr> pair;
 	typedef unsigned char typemask;
 
-	enum type
-	{
-	    CAMERA,
-	    PCLOUD,
-	    FPVEC,
+	enum type {
+		CAMERA,
+		PCLOUD,
+		FPVEC,
 
-	    LEN_
+		LEN_
 	};
 
 	static const std::string typeNames[LEN_];
@@ -44,6 +42,5 @@ private:
 	Item::type type;
 	map items;
 };
-
 }
 #endif // SEQUENCE_H

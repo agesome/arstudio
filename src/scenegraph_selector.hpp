@@ -14,24 +14,21 @@
 
 namespace Workspace
 {
-
 class ScenegraphSelector : public QWidget
 {
 	Q_OBJECT
 public:
-    ScenegraphSelector (QWidget * MainWindow = nullptr);
+	ScenegraphSelector (QWidget * MainWindow = nullptr);
 
 	void addCheckbox (Item::type);
 	Item::typemask getSelections (void);
 private:
 
-    QVBoxLayout * layout;
-    std::list< std::pair<Item::type, QCheckBox *> > boxes;
+	QVBoxLayout * layout;
+	std::list< std::pair<Item::type, QCheckBox *> > boxes;
 signals:
 
 public slots:
-
 };
-
 }
 #endif // SCENEGRAPH_SELECTOR_H

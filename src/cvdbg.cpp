@@ -11,8 +11,9 @@ using namespace Workspace;
 int main (int argc, char * argv[])
 {
 	QApplication app (argc, argv);
-    Core core;
-    core.show();
+	Core core;
 
-    return app.exec ();
+	core.show ();
+
+	return app.exec ();
 }

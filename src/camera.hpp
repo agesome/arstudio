@@ -6,7 +6,7 @@
 
 using namespace Workspace;
 
-class Camera: public Item
+class Camera : public Item
 {
 public:
 	Camera();

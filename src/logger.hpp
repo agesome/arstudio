@@ -3,7 +3,4 @@
 
 namespace Logger
 {
-
-
-
 }

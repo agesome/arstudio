@@ -5,7 +5,6 @@
 
 namespace Workspace
 {
-
 class Repository
 {
 public:
@@ -20,7 +19,6 @@ public:
 private:
 	map sequences;
 };
-
 }
 
 #endif // REPOSITORY_H

@@ -22,8 +22,8 @@ class TimeLine : public QWidget
 	Q_OBJECT
 public:
 	explicit TimeLine(QWidget *parent = 0);
-	TimeLine (int max, QMainWindow *MainWindow=0);
-	void setMax(int value);
+	TimeLine (int max, QMainWindow *MainWindow = 0);
+	void setMax (int value);
 private:
 	QGridLayout *layout;
 	QSlider *horizontalSlider;
@@ -34,16 +34,16 @@ private:
 	QToolButton *toolButton_next;
 	bool loop_flag;
 signals:
-	void nextFrame(int);
+	void nextFrame (int);
 public slots:
-	void onSliderValueChanged(int value);
-	void onPrevButtonPressed();
-	void onNextButtonPressed();
-	void onSpinBoxEditFinished();
-	void onPlayPressed();
-	void onStopPressed();
-	void onOkPressed();
-	void onDrawed();
+	void onSliderValueChanged (int value);
+	void onPrevButtonPressed ();
+	void onNextButtonPressed ();
+	void onSpinBoxEditFinished ();
+	void onPlayPressed ();
+	void onStopPressed ();
+	void onOkPressed ();
+	void onDrawed ();
 };
 
 #endif // TIMELINE_H

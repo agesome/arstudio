@@ -14,26 +14,26 @@
 #include <camera.hpp>
 class Core : public QMainWindow
 {
-    Q_OBJECT
+	Q_OBJECT
 private:
-    QWidget *central;
-    QMenuBar mnuBar;
-    QMenu *pmnu;
-    QGridLayout *layout;
-    TimeLine *tmln;
-    ScenegraphSelector * scgr_sel;
-    Workspace::Scenegraph::ptr scgr;
-    Window3D *wnd3d; //window3d
-    QWidget *hynta; //right hyNta
-    QPushButton *butt;
-    QSplitter *mainsplitter ,*winsplitter;
-    Workspace::Repository *rep;
+	QWidget * central;
+	QMenuBar mnuBar;
+	QMenu *pmnu;
+	QGridLayout *layout;
+	TimeLine *tmln;
+	ScenegraphSelector * scgr_sel;
+	Workspace::Scenegraph::ptr scgr;
+	Window3D *wnd3d;   //window3d
+	QWidget *hynta;   //right hyNta
+	QPushButton *butt;
+	QSplitter *mainsplitter, *winsplitter;
+	Workspace::Repository *rep;
 public:
-    Core();
+	Core();
 signals:
 
 public slots:
-    void quit();
+	void quit ();
 };
 
 #endif // CORE_H

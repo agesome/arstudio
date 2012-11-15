@@ -2,7 +2,6 @@
 
 namespace Workspace
 {
-
 Scenegraph::Scenegraph (ScenegraphSelector * s)
 {
 	selector = s;
@@ -34,8 +33,8 @@ Scenegraph::getMinFrame (void)
 {
 	unsigned int r = UINT_MAX;
 
-	for (auto seq: sequences)
-		for (auto it: seq->getItems ())
+	for (auto seq : sequences)
+		for (auto it : seq->getItems ())
 			if (it.first < r)
 				r = it.first;
 	return r;
@@ -46,8 +45,8 @@ Scenegraph::getMaxFrame (void)
 {
 	unsigned int r = 0;
 
-	for (auto seq: sequences)
-		for (auto it: seq->getItems ())
+	for (auto seq : sequences)
+		for (auto it : seq->getItems ())
 			if (it.first > r)
 				r = it.first;
 	return r;
