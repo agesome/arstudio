@@ -2,14 +2,15 @@
 #
 # Hook used to indent all source files before commiting
 #
+# Modified. Originally found at https://gist.github.com/1250603
 
-ASTYLE="$(git config hooks.astyle)"
-if test ! -x "$ASTYLE"
+FMT="$(git config hooks.format)"
+if test ! -x "$FMT"
 then
-	echo "Unable to find astyle executable on the configuration."
+	echo "Unable to find uncrustify executable on the configuration."
 	echo
 	echo "Please configure it with :"
-	echo "  git config hooks.astyle /path/to/astyle"
+	echo "  git config hooks.format /path/to/uncrustify"
 	echo
 fi
 
@@ -36,9 +37,8 @@ indent() {
 	done
 }
 
-# Indent the file with `indent' if this is a C/H file
 __indent_CPP() {
-	if test ! -x "$ASTYLE"
+	if test ! -x "$FMT"
 	then
 		return;
 	fi
@@ -48,7 +48,7 @@ __indent_CPP() {
 	fi
 
 	echo "Indenting " $file
-	"$ASTYLE" --style=gnu --indent=tab "$file"
+	"$FMT" -c $(git-rev-parse --show-toplevel)/git-hooks/gnu-indent.cfg "$file" --replace --no-backup
 	git add "$file"
 }
 
