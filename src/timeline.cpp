@@ -102,8 +102,7 @@ void TimeLine::onDrawed()
                     return;
                 }
             qApp->processEvents();
-            horizontalSlider->setValue(horizontalSlider->value()+1);
-            if(horizontalSlider->value() -1== horizontalSlider->maximum()) emit nextFrame(horizontalSlider->value());
+            horizontalSlider->setValue(horizontalSlider->value()+1);//it's emit the slider~>valueChanged signal
 
         }
 
