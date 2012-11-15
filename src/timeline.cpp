@@ -45,7 +45,7 @@ TimeLine::TimeLine(int max, QMainWindow *MainWindow) :
 	connect (spinBox, SIGNAL (editingFinished ()), this, SLOT (onSpinBoxEditFinished ()));
 
 
-	//retranslateUi(MainWindow);
+	// retranslateUi(MainWindow);
 	QMetaObject::connectSlotsByName (MainWindow);
 }
 
@@ -98,7 +98,7 @@ void TimeLine::onDrawed ()
 					return;
 				}
 			qApp->processEvents ();
-			horizontalSlider->setValue (horizontalSlider->value () + 1);  //it's emit the slider~>valueChanged signal
+			horizontalSlider->setValue (horizontalSlider->value () + 1);  // it's emit the slider~>valueChanged signal
 		}
 }
 

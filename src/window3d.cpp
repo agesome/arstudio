@@ -40,21 +40,21 @@ Window3D::Window3D(Scenegraph::ptr s, QWidget* parent) : QGLWidget (parent)
 
 
 	NumberPuzzle = 1;
-	CountPuzzle = 1;    //создать метод для поределения
+	CountPuzzle = 1;    // создать метод для поределения
 
 	StepPuzzlTra = 0.01;
 	StepPuzzlRot = 1.0;
 	ShiftF = 0;
 	currNframe = 1;
 
-	//ДАННЫЕ БУДУТ БРАТЬСЯ ИЗ ПОЛУЧЕННОГО Sequance
-	std::ifstream fConfig ("config.txt");     //читаем с Sequense SG
+	// ДАННЫЕ БУДУТ БРАТЬСЯ ИЗ ПОЛУЧЕННОГО Sequance
+	std::ifstream fConfig ("config.txt");     // читаем с Sequense SG
 	fConfig >> CountPuzzle;
-	points = new QVector <RgbPoint3d>[CountPuzzle];    //объект sg.getSequence
-	params = new RotTraParam[CountPuzzle];    //нужно????????????no
+	points = new QVector <RgbPoint3d>[CountPuzzle];    // объект sg.getSequence
+	params = new RotTraParam[CountPuzzle];    // нужно????????????no
 	for (int i = 0; i < CountPuzzle; i++)
 		{
-//читаем из файла и записываем в массив структур поворот-перемещение
+// читаем из файла и записываем в массив структур поворот-перемещение
 			fConfig >> params[i].xPuzzlRot;
 			fConfig >> params[i].yPuzzlRot;
 			fConfig >> params[i].zPuzzlRot;
@@ -65,7 +65,7 @@ Window3D::Window3D(Scenegraph::ptr s, QWidget* parent) : QGLWidget (parent)
 
 	for (int i = 0; i < CountPuzzle; i++)
 		{
-			//?????????????????????????????????????no
+			// ?????????????????????????????????????no
 
 			QString str = "../data/ny" + QString::number (i) + ".txt";
 			std::ifstream f1 (str.toAscii ());
@@ -94,13 +94,13 @@ Window3D::Window3D(Scenegraph::ptr s, QWidget* parent) : QGLWidget (parent)
 		}
 }
 
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 void Window3D::initializeGL ()
 {
-//инициализация GL
+// инициализация GL
 	qglClearColor (Qt::white);
 	glFrontFace (GL_CW);
-	//для работы с буффером глубины 3 стр
+	// для работы с буффером глубины 3 стр
 	glClearDepth (1.0f);
 	glEnable (GL_DEPTH_TEST);
 	glDepthFunc (GL_LEQUAL);
@@ -115,7 +115,7 @@ void Window3D::initializeGL ()
 
 void Window3D::resizeGL (int nWidth, int nHeight)
 {
-	glMatrixMode (GL_PROJECTION);     //команды отн. к проекту
+	glMatrixMode (GL_PROJECTION);     // команды отн. к проекту
 	glLoadIdentity ();
 
 
@@ -126,7 +126,7 @@ void Window3D::resizeGL (int nWidth, int nHeight)
 	else
 		glOrtho (-1.0, 1.0, -1.0 * ratio, 1.0 * ratio, -10.0, 1.0);
 
-	glViewport (0, 0, (GLint) nWidth, (GLint) nHeight);   //установка окон
+	glViewport (0, 0, (GLint) nWidth, (GLint) nHeight);   // установка окон
 }
 
 void Window3D::paintGL ()
@@ -134,7 +134,7 @@ void Window3D::paintGL ()
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-	glMatrixMode (GL_MODELVIEW);     //команды отн. к модели
+	glMatrixMode (GL_MODELVIEW);     // команды отн. к модели
 	glLoadIdentity ();
 
 	glScalef (nSca, nSca, nSca);
@@ -143,8 +143,8 @@ void Window3D::paintGL ()
 	glRotatef (yRot, 0.0f, 1.0f, 0.0f);
 	glRotatef (zRot, 0.0f, 0.0f, 1.0f);
 
-	draw ();     //выбирает, что рисовать
-	//this->show();
+	draw ();     // выбирает, что рисовать
+	// this->show();
 }
 
 void Window3D::mousePressEvent (QMouseEvent* pe)
@@ -372,10 +372,10 @@ void Window3D::defaultScene ()
 }
 
 
-//ВЫБИРАЕТ КАКОЙ МЕТОД РИСОВАНИЯ ВЫБИРАТЬ
+// ВЫБИРАЕТ КАКОЙ МЕТОД РИСОВАНИЯ ВЫБИРАТЬ
 void Window3D::draw ()
 {
-//ОСИ
+// ОСИ
 	glLineWidth (3.0f);
 
 	glColor4f (1.00f, 0.00f, 0.00f, 1.0f);
@@ -408,8 +408,8 @@ void Window3D::draw ()
 	Item::ptr item;
 
 	for (Scenegraph::list::const_iterator iter = sg->getSequences ().begin ();
-			 iter != sg->getSequences ().end ();
-			 iter++)
+	     iter != sg->getSequences ().end ();
+	     iter++)
 		{
 			temp = *iter;
 
@@ -417,8 +417,8 @@ void Window3D::draw ()
 				{
 					const Sequence::map m = temp->getItems ();
 					item = temp->getItems ().find (currNframe)->second;
-					//item = m.equal_range(currNframe).first;
-//		    item = *temp->getItems().equal_range(currNframe).first;
+					// item = m.equal_range(currNframe).first;
+// item = *temp->getItems().equal_range(currNframe).first;
 
 					switch (temp->getType ())
 						{
@@ -443,7 +443,7 @@ void Window3D::draw ()
 }
 
 
-//рисуем точки из полученного Sequence
+// рисуем точки из полученного Sequence
 void Window3D::drawPoint3D (Point3d & p, GLfloat size)
 {
 	glPointSize (size);
@@ -456,7 +456,7 @@ void Window3D::drawPoint3D (Point3d & p, GLfloat size)
 }
 
 
-//рисуем Cam из полученного Sequence
+// рисуем Cam из полученного Sequence
 void Window3D::drawCam (double x, double y, double z, double a, double rx, double ry, double rz)
 {
 	glTranslatef (x, y, z);
@@ -465,7 +465,7 @@ void Window3D::drawCam (double x, double y, double z, double a, double rx, doubl
 	glRotatef (ry, 0.0f, 1.0f, 0.0f);
 	glRotatef (rz, 0.0f, 0.0f, 1.0f);
 
-	//glRotatef(180, 1.0f, 0.0f, 0.0f);
+	// glRotatef(180, 1.0f, 0.0f, 0.0f);
 
 	glBegin (GL_QUADS);
 

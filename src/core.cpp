@@ -31,9 +31,9 @@ Core::Core() :
 	rep = new Workspace::Repository ();
 	for (int i = 1; i < 42; i++)
 		{
-			//   boost::shared_ptr<Point3d> p2 = boost::static_pointer_cast<Point3d>(itemmm);
+			// boost::shared_ptr<Point3d> p2 = boost::static_pointer_cast<Point3d>(itemmm);
 
-			//   Item::ptr itemm2 = boost::make_shared<Point3d>();
+			// Item::ptr itemm2 = boost::make_shared<Point3d>();
 			boost::shared_ptr<Point3d> p2 = boost::make_shared<Point3d>();;
 			p2->x = i * 0.1;
 			p2->y = 0;

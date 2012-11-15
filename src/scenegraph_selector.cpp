@@ -11,7 +11,7 @@ void
 ScenegraphSelector::addCheckbox (Item::type t)
 {
 	QCheckBox * box = new QCheckBox
-											(QString::fromStdString (Item::typeNames[t]));
+	                    (QString::fromStdString (Item::typeNames[t]));
 
 	box->setChecked (true);
 	boxes.push_back (std::pair<Item::type, QCheckBox *>(t, box));

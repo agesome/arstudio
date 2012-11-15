@@ -23,8 +23,8 @@ private:
 	TimeLine *tmln;
 	ScenegraphSelector * scgr_sel;
 	Workspace::Scenegraph::ptr scgr;
-	Window3D *wnd3d;   //window3d
-	QWidget *hynta;   //right hyNta
+	Window3D *wnd3d;   // window3d
+	QWidget *hynta;   // right hyNta
 	QPushButton *butt;
 	QSplitter *mainsplitter, *winsplitter;
 	Workspace::Repository *rep;

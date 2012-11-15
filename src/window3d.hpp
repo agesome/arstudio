@@ -45,12 +45,12 @@ class Window3D : public QGLWidget
 
 public:
 	RotTraParam * params;
-	//void drawPoint3D(double x, double y, double z);
+	// void drawPoint3D(double x, double y, double z);
 
 private:
 
 	Scenegraph::ptr sg;
-	//RgbPoint3d * rgbp;
+	// RgbPoint3d * rgbp;
 	Point3d * rgbp;
 	QVector <RgbPoint3d> *points;
 	GLfloat xRot;
