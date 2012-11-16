@@ -1,4 +1,4 @@
-#include "core.hpp"
+#include <core.hpp>
 
 Core::Core() :
 	QMainWindow ()

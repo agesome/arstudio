@@ -1,6 +1,6 @@
 #ifndef CAMERA_H
 #define CAMERA_H
-#include "sequence.hpp"
+#include <sequence.hpp>
 
 #include <GL/glu.h>
 

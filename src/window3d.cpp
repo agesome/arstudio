@@ -6,7 +6,7 @@
 #include <list>
 #include <sequence.hpp>
 #include <scenegraph.hpp>
-#include "camera.hpp"
+#include <camera.hpp>
 
 const static float pi = 3.141593, k = pi / 180;
 
