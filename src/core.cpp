@@ -7,29 +7,33 @@ Core::Core() :
 	this->setObjectName (QString::fromUtf8 ("Core"));
 	this->setGeometry (10, 10, 800, 500);
 	this->setCentralWidget (central);
-	pmnu = new QMenu ("&Menu");
-	mnuBar.addMenu (pmnu);
-	pmnu->addAction ("Quit", this, SLOT (quit ()));
-	this->setMenuBar (&mnuBar);
-	layout = new QGridLayout (central);
-	mainsplitter = new QSplitter (Qt:: Horizontal, central);
-	winsplitter = new QSplitter (Qt:: Vertical, central);
-	layout->addWidget (mainsplitter, 0, 0, 1, 1);
-	scgr_sel = new ScenegraphSelector ();
-	scgr_sel->addCheckbox (Item::CAMERA);
+    layout = new QGridLayout (central);
+    mainsplitter = new QSplitter (Qt:: Horizontal, central);
+    winsplitter = new QSplitter (Qt:: Vertical, central);
+    scgr_sel = new ScenegraphSelector (central);
+    scgr = Workspace::Scenegraph::make (scgr_sel);
+    wnd3d = new Window3D (scgr, central);
+    tmlnmod = new TimeLineModel(1, 10);
+    tmln = new TimeLine (tmlnmod, this);
+    hynta = new QWidget (central);
+    rep = new Workspace::Repository ();
+    mnuBar = new QMenuBar(this);
+    pmnu = new QMenu ("&Menu");
+
+    pmnu->addAction ("Quit", this, SLOT (quit ()));
+    mnuBar->addMenu (pmnu);
+    this->setMenuBar (mnuBar);
+
+    layout->addWidget (mainsplitter, 0, 0, 1, 1);
+    scgr_sel->addCheckbox (Item::CAMERA);
 	scgr_sel->addCheckbox (Item::FPVEC);
-	mainsplitter->addWidget (scgr_sel);
-	scgr = Workspace::Scenegraph::make (scgr_sel);
-	wnd3d = new Window3D (scgr, central);
-	wnd3d->setMinimumSize (300, 300);
+    wnd3d->setMinimumSize (300, 300);
 	winsplitter->addWidget (wnd3d);
-	tmln = new TimeLine (10, this);
-	winsplitter->addWidget (tmln);
-	mainsplitter->addWidget (winsplitter);
-	hynta = new QWidget (central);
-	mainsplitter->addWidget (hynta);
-	rep = new Workspace::Repository ();
-	for (int i = 1; i < 42; i++)
+    winsplitter->addWidget (tmln);
+    mainsplitter->addWidget (scgr_sel);
+    mainsplitter->addWidget (winsplitter);
+    mainsplitter->addWidget (hynta);
+    for (int i = 1; i < 41; i++)
 		{
 			//   boost::shared_ptr<Point3d> p2 = boost::static_pointer_cast<Point3d>(itemmm);
 
@@ -43,7 +47,7 @@ Core::Core() :
 			p2->b = 0;
 
 			boost::shared_ptr<Camera> p1 = boost::make_shared<Camera>();;
-			p1->tx = 0.05 * i;
+            p1->tx = 0.1 * i;
 			p1->ty = 0;
 			p1->tz = 0;
 
@@ -52,9 +56,9 @@ Core::Core() :
 		}
 	for (auto it : rep->getSequences ())
 		scgr->addSequence (it.second);
-	tmln->setMax (41);
-	connect (tmln, SIGNAL (nextFrame (int)), wnd3d, SLOT (update (int)));
-	connect (wnd3d, SIGNAL (drawed ()), tmln, SLOT (onDrawed ()));
+    connect (tmlnmod, SIGNAL (newFrame(int)), wnd3d, SLOT(update(int)));
+    tmlnmod->setMax(41);
+    tmln->updateWidget();
 }
 void Core::quit ()
 {

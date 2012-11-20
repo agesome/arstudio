@@ -99,7 +99,7 @@ protected:
 	void keyPressEvent (QKeyEvent* pe);
 
 signals:
-	void drawed ();
+
 public slots:
 	void update (int);
 public:

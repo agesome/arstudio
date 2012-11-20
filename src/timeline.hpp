@@ -17,33 +17,41 @@
 #include <QWidget>
 #include <QDebug>
 #include <QGridLayout>
+#include <QTimer>
+#include <timelinemodel.hpp>
 class TimeLine : public QWidget
 {
 	Q_OBJECT
 public:
 	explicit TimeLine(QWidget *parent = 0);
-	TimeLine (int max, QMainWindow *MainWindow = 0);
+    TimeLine (TimeLineModel *tmlnmd, QMainWindow *MainWindow = 0);
 	void setMax (int value);
+    void setMin(int value);
+    void updateWidget();
 private:
-	QGridLayout *layout;
-	QSlider *horizontalSlider;
-	QSpinBox *spinBox;
-	QPushButton *playButton;
-	QPushButton *stopButton;
-	QToolButton *toolButton_prev;
-	QToolButton *toolButton_next;
-	bool loop_flag;
+    QGridLayout *layout = new QGridLayout (this);
+    QSlider *horizontalSlider = new QSlider (this);
+    QSpinBox *spinBox = new QSpinBox (this);
+    QPushButton *playButton = new QPushButton (this);
+    QPushButton *stopButton = new QPushButton (this);
+    QToolButton *toolButton_prev = new QToolButton (this);
+    QToolButton *toolButton_next = new QToolButton (this);
+    QTimer *timer = new QTimer(this);
+    TimeLineModel *tmlnmod;
+    void connects();
+    void iniGUI();
 signals:
-	void nextFrame (int);
+    void drawFrame ();
 public slots:
-	void onSliderValueChanged (int value);
-	void onPrevButtonPressed ();
+    void onPrevButtonPressed ();
 	void onNextButtonPressed ();
 	void onSpinBoxEditFinished ();
 	void onPlayPressed ();
 	void onStopPressed ();
-	void onOkPressed ();
-	void onDrawed ();
+    void onModelChanged (int n);
+    void onTimer();
+    void onSliderChanged(int n);
+
 };
 
 #endif // TIMELINE_H

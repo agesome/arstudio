@@ -12,12 +12,13 @@
 #include <QSplitter>
 #include <repository.hpp>
 #include <camera.hpp>
+#include <timelinemodel.hpp>
 class Core : public QMainWindow
 {
 	Q_OBJECT
 private:
 	QWidget * central;
-	QMenuBar mnuBar;
+    QMenuBar *mnuBar;
 	QMenu *pmnu;
 	QGridLayout *layout;
 	TimeLine *tmln;
@@ -28,6 +29,7 @@ private:
 	QPushButton *butt;
 	QSplitter *mainsplitter, *winsplitter;
 	Workspace::Repository *rep;
+    TimeLineModel *tmlnmod;
 public:
 	Core();
 signals:

@@ -26,7 +26,6 @@ void Window3D::update (int nframe)
 	currNframe = nframe;
 	this->updateGL ();
 
-	emit drawed ();
 }
 
 Window3D::Window3D(Scenegraph::ptr s, QWidget* parent) : QGLWidget (parent)

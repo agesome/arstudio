@@ -15,6 +15,7 @@ set(cvdbg_sources
 	scenegraph_selector.cpp
         logger.cpp
         timeline.cpp
+        timelinemodel.cpp
         core.cpp)
 
 set(Boost_USE_MULTITHREADED ON)
@@ -28,7 +29,7 @@ find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIR})
 
 include_directories("./")
-add_definitions("-std=c++11")
+add_definitions("-std=c++11 -ggdb3")
 
 add_executable(cvdbg ${cvdbg_sources})
 target_link_libraries(cvdbg ${QT_LIBRARIES} ${Boost_LIBRARIES} ${OPENGL_LIBRARIES})
