@@ -3,43 +3,61 @@
 namespace Workspace
 {
 void
-Repository::addSequence (int id, Sequence::ptr p)
+Repository::addSequence (Sequence::ptr p, std::string id,
+                         std::string branch_name)
 {
-	sequences.insert (Sequence::pair (id, p));
+	branch & br = accessBranch (branch_name);
+
+	br.insert (leaf (id, p));
+	on_leaf_add (id, branch_name);
 }
 
 void
-Repository::addItem (int seq_id, Item::type it, int nfr, Item::ptr ip)
+Repository::addItem (Item::ptr i, unsigned int nfr, Item::type type,
+                     std::string id, std::string branch_name)
 {
-	Sequence::ptr p;
+	branch & br = accessBranch (branch_name);
 
-	for (auto i : sequences)
+	branch::iterator it = br.find (id);
+
+	if (it == br.end ())
 		{
-			if (i.first == seq_id)
-				p = i.second;
+			Sequence::ptr p = Sequence::make (type);
+			br.insert (leaf (id, p));
+			on_leaf_add (id, branch_name);
+			p->addItem (nfr, i);
 		}
-	if (!p)       // p not assigned
+	else
 		{
-			p = boost::make_shared<Sequence> (it);
-			sequences.insert (Sequence::pair (seq_id, p));
+			it->second->addItem (nfr, i);
 		}
-	p->addItem (nfr, ip);
 }
 
-Item::typemask
-Repository::getItemTypes (void)
+Repository::branch &
+Repository::accessBranch (std::string branch_name = "default")
 {
-	Item::typemask r = 0;
+	tree::iterator it = sequences.find (branch_name);
 
-	for (auto it : sequences)
+	if (it == sequences.end ())
 		{
-			r |= (1 << it.second->getType ());
+			it = sequences.insert (tree_pair (branch_name, branch ())).first;
+			on_branch_add (branch_name);
+			return it->second;
 		}
-	return r;
+	else
+		{
+			return it->second;
+		}
 }
 
-const Repository::map &
-Repository::getSequences (void)
+Repository::ptr
+Repository::make (void)
+{
+	return boost::make_shared <Repository> ();
+}
+
+const Repository::tree &
+Repository::getTree (void)
 {
 	return sequences;
 }

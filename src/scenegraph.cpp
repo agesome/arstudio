@@ -2,24 +2,22 @@
 
 namespace Workspace
 {
-Scenegraph::Scenegraph (ScenegraphSelector * s)
-{
-	selector = s;
-}
-
 Scenegraph::ptr
-Scenegraph::make (ScenegraphSelector * p)
+Scenegraph::make ()
 {
-	return boost::make_shared<Scenegraph> (p);
+	return boost::make_shared<Scenegraph> ();
 }
 
 void
 Scenegraph::addSequence (Sequence::ptr seq)
 {
-	Item::typemask t = selector->getSelections ();
+	sequences.push_back (seq);
+}
 
-	if (t & (1 << seq->getType ()))
-		sequences.push_back (seq);
+void
+Scenegraph::removeSequence (Sequence::ptr seq)
+{
+	sequences.remove (seq);
 }
 
 const Scenegraph::list &

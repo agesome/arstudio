@@ -16,7 +16,7 @@ src/Makefile
 src/cmake_install.cmake
 src/CMakeFiles/
 src/CMakeCache.txt
-cvdbg
+
 
 # Qt stuff
 moc_*.cpp

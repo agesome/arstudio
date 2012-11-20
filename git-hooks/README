@@ -1,3 +1,0 @@
-This directory contains usable git hooks for this project.
-
-Copy the hook file to .git/hooks/ to enable it.

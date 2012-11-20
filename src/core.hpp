@@ -7,12 +7,16 @@
 #include <QPushButton>
 #include <QFrame>
 #include <timeline.hpp>
-#include <scenegraph_selector.hpp>
+#include <repository_view.hpp>
 #include <window3d.hpp>
 #include <QSplitter>
 #include <repository.hpp>
 #include <camera.hpp>
+<<<<<<< HEAD
 #include <timelinemodel.hpp>
+=======
+
+>>>>>>> 86866e2bc19b9b471850248534400c8101f4ded7
 class Core : public QMainWindow
 {
 	Q_OBJECT
@@ -22,14 +26,18 @@ private:
 	QMenu *pmnu;
 	QGridLayout *layout;
 	TimeLine *tmln;
-	ScenegraphSelector * scgr_sel;
+	Workspace::Repository::ptr repo;
+	RepositoryView * repo_view;
 	Workspace::Scenegraph::ptr scgr;
-	Window3D *wnd3d;   //window3d
-	QWidget *hynta;   //right hyNta
+	Window3D *wnd3d;   // window3d
+	QWidget *hynta;   // right hyNta
 	QPushButton *butt;
 	QSplitter *mainsplitter, *winsplitter;
+<<<<<<< HEAD
 	Workspace::Repository *rep;
     TimeLineModel *tmlnmod;
+=======
+>>>>>>> 86866e2bc19b9b471850248534400c8101f4ded7
 public:
 	Core();
 signals:
