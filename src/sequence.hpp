@@ -1,5 +1,6 @@
 #ifndef SEQUENCE_H
 #define SEQUENCE_H
+
 #include <map>
 #include <string>
 #include <boost/shared_ptr.hpp>
@@ -12,10 +13,14 @@ class Item
 public:
 	typedef boost::shared_ptr<Item> ptr;
 	typedef std::pair<int, ptr> pair;
-	typedef unsigned char typemask;
+
+	template <class T> static boost::shared_ptr<T> ptr_cast_to (const Item::ptr & r)
+	{
+		return boost::dynamic_pointer_cast<T, Item> (r);
+	}
 
 	enum type {
-		CAMERA,
+		CAMERA = 0,
 		PCLOUD,
 		FPVEC,
 
@@ -23,6 +28,11 @@ public:
 	};
 
 	static const std::string typeNames[LEN_];
+private:
+	// required for dynamic_pointer_cast
+	virtual void dummy (void)
+	{
+	};
 };
 
 class Sequence

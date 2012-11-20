@@ -2,22 +2,32 @@
 #define REPOSITORY_H
 
 #include <sequence.hpp>
+#include <string>
+#include <functional>
 
 namespace Workspace
 {
 class Repository
 {
 public:
-	typedef std::pair <int, Sequence::ptr> pair;
-	typedef std::map <int, Sequence::ptr> map;
+	typedef std::pair <std::string, Sequence::ptr> leaf;
+	typedef std::map <std::string, Sequence::ptr> branch;
+	typedef std::map <std::string, branch> tree;
+	typedef std::pair <std::string, branch> tree_pair;
+	typedef boost::shared_ptr <Repository> ptr;
 
-	void addSequence (int, Sequence::ptr);
-	void addItem (int, Item::type, int, Item::ptr);
-	// may have to switch to int with >8 item types
-	Item::typemask getItemTypes (void);
-	const map & getSequences (void);
+	std::function <void (std::string)> on_branch_add;
+	std::function <void (std::string, std::string)> on_leaf_add;
+
+	void addSequence (Sequence::ptr, std::string, std::string = "default");
+	void addItem (Item::ptr, unsigned int, Item::type, std::string,
+	              std::string = "default");
+	static ptr make (void);
+	const tree & getTree (void);
+	const Sequence::ptr getSequence (std::string, std::string);
+	branch & accessBranch (std::string);
 private:
-	map sequences;
+	tree sequences;
 };
 }
 

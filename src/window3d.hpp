@@ -10,9 +10,6 @@
 #include <GL/glu.h>
 #include <map>
 #include <scenegraph.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/shared_array.hpp>
-#include <boost/make_shared.hpp>
 #include <point3d.hpp>
 
 
@@ -86,7 +83,7 @@ private:
 	void draw ();
 	void drawCube (double x, double y, double z, double a);
 	void drawCam (double x, double y, double z, double a, double rx, double ry, double rz);
-	void drawPoint3D (Point3d &, GLfloat);
+	void drawPoint3D (Point3d::ptr, GLfloat);
 	void drawPointCloud ();
 protected:
 	void initializeGL ();

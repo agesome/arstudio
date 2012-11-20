@@ -8,11 +8,13 @@ using namespace Workspace;
 class Point3d : public Item
 {
 public:
-	Point3d();
+	typedef boost::shared_ptr<Point3d> ptr;
+	static ptr make (void);
+	static ptr make (GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat);
 
+	Point3d();
 	Point3d(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat);
 
-public:
 	GLfloat x;
 	GLfloat y;
 	GLfloat z;

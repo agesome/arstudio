@@ -9,6 +9,9 @@ using namespace Workspace;
 class Camera : public Item
 {
 public:
+	typedef boost::shared_ptr<Camera> ptr;
+	static ptr make (void);
+
 	Camera();
 
 

@@ -406,6 +406,7 @@ void Window3D::draw ()
 
 	Sequence::ptr temp;
 	Item::ptr item;
+	Camera::ptr c;
 
 	for (Scenegraph::list::const_iterator iter = sg->getSequences ().begin ();
 	     iter != sg->getSequences ().end ();
@@ -417,23 +418,17 @@ void Window3D::draw ()
 				{
 					const Sequence::map m = temp->getItems ();
 					item = temp->getItems ().find (currNframe)->second;
-					// item = m.equal_range(currNframe).first;
-// item = *temp->getItems().equal_range(currNframe).first;
 
 					switch (temp->getType ())
 						{
-							Point3d * p;
-							Camera * c;
-
 						case Item::CAMERA:
-							c = (Camera *) (item.get ());
+							c = Item::ptr_cast_to<Camera> (item);
 							drawCam (c->tx, c->ty, c->tz, 0.05, c->rx, c->ry, c->rz);
 							qDebug () << currNframe << c->tx << c->ty << c->tz;
 							break;
 
 						case Item::FPVEC:
-							p = (Point3d *) (item.get ());
-							drawPoint3D (*p, 20);
+							drawPoint3D (Item::ptr_cast_to<Point3d> (item), 20);
 							break;
 						}
 				}
@@ -444,13 +439,13 @@ void Window3D::draw ()
 
 
 // рисуем точки из полученного Sequence
-void Window3D::drawPoint3D (Point3d & p, GLfloat size)
+void Window3D::drawPoint3D (Point3d::ptr p, GLfloat size)
 {
 	glPointSize (size);
 	glTranslatef (0, 0, 0);
-	glColor3f (p.r, p.g, p.b);
+	glColor3f (p->r, p->g, p->b);
 	glBegin (GL_POINTS);
-	glVertex3d (p.x, p.y, p.z);
+	glVertex3d (p->x, p->y, p->z);
 	glColor3f (1, 1, 1);
 	glEnd ();
 }
