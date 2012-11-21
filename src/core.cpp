@@ -9,18 +9,21 @@ Core::Core() :
     for (int i = 1; i < 42; i++)
 		{
 			Point3d::ptr p2 = Point3d::make ();
-			p2->x = i * 0.1;
+            p2->x = i * 0.1;
 			p2->y = 0;
-			p2->z = 0;
+            p2->z = 0;
 			p2->r = 0;
 			p2->g = 0;
 			p2->b = 0;
 
 
 			Camera::ptr p1 = Camera::make ();
-			p1->tx = 0.05 * i;
-			p1->ty = 0;
-			p1->tz = 0;
+            p1->tx = 0;
+            p1->ty = 0;
+            p1->tz = 0.05 * i;
+            p1->rx = 5 * i;
+            p1->ry = 0;
+            p1->rz = 0;
 
 			repo->addItem (p2, i, Item::FPVEC, "fpvec");
 			repo->addItem (p1, i, Item::CAMERA, "camera");
