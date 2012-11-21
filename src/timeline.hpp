@@ -39,7 +39,7 @@ private:
     QTimer *timer = new QTimer(this);
     TimeLineModel *tmlnmod;
     void connects();
-    void iniGUI();
+    void initGUI();
 signals:
     void drawFrame ();
 public slots:

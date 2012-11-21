@@ -18,20 +18,21 @@ class Core : public QMainWindow
 {
 	Q_OBJECT
 private:
-	QWidget * central;
-    QMenuBar *mnuBar;
-	QMenu *pmnu;
-	QGridLayout *layout;
-	TimeLine *tmln;
-	Workspace::Repository::ptr repo;
-	RepositoryView * repo_view;
-	Workspace::Scenegraph::ptr scgr;
-	Window3D *wnd3d;   // window3d
-	QWidget *hynta;   // right hyNta
+    QWidget * central = new QWidget (this);
+    QMenuBar *mnuBar = new QMenuBar(this);
+    QMenu *pmnu =  new QMenu ("&Menu");
+    QGridLayout *layout = new QGridLayout (central);
+    TimeLineModel *tmlnmod = new TimeLineModel(1, 10);
+    TimeLine *tmln = new TimeLine (tmlnmod, this);
+    Workspace::Repository::ptr repo =  Workspace::Repository::make();
+    Workspace::Scenegraph::ptr scgr = Workspace::Scenegraph::make ();
+    RepositoryView * repo_view = new Workspace::RepositoryView(repo, scgr);
+    Window3D *wnd3d = new Window3D (scgr, central);
+    QWidget *hynta = new QWidget (central);   // right hyNta
 	QPushButton *butt;
-	QSplitter *mainsplitter, *winsplitter;
-	Workspace::Repository *rep;
-    TimeLineModel *tmlnmod;
+    QSplitter *mainsplitter = new QSplitter (Qt:: Horizontal, central);
+    QSplitter *winsplitter = new QSplitter (Qt:: Vertical, central);
+    void initGUI();
 public:
 	Core();
 signals:

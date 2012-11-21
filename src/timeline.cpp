@@ -5,7 +5,7 @@ TimeLine::TimeLine(TimeLineModel *tmlnmd, QMainWindow *MainWindow) :
 	QWidget (MainWindow)
 {
     this->tmlnmod = tmlnmd;
-    iniGUI();
+    initGUI();
     connects();
     updateWidget();
     QMetaObject::connectSlotsByName (MainWindow);
@@ -135,7 +135,7 @@ void TimeLine::onSliderChanged(int n)
 }
 
 
-void TimeLine::iniGUI()
+void TimeLine::initGUI()
 {
     this->setMinimumHeight (90);
     this->setMaximumHeight (90);
