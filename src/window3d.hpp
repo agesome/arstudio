@@ -2,37 +2,20 @@
 #define SCENE3D_H
 
 #include <QGLWidget>
-#include <QFile>
-#include <fstream>
 #include <QDebug>
-#include <QObject>
-#include <QVector>
 #include <GL/glu.h>
+#include <QtGui>
 #include <map>
 #include <scenegraph.hpp>
 #include <point3d.hpp>
+#include <camera.hpp>
+#include <sequence.hpp>
+#include <scenegraph.hpp>
 
 
 using namespace std;
 using namespace Workspace;
 
-struct RgbPoint3d {
-	GLfloat x;
-	GLfloat y;
-	GLfloat z;
-	GLfloat r;
-	GLfloat g;
-	GLfloat b;
-};
-
-struct RotTraParam {
-	GLfloat xPuzzlRot;
-	GLfloat yPuzzlRot;
-	GLfloat zPuzzlRot;
-	GLfloat xPuzzlTra;
-	GLfloat yPuzzlTra;
-	GLfloat zPuzzlTra;
-};
 
 class Window3D : public QGLWidget
 {
@@ -41,29 +24,22 @@ class Window3D : public QGLWidget
 
 
 public:
-	RotTraParam * params;
-	// void drawPoint3D(double x, double y, double z);
 
 private:
 
 	Scenegraph::ptr sg;
-	// RgbPoint3d * rgbp;
-	Point3d * rgbp;
-	QVector <RgbPoint3d> *points;
+
+    int currNframe;
+
 	GLfloat xRot;
 	GLfloat yRot;
 	GLfloat zRot;
 	GLfloat zTra;
 	GLfloat nSca;
 
-	GLfloat StepPuzzlTra;
-	GLfloat StepPuzzlRot;
-	bool ShiftF;
-
 	QPoint ptrMousePosition;
-	int NumberPuzzle;
-	int CountPuzzle;
-	void scale_plus ();
+
+    void scale_plus ();
 	void scale_minus ();
 	void rotate_up ();
 	void rotate_down ();
@@ -72,19 +48,13 @@ private:
 	void translate_down ();
 	void translate_up ();
 	void defaultScene ();
-	void moveMinusX ();
-	void movePluseX ();
-	void moveMinusY ();
-	void movePluseY ();
-	void moveMinusZ ();
-	void movePluseZ ();
-	void FlagShift ();
 
-	void draw ();
-	void drawCube (double x, double y, double z, double a);
+    void drawSceneElements ();
+    void drawAxis();
 	void drawCam (double x, double y, double z, double a, double rx, double ry, double rz);
 	void drawPoint3D (Point3d::ptr, GLfloat);
 	void drawPointCloud ();
+
 protected:
 	void initializeGL ();
 	void resizeGL (int nWidth, int nHeight);
