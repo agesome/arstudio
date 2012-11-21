@@ -20,7 +20,8 @@ class Core : public QMainWindow
 private:
     QWidget * central = new QWidget (this);
     QMenuBar *mnuBar = new QMenuBar(this);
-    QMenu *pmnu =  new QMenu ("&Menu");
+    QMenu *menu_file =  new QMenu ("&File");
+    QMenu *menu_help = new QMenu ("&Help");
     QGridLayout *layout = new QGridLayout (central);
     TimeLineModel *tmlnmod = new TimeLineModel(1, 10);
     TimeLine *tmln = new TimeLine (tmlnmod, this);
@@ -39,6 +40,8 @@ signals:
 
 public slots:
 	void quit ();
+    void open ();
+    void about ();
 };
 
 #endif // CORE_H

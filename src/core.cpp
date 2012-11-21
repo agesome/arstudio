@@ -49,8 +49,12 @@ void Core::initGUI()
     this->setGeometry (10, 10, 800, 500);
     this->setCentralWidget (central);
     repo_view->setMaximumWidth(180);
-    pmnu->addAction ("Quit", this, SLOT (quit ()));
-    mnuBar->addMenu (pmnu);
+    menu_file->addAction ("Open", this, SLOT (open ()));
+    menu_file->addSeparator();
+    menu_file->addAction ("Exit", this, SLOT (quit ()));
+    menu_help->addAction("About", this, SLOT (about ()));
+    mnuBar->addMenu (menu_file);
+    mnuBar->addMenu (menu_help);
     this->setMenuBar (mnuBar);
 
     layout->addWidget (mainsplitter, 0, 0, 1, 1);
@@ -61,4 +65,16 @@ void Core::initGUI()
     mainsplitter->addWidget (winsplitter);
     mainsplitter->addWidget (hynta);
 
+}
+
+
+void Core::open()
+{
+    qDebug()<<"Open file";
+}
+
+
+void Core::about()
+{
+    qDebug()<<"About";
 }
