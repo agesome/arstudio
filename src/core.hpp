@@ -21,6 +21,7 @@ private:
     QWidget * central = new QWidget (this);
     QMenuBar *mnuBar = new QMenuBar(this);
     QMenu *menu_file =  new QMenu ("&File");
+    QMenu *menu_edit = new QMenu("&Edit");
     QMenu *menu_help = new QMenu ("&Help");
     QGridLayout *layout = new QGridLayout (central);
     TimeLineModel *tmlnmod = new TimeLineModel(1, 10);
@@ -42,6 +43,8 @@ public slots:
 	void quit ();
     void open ();
     void about ();
+    void help ();
+    void settings ();
 };
 
 #endif // CORE_H

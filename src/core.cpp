@@ -52,8 +52,12 @@ void Core::initGUI()
     menu_file->addAction ("Open", this, SLOT (open ()));
     menu_file->addSeparator();
     menu_file->addAction ("Exit", this, SLOT (quit ()));
-    menu_help->addAction("About", this, SLOT (about ()));
+    menu_edit->addAction ("Settings", this, SLOT(settings ()));
+    menu_help->addAction("Help", this, SLOT(about()), Qt::Key_F1);
+    menu_help->addSeparator ();
+    menu_help->addAction ("About", this, SLOT (about ()));
     mnuBar->addMenu (menu_file);
+    mnuBar->addMenu(menu_edit);
     mnuBar->addMenu (menu_help);
     this->setMenuBar (mnuBar);
 
@@ -77,4 +81,16 @@ void Core::open()
 void Core::about()
 {
     qDebug()<<"About";
+}
+
+
+void Core::settings()
+{
+    qDebug()<<"Settings";
+}
+
+
+void Core::help()
+{
+    qDebug()<<"Help";
 }
