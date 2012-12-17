@@ -11,7 +11,7 @@
 #include <camera.hpp>
 #include <sequence.hpp>
 #include <scenegraph.hpp>
-
+#include <pcloud.hpp>
 
 using namespace std;
 using namespace Workspace;
@@ -29,7 +29,7 @@ private:
 
 	Scenegraph::ptr sg;
 
-    int currNframe;
+	int currNframe;
 
 	GLfloat xRot;
 	GLfloat yRot;
@@ -39,7 +39,7 @@ private:
 
 	QPoint ptrMousePosition;
 
-    void scale_plus ();
+	void scale_plus ();
 	void scale_minus ();
 	void rotate_up ();
 	void rotate_down ();
@@ -49,11 +49,11 @@ private:
 	void translate_up ();
 	void defaultScene ();
 
-    void drawSceneElements ();
-    void drawAxis();
+	void drawSceneElements ();
+	void drawAxis ();
 	void drawCam (double x, double y, double z, double a, double rx, double ry, double rz);
 	void drawPoint3D (Point3d::ptr, GLfloat);
-	void drawPointCloud ();
+	void drawPointCloud (PointCloud::ptr);
 
 protected:
 	void initializeGL ();

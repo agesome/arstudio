@@ -9,20 +9,19 @@ using namespace Workspace;
 
 void Window3D::update (int nframe)
 {
-    qDebug () << "draw new frame" << nframe;
+	qDebug () << "draw new frame" << nframe;
 
 	currNframe = nframe;
 	this->updateGL ();
-
 }
 
 Window3D::Window3D(Scenegraph::ptr s, QWidget* parent) : QGLWidget (parent)
 {
 	sg = s;
 
-    defaultScene();
+	defaultScene ();
 
-    currNframe = 1;
+	currNframe = 1;
 }
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -74,7 +73,7 @@ void Window3D::paintGL ()
 	glRotatef (yRot, 0.0f, 1.0f, 0.0f);
 	glRotatef (zRot, 0.0f, 0.0f, 1.0f);
 
-    drawSceneElements ();     // выбирает, что рисовать
+	drawSceneElements ();     // выбирает, что рисовать
 	// this->show();
 }
 
@@ -109,9 +108,8 @@ void Window3D::wheelEvent (QWheelEvent* pe)
 
 void Window3D::keyPressEvent (QKeyEvent* pe)
 {
-    switch (pe->key ())
+	switch (pe->key ())
 		{
-
 		case Qt::Key_Plus:
 			scale_plus ();
 			break;
@@ -137,14 +135,12 @@ void Window3D::keyPressEvent (QKeyEvent* pe)
 			break;
 
 		case Qt::Key_Right:
-            rotate_right ();
+			rotate_right ();
 			break;
 
 		case Qt::Key_Space:
 			defaultScene ();
 			break;
-
-
 		}
 
 	updateGL ();
@@ -154,12 +150,12 @@ void Window3D::keyPressEvent (QKeyEvent* pe)
 
 void Window3D::scale_plus ()
 {
-    nSca = nSca * 1.1;
+	nSca = nSca * 1.1;
 }
 
 void Window3D::scale_minus ()
 {
-    nSca = nSca / 1.1;
+	nSca = nSca / 1.1;
 }
 
 void Window3D::rotate_up ()
@@ -194,22 +190,20 @@ void Window3D::translate_up ()
 
 void Window3D::defaultScene ()
 {
-    xRot = 180;
-    yRot = 0;
-    zRot = 180;
-    zTra = 0;
-    nSca = 1;
-
+	xRot = 180;
+	yRot = 0;
+	zRot = 180;
+	zTra = 0;
+	nSca = 1;
 }
 
 
 void Window3D::drawSceneElements ()
 {
+	drawAxis ();
 
-    drawAxis ();
-
-    float cam_size= 0.05;
-    float point_size= 20;
+	float cam_size = 0.05;
+	float point_size = 20;
 
 	Sequence::ptr temp;
 	Item::ptr item;
@@ -230,45 +224,48 @@ void Window3D::drawSceneElements ()
 						{
 						case Item::CAMERA:
 							c = Item::ptr_cast_to<Camera> (item);
-                            drawCam (c->tx, c->ty, c->tz, cam_size, c->rx, c->ry, c->rz);
+							drawCam (c->tx, c->ty, c->tz, cam_size, c->rx, c->ry, c->rz);
 							qDebug () << currNframe << c->tx << c->ty << c->tz;
 							break;
 
-						case Item::FPVEC:
-                            drawPoint3D (Item::ptr_cast_to<Point3d> (item), point_size);
+						case Item::POINT3D:
+							drawPoint3D (Item::ptr_cast_to<Point3d> (item), point_size);
+							break;
+
+						case Item::PCLOUD:
+							drawPointCloud (Item::ptr_cast_to<PointCloud> (item));
 							break;
 						}
 				}
 
 			qDebug () << "type = " << temp->getType ();
-    }
+		}
 }
 
 void Window3D::drawAxis ()
 {
-    glLineWidth (3.0f);
+	glLineWidth (3.0f);
 
-    glColor4f (1.00f, 0.00f, 0.00f, 1.0f);
-    glBegin (GL_LINES);
-    glVertex3f (1.0f, 0.0f, 0.0f);
-    glVertex3f (-1.0f, 0.0f, 0.0f);
-    glEnd ();
+	glColor4f (1.00f, 0.00f, 0.00f, 1.0f);
+	glBegin (GL_LINES);
+	glVertex3f (1.0f, 0.0f, 0.0f);
+	glVertex3f (-1.0f, 0.0f, 0.0f);
+	glEnd ();
 
-    QColor halfGreen (0, 128, 0, 255);
-    qglColor (halfGreen);
-    glBegin (GL_LINES);
-    glVertex3f (0.0f, 1.0f, -0.0f);
-    glVertex3f (0.0f, -1.0f, 0.0f);
+	QColor halfGreen (0, 128, 0, 255);
+	qglColor (halfGreen);
+	glBegin (GL_LINES);
+	glVertex3f (0.0f, 1.0f, -0.0f);
+	glVertex3f (0.0f, -1.0f, 0.0f);
 
-    glColor4f (0.00f, 0.00f, 1.00f, 1.0f);
-    glVertex3f (0.0f, 0.0f, 1.0f);
-    glVertex3f (0.0f, 0.0f, -1.0f);
-    glEnd ();
+	glColor4f (0.00f, 0.00f, 1.00f, 1.0f);
+	glVertex3f (0.0f, 0.0f, 1.0f);
+	glVertex3f (0.0f, 0.0f, -1.0f);
+	glEnd ();
 
-    drawCam (1, 0, 0, 0.02, 0, -90, 0);
-    drawCam (0, 1, 0, 0.02, 90, 0, 0);
-    drawCam (0, 0, 1, 0.02, 180, 0, 0);
-
+	drawCam (1, 0, 0, 0.02, 0, -90, 0);
+	drawCam (0, 1, 0, 0.02, 90, 0, 0);
+	drawCam (0, 0, 1, 0.02, 180, 0, 0);
 }
 
 
@@ -282,6 +279,12 @@ void Window3D::drawPoint3D (Point3d::ptr p, GLfloat size)
 	glVertex3d (p->x, p->y, p->z);
 	glColor3f (1, 1, 1);
 	glEnd ();
+}
+
+void Window3D::drawPointCloud (PointCloud::ptr pc)
+{
+	for (auto p : pc->cloud)
+		drawPoint3D (p, 1);
 }
 
 

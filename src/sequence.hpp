@@ -22,7 +22,7 @@ public:
 	enum type {
 		CAMERA = 0,
 		PCLOUD,
-		FPVEC,
+		POINT3D,
 
 		LEN_
 	};

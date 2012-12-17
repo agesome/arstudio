@@ -2,46 +2,45 @@
 
 namespace Workspace
 {
-RepositoryView::RepositoryView (Repository::ptr r, Scenegraph::ptr sp, QWidget * MainWindow) : QTreeView (MainWindow)
+RepositoryView::RepositoryView (Repository::ptr r, Scenegraph::ptr sp, QWidget * MainWindow) : QTreeWidget (MainWindow)
 {
 	scgr = sp;
 	repo = r;
-	model = new QStandardItemModel ();
-	setModel (model);
-	model->setHorizontalHeaderItem (0, new QStandardItem ("Repository"));
+	setColumnCount (1);
+	setHeaderLabel ("Repository");
 
 	repo->on_branch_add = [this](std::string s)
 	{
-		QStandardItem * i = new QStandardItem (s.c_str ());
-
-		i->setEditable (false);
-		this->model->appendRow (i);
-		this->child_count.insert (std::pair <std::string, int> (s, 0));
+		QTreeWidgetItem * i = new QTreeWidgetItem (invisibleRootItem ());
+		i->setText (0, s.c_str ());
+		i->setExpanded (true);
 	};
 	repo->on_leaf_add = [this](std::string l, std::string br)
 	{
-		QStandardItem * i = new QStandardItem (l.c_str ());
-		QStandardItem * paren = this->model->findItems (br.c_str ()).first ();
-		paren->setChild (child_count[br]++, 0, i);
-		i->setEditable (false);
-		i->setCheckable (true);
-		i->setCheckState (Qt::Checked);
+		QTreeWidgetItem * paren = this->findItems (br.c_str (), Qt::MatchExactly).first ();
+		QTreeWidgetItem * i = new QTreeWidgetItem (paren);
+		i->setText (0, l.c_str ());
+		i->setFlags (Qt::ItemIsUserCheckable | Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		i->setCheckState (0, Qt::Checked);
 	};
-	connect (model, SIGNAL (itemChanged (QStandardItem *)), this,
-	         SLOT (onItemChanged (QStandardItem *)));
+	connect (this, SIGNAL (itemChanged (QTreeWidgetItem *, int)), this,
+	         SLOT (onItemChanged (QTreeWidgetItem *, int)));
 }
 
 void
-RepositoryView::onItemChanged (QStandardItem * item)
+RepositoryView::onItemChanged (QTreeWidgetItem * item, int col)
 {
-	QStandardItem * par = item->parent ();
-	std::string branch = par->text ().toStdString ();
-	std::string leaf = item->text ().toStdString ();
+	QTreeWidgetItem * par = item->parent ();
+
+	if (par == NULL)
+		return;
+	std::string branch = par->text (0).toStdString ();
+	std::string leaf = item->text (0).toStdString ();
 
 	Repository::branch & b = repo->accessBranch (branch);
 	Sequence::ptr seq = (*(b.find (leaf))).second;
 
-	if (item->checkState () == Qt::Checked)
+	if (item->checkState (0) == Qt::Checked)
 		{
 			scgr->addSequence (seq);
 		}

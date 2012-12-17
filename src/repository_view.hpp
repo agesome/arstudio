@@ -3,30 +3,29 @@
 
 #include <QMainWindow>
 #include <QWidget>
-#include <QStandardItemModel>
-#include <QTreeView>
+#include <QTreeWidgetItem>
 #include <string>
 #include <repository.hpp>
 #include <scenegraph.hpp>
 
 namespace Workspace
 {
-class RepositoryView : public QTreeView
+class RepositoryView : public QTreeWidget
 {
 	Q_OBJECT
 public:
 	RepositoryView (Repository::ptr, Scenegraph::ptr, QWidget * MainWindow = nullptr);
 
 private:
-	QStandardItemModel * model;
-	std::map <std::string, int> child_count;
+	// QStandardItemModel * model;
+	// std::map <std::string, int> child_count;
 	Scenegraph::ptr scgr;
 	Repository::ptr repo;
 
 signals:
 
 private slots:
-	void onItemChanged (QStandardItem *);
+	void onItemChanged (QTreeWidgetItem * item, int col);
 };
 }
 #endif // REPOSITORY_VIEW_H
