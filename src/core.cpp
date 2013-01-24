@@ -4,10 +4,11 @@ Core::Core() :
 	QMainWindow ()
 {
 	initGUI ();
-	connect (tmlnmod, SIGNAL (newFrame (int)), wnd3d, SLOT (update (int)));
-
 	apipe->loadModules ();
-	cview->populate ();
+	connect (tmlnmod, SIGNAL (newFrame (int)), wnd3d, SLOT (update (int)));
+	cview->setModel (&(Config::getInstance ()));
+	connect (&(Config::getInstance ()), SIGNAL (itemChanged (QStandardItem *)),
+	         cview, SLOT (itemChangedHandler (QStandardItem *)));
 
 	// std::function<void(const Config::tree_t &, int)> walk =
 	// [&walk, this](const Config::tree_t & tree, int level)
@@ -24,7 +25,9 @@ Core::Core() :
 
 	// walk (Config::getInstance ().rawTree (), 0);
 
+	// PointCloud::ptr result = PointCloud::make ();
 	// std::ifstream f ("../data/ny0.txt");
+
 	// while (f.good ())
 	// {
 	// double x, y, z, r, g, b;
@@ -34,40 +37,40 @@ Core::Core() :
 	// }
 	// repo->addItem (result, 1, Item::PCLOUD, "image");
 
-	// Logger::setRepository (repo);
-	// cv::VideoCapture capture ("video.mkv");
-	// cv::Mat image, empty;
-	// capture.set (CV_CAP_PROP_POS_MSEC, 212000.0);
-	// PointCloud::ptr result = PointCloud::make ();
+	Logger::setRepository (repo);
+	cv::VideoCapture capture ("video.mkv");
+	cv::Mat image, empty;
+	capture.set (CV_CAP_PROP_POS_MSEC, 212000.0);
+	PointCloud::ptr result = PointCloud::make ();
 
-	// for (int i = 0; i < 10; i++)
-	// {
-	// capture >> image;
-	// apipe->processFrame (image, empty);
-	// }
-
-	for (int i = 1; i < 42; i++)
+	for (int i = 0; i < 10; i++)
 		{
-			::Point3d::ptr p2 = ::Point3d::make ();
-			p2->x = i * 0.1;
-			p2->y = 0;
-			p2->z = 0;
-			p2->r = 0;
-			p2->g = 0;
-			p2->b = 0;
-
-
-			Camera::ptr p1 = Camera::make ();
-			p1->tx = 0;
-			p1->ty = 0;
-			p1->tz = 0.05 * i;
-			p1->rx = 5 * i;
-			p1->ry = 0;
-			p1->rz = 0;
-
-			repo->addItem (p2, i, Item::POINT3D, "point");
-			repo->addItem (p1, i, Item::CAMERA, "camera");
+			capture >> image;
+			apipe->processFrame (image, empty);
 		}
+
+	// for (int i = 1; i < 42; i++)
+	// {
+	// ::Point3d::ptr p2 = ::Point3d::make ();
+	// p2->x = i * 0.1;
+	// p2->y = 0;
+	// p2->z = 0;
+	// p2->r = 0;
+	// p2->g = 0;
+	// p2->b = 0;
+
+
+	// Camera::ptr p1 = Camera::make ();
+	// p1->tx = 0;
+	// p1->ty = 0;
+	// p1->tz = 0.05 * i;
+	// p1->rx = 5 * i;
+	// p1->ry = 0;
+	// p1->rz = 0;
+
+	// repo->addItem (p2, i, Item::POINT3D, "point");
+	// repo->addItem (p1, i, Item::CAMERA, "camera");
+	// }
 	// for (auto it : repo->getTree ())
 	// {
 	// std::cout << "branch: " << it.first << std::endl;

@@ -1,24 +1,24 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include <boost/property_tree/ptree.hpp>
+#include <QStandardItemModel>
+#include <QDomDocument>
+#include <QFile>
 #include <string>
+#include <boost/filesystem.hpp>
 
-class Config
+using namespace boost;
+
+class Config : public QStandardItemModel
 {
 public:
-	typedef boost::property_tree::basic_ptree<std::string, double> tree_t;
 	static Config & getInstance (void);
 
-	void addProperty (const std::string, const double);
-	double getProperty (const std::string);
-	const tree_t & rawTree (void);
+	bool importXml (const filesystem::path &);
 private:
 	Config ();
 	Config (const Config &);
 	void operator= (const Config &);
-
-	tree_t pt;
 };
 
 #endif // CONFIG_H

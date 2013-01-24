@@ -4,7 +4,18 @@ std::list <AlgoPipeline::module_t> AlgoPipeline::modules;
 
 AlgoPipeline::AlgoPipeline ()
 {
-	lt_dlinit ();
+	int rc;
+
+	try
+		{
+			rc = lt_dlinit ();
+			if (rc != 0)
+				throw rc;
+		}
+	catch (int e)
+		{
+			throw;
+		}
 }
 
 AlgoPipeline::~AlgoPipeline ()
@@ -12,40 +23,27 @@ AlgoPipeline::~AlgoPipeline ()
 	lt_dlexit ();
 }
 
-int
-AlgoPipeline::module_load (const char * fn, void * data)
-{
-	module_t module;
-
-	module.handle = lt_dlopenext (fn);
-	if (module.handle == NULL)
-		return 0;
-	*(void * *) (&module.init) = lt_dlsym (module.handle, "_module_init");
-	if (module.init == NULL)
-		{
-			lt_dlclose (module.handle);
-			return 0;
-		}
-	*(void * *) (&module.process) = lt_dlsym (module.handle, "_module_process");
-	*(void * *) (&module.reconfigure) = lt_dlsym (module.handle, "_module_reconfigure");
-	module.desc = std::string ((char *) lt_dlsym (module.handle, "_module_desc"));
-	module.name = std::string ((char *) lt_dlsym (module.handle, "_module_name"));
-	if (module.init ())
-		{
-			std::cout << "Loaded module ";
-			modules.push_back (module);
-		}
-	else
-		std::cout << "Failed to load ";
-	std::cout << fn << std::endl;
-
-	return 0;
-}
-
 void
 AlgoPipeline::loadModules (void)
 {
-	lt_dlforeachfile (MODULE_SEARCH_PATH, &AlgoPipeline::module_load, NULL);
+	filesystem::directory_iterator dir (MODULE_SEARCH_PATH);
+	filesystem::directory_iterator end;
+	module_t module;
+
+// TODO: error checking
+	for (; dir != end; dir++)
+		{
+			filesystem::path p = dir->path ();
+			if (p.extension () == ".xml")
+				if (Config::getInstance ().importXml (p))
+					{
+						module.name = p.stem ().string ();
+						std::cout << "module data loaded: " << module.name << std::endl;
+						module.handle = lt_dlopenext ((MODULE_SEARCH_PATH + module.name).c_str ());
+						*(void * *) (&module.process) = lt_dlsym (module.handle, "process");
+						modules.push_back (module);
+					}
+		}
 }
 
 void

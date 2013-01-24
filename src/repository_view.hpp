@@ -17,8 +17,6 @@ public:
 	RepositoryView (Repository::ptr, Scenegraph::ptr, QWidget * MainWindow = nullptr);
 
 private:
-	// QStandardItemModel * model;
-	// std::map <std::string, int> child_count;
 	Scenegraph::ptr scgr;
 	Repository::ptr repo;
 

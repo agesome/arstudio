@@ -2,35 +2,14 @@
 #include <opencv2/nonfree/features2d.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <logger.hpp>
-#include <config.hpp>
-#include <iostream>
 
 using namespace cv;
 
 extern "C"
 {
-extern const char _module_desc[] = "Brightness";
-extern const char _module_name[] = "brightness";
+double beta;
 
-double beta = 80;
-
-bool _module_init (void)
-{
-	Config & c = Config::getInstance ();
-
-	c.addProperty ("algo.brightness.param.beta", beta);
-
-	return true;
-}
-
-void _module_reconfigure (void)
-{
-	Config & c = Config::getInstance ();
-
-	beta = c.getProperty ("algo.brightness.param.beta");
-}
-
-bool _module_process (Mat & image, Mat & dmap)
+bool process (Mat & image, Mat & dmap)
 {
 	Mat result = Mat::zeros (image.size (), image.type ());
 
@@ -48,7 +27,7 @@ bool _module_process (Mat & image, Mat & dmap)
 		}
 
 	Logger & l = Logger::getInstance ();
-	l.addImage (result, _module_name);
+	l.addImage (result, "brightness");
 	return true;
 }
 }

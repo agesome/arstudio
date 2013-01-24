@@ -2,26 +2,25 @@
 #define ALGO_PIPELINE_H
 
 #include <opencv2/highgui/highgui.hpp>
+#include <boost/filesystem.hpp>
 #include <ltdl.h>
 #include <string>
 #include <iostream>
 #include <list>
 #include <logger.hpp>
+#include <config.hpp>
 
 using namespace cv;
+using namespace boost;
 
 class AlgoPipeline
 {
 private:
-	const char * MODULE_SEARCH_PATH = "./plugins/";
-	static int module_load (const char *, void *);
+	const std::string MODULE_SEARCH_PATH = "./modules/";
 
 	typedef struct {
-		bool (*init)(void);
 		bool (*process)(Mat &, Mat &);
-		void (*reconfigure)(void);
 		lt_dlhandle handle;
-		std::string desc;
 		std::string name;
 	} module_t;
 
