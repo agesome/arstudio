@@ -34,9 +34,9 @@ Logger::addImage (cv::Mat & m, std::string source)
 
 	if (m.channels () == 1)
 		cv::cvtColor (m, m, CV_GRAY2BGR);
-	for (int i = 0; i < m.rows; i += 10)
+    for (int i = 0; i < m.rows; i += 10)
 		{
-			for (int j = 0; j < m.cols; j += 10)
+            for (int j = 0; j < m.cols; j += 10)
 				{
 					cv::Vec3b p = m.at<cv::Vec3b> (i, j);
 					point = Point3d::make (j / (m.cols * 1.5), i / (m.cols * 1.5), 0, p[2] / 255.0, p[1] / 255.0, p[0] / 255.0);

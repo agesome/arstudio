@@ -7,6 +7,7 @@
 #include <QPushButton>
 #include <QGridLayout>
 #include <QFileDialog>
+#include <QProgressBar>
 #include <opencv2/highgui/highgui.hpp>
 #include <algo_pipeline.hpp>
 #include <QDebug>
@@ -24,6 +25,7 @@ private:
 	QPushButton *process_button = new QPushButton (this);
 	QSpinBox *start_frame_spin = new QSpinBox (this);
 	QSpinBox *end_frame_spin = new QSpinBox (this);
+    QProgressBar *progress_bar = new QProgressBar(this);
 	QGridLayout *layout = new QGridLayout (this);
 	QString file_path;
 

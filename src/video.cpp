@@ -7,21 +7,22 @@ Video::Video(QWidget *parent, AlgoPipeline *p) :
 	select_frames_label->setText ("Select frames: ");
 	select_file_button->setText ("Select file");
 	process_button->setText ("Process");
-
+    progress_bar->setValue(0);
 	layout->addWidget (file_name_label, 0, 0, 1, 3, 0);
 	layout->addWidget (frames_count_label, 1, 0, 1, 3, 0);
 	layout->addWidget (select_frames_label, 2, 0, 1, 1, 0);
 	layout->addWidget (start_frame_spin, 2, 1, 1, 1, 0);
 	layout->addWidget (end_frame_spin, 2, 2, 1, 1, 0);
-	layout->addWidget (select_file_button, 3, 0, 1, 1, 0);
-	layout->addWidget (process_button, 3, 1, 1, 1, 0);
+    layout->addWidget (progress_bar, 3, 0, 1, 3, 0);
+    layout->addWidget (select_file_button, 4, 0, 1, 1, 0);
+    layout->addWidget (process_button, 4, 1, 1, 1, 0);
 
 	connect (select_file_button, SIGNAL (clicked ()), this, SLOT (select_file ()));
 	connect (process_button, SIGNAL (clicked ()), this, SLOT (process_frames ()));
 
-	// this->adjustSize();
-	// this->resize (1, 1);
-	// this->setMaximumHeight (this->height ());
+    this->adjustSize();
+    this->resize (1, 1);
+    this->setMaximumHeight (this->height ());
 
 	apipe = p;
 }
@@ -48,6 +49,7 @@ void Video::select_file ()
 			end_frame_spin->setRange (1, frames_count);
 			vcap = c;
 		}
+    progress_bar->setValue(0);
 	frames_count_label->setText ("Frames: " + QString::number (frames_count));
 }
 
@@ -58,14 +60,18 @@ void Video::process_frames (void)
 
 	int start = start_frame_spin->value ();
 	int end = end_frame_spin->value ();
+    if (start >= end)
+        return;
 	cv::Mat image, empty;
 
 	vcap->set (CV_CAP_PROP_POS_FRAMES, start);
-
+    progress_bar->setMaximum(end-start);
+    progress_bar->setValue(0);
 	for (int i = start; i < end; i++)
 		{
 			*vcap >> image;
 			apipe->processFrame (image, empty);
+            progress_bar->setValue(progress_bar->value()+1);
 		}
-	done_processing ();
+    done_processing ();
 }
