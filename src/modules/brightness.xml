@@ -1,6 +1,6 @@
 <module>
 	<parameter>
 		<symbol>beta</symbol> <!-- in-code variable name -->
-		<value>80</value>
+		<value>200</value>
 	</parameter>
 </module>

@@ -8,9 +8,3 @@ ConfigView::ConfigView (QWidget * MainWindow) : QTreeView (MainWindow)
 	v->setStretchLastSection (true);
 	setHeader (v);
 }
-
-void
-ConfigView::itemChangedHandler (QStandardItem *item)
-{
-	// TODO: update algorithm parameters in-memory
-}

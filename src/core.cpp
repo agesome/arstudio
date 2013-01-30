@@ -4,38 +4,11 @@ Core::Core() :
 	QMainWindow ()
 {
 	initGUI ();
-	apipe->loadModules ();
+	apipe->loadModules (config);
+	cview->setModel (config);
 	connect (tmlnmod, SIGNAL (newFrame (int)), wnd3d, SLOT (update (int)));
-	cview->setModel (&(Config::getInstance ()));
-	connect (&(Config::getInstance ()), SIGNAL (itemChanged (QStandardItem *)),
-	         cview, SLOT (itemChangedHandler (QStandardItem *)));
-
-	// std::function<void(const Config::tree_t &, int)> walk =
-	// [&walk, this](const Config::tree_t & tree, int level)
-	// {
-	// for (auto it: tree)
-	// {
-	// for (int i = level; i > 0; i--)
-	// std::cout << "\t";
-	// std::cout << it.first << std::endl;
-	// if (!it.second.empty ())
-	// walk (it.second, level + 1);
-	// }
-	// };
-
-	// walk (Config::getInstance ().rawTree (), 0);
-
-	// PointCloud::ptr result = PointCloud::make ();
-	// std::ifstream f ("../data/ny0.txt");
-
-	// while (f.good ())
-	// {
-	// double x, y, z, r, g, b;
-	// f >> x >> y >> z >> r >> g >> b;
-	// ::Point3d::ptr point = ::Point3d::make (x, y, z, r, g, b);
-	// result->cloud.push_back (point);
-	// }
-	// repo->addItem (result, 1, Item::PCLOUD, "image");
+	connect (config, SIGNAL (itemChanged (QStandardItem *)),
+	         apipe, SLOT (itemChangedHandler (QStandardItem *)));
 
 	Logger::setRepository (repo);
 	cv::VideoCapture capture ("video.mkv");
@@ -49,34 +22,6 @@ Core::Core() :
 			apipe->processFrame (image, empty);
 		}
 
-	// for (int i = 1; i < 42; i++)
-	// {
-	// ::Point3d::ptr p2 = ::Point3d::make ();
-	// p2->x = i * 0.1;
-	// p2->y = 0;
-	// p2->z = 0;
-	// p2->r = 0;
-	// p2->g = 0;
-	// p2->b = 0;
-
-
-	// Camera::ptr p1 = Camera::make ();
-	// p1->tx = 0;
-	// p1->ty = 0;
-	// p1->tz = 0.05 * i;
-	// p1->rx = 5 * i;
-	// p1->ry = 0;
-	// p1->rz = 0;
-
-	// repo->addItem (p2, i, Item::POINT3D, "point");
-	// repo->addItem (p1, i, Item::CAMERA, "camera");
-	// }
-	// for (auto it : repo->getTree ())
-	// {
-	// std::cout << "branch: " << it.first << std::endl;
-	// for (auto l : it.second)
-	// std::cout << "\t leaf: " << l.first << std::endl;
-	// }
 	tmlnmod->setMax (scgr->getMaxFrame ());
 	tmln->updateWidget ();
 }
