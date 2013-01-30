@@ -34,6 +34,7 @@ private:
 	QPushButton *butt;
 	QSplitter *mainsplitter = new QSplitter (Qt:: Horizontal, central);
 	QSplitter *winsplitter = new QSplitter (Qt:: Vertical, central);
+	QSplitter *rsplitter = new QSplitter (Qt:: Vertical, central);
 
 	TimeLineModel *tmlnmod = new TimeLineModel (1, 10);
 	TimeLine *tmln = new TimeLine (tmlnmod, this);
@@ -44,6 +45,7 @@ private:
 	ConfigView *cview = new ConfigView (central);
 	AlgoPipeline * apipe = new AlgoPipeline ();
 	Config * config = new Config ();
+	Video *vselect = new Video (NULL, apipe);
 
 	void initGUI ();
 public:
@@ -56,5 +58,6 @@ public slots:
 	void about ();
 	void help ();
 	void settings ();
+	void updateTimeline (void);
 };
 #endif // CORE_H

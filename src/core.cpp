@@ -9,25 +9,17 @@ Core::Core() :
 	connect (tmlnmod, SIGNAL (newFrame (int)), wnd3d, SLOT (update (int)));
 	connect (config, SIGNAL (itemChanged (QStandardItem *)),
 	         apipe, SLOT (itemChangedHandler (QStandardItem *)));
+	connect (vselect, SIGNAL (done_processing (void)), this, SLOT (updateTimeline (void)));
 
 	Logger::setRepository (repo);
-	cv::VideoCapture capture ("video.mkv");
-	cv::Mat image, empty;
-	capture.set (CV_CAP_PROP_POS_MSEC, 212000.0);
-	PointCloud::ptr result = PointCloud::make ();
+}
 
-	for (int i = 0; i < 10; i++)
-		{
-			capture >> image;
-			apipe->processFrame (image, empty);
-		}
-
+void Core::updateTimeline (void)
+{
 	tmlnmod->setMax (scgr->getMaxFrame ());
 	tmln->updateWidget ();
-    Video *v1 = new Video();
-    v1->show();
-
 }
+
 void Core::quit ()
 {
 	qApp->exit ();
@@ -57,7 +49,9 @@ void Core::initGUI ()
 	winsplitter->addWidget (tmln);
 	mainsplitter->addWidget (repo_view);
 	mainsplitter->addWidget (winsplitter);
-	mainsplitter->addWidget (cview);
+	mainsplitter->addWidget (rsplitter);
+	rsplitter->addWidget (cview);
+	rsplitter->addWidget (vselect);
 }
 
 
