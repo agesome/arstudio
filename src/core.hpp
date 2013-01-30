@@ -20,6 +20,7 @@
 #include <point3d.hpp>
 #include <config.hpp>
 #include <config_view.hpp>
+#include <video.hpp>
 
 class Core : public QMainWindow
 {

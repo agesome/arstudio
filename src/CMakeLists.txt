@@ -19,7 +19,8 @@ set(cvdbg_sources
 	core.cpp
 	algo_pipeline.cpp
 	config.cpp
-	config_view.cpp)
+        config_view.cpp
+        video.cpp)
 	
 set(Boost_USE_MULTITHREADED ON)
 find_package(Boost REQUIRED COMPONENTS system filesystem)

@@ -79,6 +79,9 @@ Core::Core() :
 	// }
 	tmlnmod->setMax (scgr->getMaxFrame ());
 	tmln->updateWidget ();
+    Video *v1 = new Video();
+    v1->show();
+
 }
 void Core::quit ()
 {
