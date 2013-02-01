@@ -1,0 +1,7 @@
+<algorithm>
+	<type>brightness</type>
+	<runtime-parameters>
+		<brightness>80</brightness>
+		<contrast>3.2</contrast>
+	</runtime-parameters>
+</algorithm>

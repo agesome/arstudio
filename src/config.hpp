@@ -1,11 +1,22 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include <QStandardItemModel>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/xml_parser.hpp>
 
-class Config : public QStandardItemModel
+using namespace boost::property_tree;
+
+class Config
 {
 public:
-	Config ();
+	Config (const std::string &);
+	~Config ();
+
+	template <typename T> T get (const std::string & prop)
+	{
+		return pt.get<T> (prop);
+	}
+private:
+	ptree pt;
 };
 #endif // CONFIG_H

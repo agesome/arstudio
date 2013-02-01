@@ -1,9 +1,10 @@
 #include <config.hpp>
 
-Config::Config ()
+Config::Config (const std::string & filename)
 {
-	setColumnCount (2);
-	QStringList sl;
-	sl << "Modules" << "";
-	setHorizontalHeaderLabels (sl);
+	read_xml (filename, pt);
+}
+
+Config::~Config (void)
+{
 }

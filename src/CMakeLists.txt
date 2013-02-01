@@ -18,9 +18,9 @@ set(cvdbg_sources
 	timeline.cpp
 	core.cpp
 	algo_pipeline.cpp
-	config.cpp
-        config_view.cpp
-        video.cpp)
+    config_view.cpp
+    config.cpp
+    video.cpp)
 	
 set(Boost_USE_MULTITHREADED ON)
 find_package(Boost REQUIRED COMPONENTS system filesystem)
@@ -34,18 +34,18 @@ include_directories(${OPENGL_INCLUDE_DIR})
 
 find_package(OpenCV REQUIRED)
 
-find_library(lib_ltdl ltdl)
-
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/algorithms/)
 set(CMAKE_CXX_FLAGS "-std=c++11")
 
+add_subdirectory (algorithms)
+
 add_executable(cvdbg ${cvdbg_sources})
-target_link_libraries(cvdbg
+target_link_libraries(
+	cvdbg
+	adjuster
+
 	${QT_LIBRARIES}
 	${Boost_LIBRARIES}
 	${OPENGL_LIBRARIES}
-	${OpenCV_LIBS}
-	${lib_ltdl})
-
-#add_subdirectory (ClassKin)
-add_subdirectory (modules)
+	${OpenCV_LIBS})

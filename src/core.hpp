@@ -42,9 +42,9 @@ private:
 	Workspace::Scenegraph::ptr scgr = Workspace::Scenegraph::make ();
 	RepositoryView * repo_view = new Workspace::RepositoryView (repo, scgr);
 	Window3D *wnd3d = new Window3D (scgr, central);
-	ConfigView *cview = new ConfigView (central);
+	// ConfigView *cview = new ConfigView (central);
 	AlgoPipeline * apipe = new AlgoPipeline ();
-	Config * config = new Config ();
+	// Config * config = new Config ();
 	Video *vselect = new Video (NULL, apipe);
 
 	void initGUI ();

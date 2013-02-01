@@ -4,11 +4,11 @@ Core::Core() :
 	QMainWindow ()
 {
 	initGUI ();
-	apipe->loadModules (config);
-	cview->setModel (config);
+	// apipe->loadModules (config);
+	// cview->setModel (config);
 	connect (tmlnmod, SIGNAL (newFrame (int)), wnd3d, SLOT (update (int)));
-	connect (config, SIGNAL (itemChanged (QStandardItem *)),
-	         apipe, SLOT (itemChangedHandler (QStandardItem *)));
+	// connect (config, SIGNAL (itemChanged (QStandardItem *)),
+	// apipe, SLOT (itemChangedHandler (QStandardItem *)));
 	connect (vselect, SIGNAL (done_processing (void)), this, SLOT (updateTimeline (void)));
 
 	Logger::setRepository (repo);
@@ -50,7 +50,7 @@ void Core::initGUI ()
 	mainsplitter->addWidget (repo_view);
 	mainsplitter->addWidget (winsplitter);
 	mainsplitter->addWidget (rsplitter);
-	rsplitter->addWidget (cview);
+	// rsplitter->addWidget (cview);
 	rsplitter->addWidget (vselect);
 }
 
