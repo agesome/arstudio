@@ -12,6 +12,7 @@
 #include <sequence.hpp>
 #include <scenegraph.hpp>
 #include <pcloud.hpp>
+#include <bitmap.hpp>
 
 using namespace std;
 using namespace Workspace;
@@ -54,6 +55,7 @@ private:
 	void drawCam (double x, double y, double z, double a, double rx, double ry, double rz);
 	void drawPoint3D (Point3d::ptr, GLfloat);
 	void drawPointCloud (PointCloud::ptr);
+	void drawBitmap (Bitmap::ptr);
 
 protected:
 	void initializeGL ();

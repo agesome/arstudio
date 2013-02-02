@@ -2,6 +2,6 @@
 	<type>contrast</type>
 	<runtime-parameters>
 		<brightness>80</brightness>
-		<contrast>3.2</contrast>
+		<contrast>1</contrast>
 	</runtime-parameters>
 </algorithm>

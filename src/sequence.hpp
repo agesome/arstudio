@@ -23,6 +23,7 @@ public:
 		CAMERA = 0,
 		PCLOUD,
 		POINT3D,
+		BITMAP,
 
 		LEN_
 	};

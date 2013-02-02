@@ -4,18 +4,18 @@
 TimeLine::TimeLine(TimeLineModel *tmlnmd, QMainWindow *MainWindow) :
 	QWidget (MainWindow)
 {
-    this->tmlnmod = tmlnmd;
-    initGUI();
-    connects();
-    updateWidget();
-    QMetaObject::connectSlotsByName (MainWindow);
+	this->tmlnmod = tmlnmd;
+	initGUI ();
+	connects ();
+	updateWidget ();
+	QMetaObject::connectSlotsByName (MainWindow);
 }
 
 
 void TimeLine::onSpinBoxEditFinished ()
 {
 	horizontalSlider->setValue (spinBox->value ());
-    tmlnmod->setCurFrame(spinBox->value ());
+	tmlnmod->setCurFrame (spinBox->value ());
 }
 
 
@@ -44,115 +44,95 @@ void TimeLine::setMax (int value)
 	spinBox->setMaximum (value);
 	horizontalSlider->setMaximum (value);
 }
-/*void TimeLine::onDrawed ()
-{
-	if (loop_flag)
-		{
-			if (horizontalSlider->value () == horizontalSlider->maximum ())
-				{
-					onStopPressed ();
-					return;
-				}
-			qApp->processEvents ();
-			horizontalSlider->setValue (horizontalSlider->value () + 1);  // it's emit the slider~>valueChanged signal
-		}
-}*/
 
 void TimeLine::onPlayPressed ()
 {
 	qDebug () << "play";
-    playButton->setEnabled(false);
-    stopButton->setEnabled(true);
+	playButton->setEnabled (false);
+	stopButton->setEnabled (true);
 	toolButton_next->setEnabled (false);
 	toolButton_prev->setEnabled (false);
-    //timer on
-    timer->start(100);
+	// timer on
+	timer->start (100);
 }
 
 
 void TimeLine::onStopPressed ()
 {
-    //timer off
-    timer->stop();
-    playButton->setEnabled(true);
-    stopButton->setEnabled(false);
-    toolButton_next->setEnabled (true);
-    toolButton_prev->setEnabled (true);
-
+	// timer off
+	timer->stop ();
+	playButton->setEnabled (true);
+	stopButton->setEnabled (false);
+	toolButton_next->setEnabled (true);
+	toolButton_prev->setEnabled (true);
 }
 
 
 
-void TimeLine::onModelChanged(int n)
+void TimeLine::onModelChanged (int n)
 {
-    horizontalSlider->setValue (n);
-    spinBox->setValue (n);
-
+	horizontalSlider->setValue (n);
+	spinBox->setValue (n);
 }
 
 
-void TimeLine::onTimer()
+void TimeLine::onTimer ()
 {
-    qDebug()<<"hello";
-    if(!tmlnmod->incCurFrame())
-        onStopPressed();
-
+	if (!tmlnmod->incCurFrame ())
+		onStopPressed ();
 }
 
 
-void TimeLine::setMin(int value)
+void TimeLine::setMin (int value)
 {
-    spinBox->setMinimum (value);
-    horizontalSlider->setMinimum (value);
+	spinBox->setMinimum (value);
+	horizontalSlider->setMinimum (value);
 }
 
 
-void TimeLine::updateWidget()
+void TimeLine::updateWidget ()
 {
-    setMax (tmlnmod->getMax());
-    setMin (tmlnmod->getMin());
-
+	setMax (tmlnmod->getMax ());
+	setMin (tmlnmod->getMin ());
 }
 
 
-void TimeLine::connects()
+void TimeLine::connects ()
 {
-    connect (toolButton_prev, SIGNAL (clicked ()), this, SLOT (onPrevButtonPressed ()));
-    connect (toolButton_next, SIGNAL (clicked ()), this, SLOT (onNextButtonPressed ()));
-    connect (playButton, SIGNAL (clicked ()), this, SLOT (onPlayPressed ()));
-    connect (stopButton, SIGNAL (clicked ()), this, SLOT (onStopPressed ()));
-    connect (spinBox, SIGNAL (editingFinished ()), this, SLOT (onSpinBoxEditFinished ()));
-    connect (tmlnmod, SIGNAL(newFrame (int)), this, SLOT(onModelChanged(int)));
-    connect (timer, SIGNAL(timeout()), this, SLOT(onTimer()));
-    connect (horizontalSlider, SIGNAL(valueChanged(int)), this, SLOT(onSliderChanged(int)));
+	connect (toolButton_prev, SIGNAL (clicked ()), this, SLOT (onPrevButtonPressed ()));
+	connect (toolButton_next, SIGNAL (clicked ()), this, SLOT (onNextButtonPressed ()));
+	connect (playButton, SIGNAL (clicked ()), this, SLOT (onPlayPressed ()));
+	connect (stopButton, SIGNAL (clicked ()), this, SLOT (onStopPressed ()));
+	connect (spinBox, SIGNAL (editingFinished ()), this, SLOT (onSpinBoxEditFinished ()));
+	connect (tmlnmod, SIGNAL (newFrame (int)), this, SLOT (onModelChanged (int)));
+	connect (timer, SIGNAL (timeout ()), this, SLOT (onTimer ()));
+	connect (horizontalSlider, SIGNAL (valueChanged (int)), this, SLOT (onSliderChanged (int)));
 }
 
 
-void TimeLine::onSliderChanged(int n)
+void TimeLine::onSliderChanged (int n)
 {
-    spinBox->setValue(n);
-    tmlnmod->setCurFrame(n);
+	spinBox->setValue (n);
+	tmlnmod->setCurFrame (n);
 }
 
-
-void TimeLine::initGUI()
+void TimeLine::initGUI ()
 {
-    this->setMinimumHeight (90);
-    this->setMaximumHeight (90);
-    layout->addWidget (horizontalSlider, 0, 0, 0, 6, 0);
-    horizontalSlider->setOrientation (Qt::Horizontal);
-    horizontalSlider->setTickInterval (1);
-    horizontalSlider->setPageStep (1);
-    horizontalSlider->setTickPosition (QSlider::TicksLeft);
-    layout->addWidget (spinBox, 1, 5, 0);
-    layout->addWidget (playButton, 1, 2, 0);
-    playButton->setText ("Play");
-    layout->addWidget (stopButton, 1, 3, 0);
-    stopButton->setText ("Stop");
-    stopButton->setEnabled(false);
-    layout->addWidget (toolButton_prev, 1, 0, 0);
-    toolButton_prev->setText ("<");
-    layout->addWidget (toolButton_next, 1, 1, 0);
-    toolButton_next->setText (">");
-
+	this->setMinimumHeight (90);
+	this->setMaximumHeight (90);
+	layout->addWidget (horizontalSlider, 0, 0, 0, 6, 0);
+	horizontalSlider->setOrientation (Qt::Horizontal);
+	horizontalSlider->setTickInterval (1);
+	horizontalSlider->setPageStep (1);
+	horizontalSlider->setTickPosition (QSlider::TicksLeft);
+	layout->addWidget (spinBox, 1, 5, 0);
+	layout->addWidget (playButton, 1, 2, 0);
+	playButton->setText ("Play");
+	layout->addWidget (stopButton, 1, 3, 0);
+	stopButton->setText ("Stop");
+	stopButton->setEnabled (false);
+	layout->addWidget (toolButton_prev, 1, 0, 0);
+	toolButton_prev->setText ("<");
+	layout->addWidget (toolButton_next, 1, 1, 0);
+	toolButton_next->setText (">");
 }

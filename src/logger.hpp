@@ -3,6 +3,7 @@
 
 #include <repository.hpp>
 #include <pcloud.hpp>
+#include <bitmap.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/nonfree/features2d.hpp>
@@ -24,5 +25,4 @@ private:
 	static Workspace::Repository::ptr repo;
 	unsigned int current_frame = 1;
 };
-
 #endif // LOGGER_H

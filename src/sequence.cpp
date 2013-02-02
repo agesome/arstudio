@@ -6,7 +6,8 @@ const std::string Item::typeNames[] =
 {
 	std::string ("Camera"),
 	std::string ("Point cloud"),
-	std::string ("Point3D")
+	std::string ("Point3D"),
+	std::string ("Bitmap")
 };
 
 Sequence::Sequence (Item::type t)

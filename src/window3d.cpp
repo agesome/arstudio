@@ -1,16 +1,11 @@
 #include <window3d.hpp>
 
-
-
 using namespace std;
 using namespace boost;
 using namespace Workspace;
 
-
 void Window3D::update (int nframe)
 {
-	qDebug () << "draw new frame" << nframe;
-
 	currNframe = nframe;
 	this->updateGL ();
 }
@@ -74,7 +69,6 @@ void Window3D::paintGL ()
 	glRotatef (zRot, 0.0f, 0.0f, 1.0f);
 
 	drawSceneElements ();     // выбирает, что рисовать
-	// this->show();
 }
 
 void Window3D::mousePressEvent (QMouseEvent* pe)
@@ -225,7 +219,6 @@ void Window3D::drawSceneElements ()
 						case Item::CAMERA:
 							c = Item::ptr_cast_to<Camera> (item);
 							drawCam (c->tx, c->ty, c->tz, cam_size, c->rx, c->ry, c->rz);
-							qDebug () << currNframe << c->tx << c->ty << c->tz;
 							break;
 
 						case Item::POINT3D:
@@ -235,10 +228,12 @@ void Window3D::drawSceneElements ()
 						case Item::PCLOUD:
 							drawPointCloud (Item::ptr_cast_to<PointCloud> (item));
 							break;
+
+						case Item::BITMAP:
+							drawBitmap (Item::ptr_cast_to<Bitmap> (item));
+							break;
 						}
 				}
-
-			qDebug () << "type = " << temp->getType ();
 		}
 }
 
@@ -288,6 +283,34 @@ void Window3D::drawPointCloud (PointCloud::ptr pc)
 }
 
 
+void Window3D::drawBitmap (Bitmap::ptr bitmap)
+{
+	GLuint texture;
+	unsigned char *data = bitmap->bitmap.data;
+
+	glGenTextures (1, &texture);
+	glBindTexture (GL_TEXTURE_2D, texture);
+	glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexImage2D (GL_TEXTURE_2D, 0, 3, bitmap->bitmap.cols, bitmap->bitmap.rows,
+	              0, GL_BGR, GL_UNSIGNED_BYTE, data);
+	glEnable (GL_TEXTURE_2D);
+	glBegin (GL_QUADS);
+	glColor3f (1, 1, 1);
+
+	glNormal3f (0.0, 0.0, 1.0);
+	glTexCoord2d (1, 1); glVertex3f (0.0, 0.0, 0.0);
+	glTexCoord2d (1, 0); glVertex3f (0.0, 1.0, 0.0);
+	glTexCoord2d (0, 0); glVertex3f (1.0, 1.0, 0.0);
+	glTexCoord2d (0, 1); glVertex3f (1.0, 0.0, 0.0);
+	glEnd ();
+
+	glDisable (GL_TEXTURE_2D);
+	glDeleteTextures (1, &texture);
+}
+
 // рисуем Cam из полученного Sequence
 void Window3D::drawCam (double x, double y, double z, double a, double rx, double ry, double rz)
 {
@@ -296,8 +319,6 @@ void Window3D::drawCam (double x, double y, double z, double a, double rx, doubl
 	glRotatef (rx, 1.0f, 0.0f, 0.0f);
 	glRotatef (ry, 0.0f, 1.0f, 0.0f);
 	glRotatef (rz, 0.0f, 0.0f, 1.0f);
-
-	// glRotatef(180, 1.0f, 0.0f, 0.0f);
 
 	glBegin (GL_QUADS);
 
@@ -345,10 +366,3 @@ void Window3D::drawCam (double x, double y, double z, double a, double rx, doubl
 
 	glTranslatef (-x, -y, -z);
 }
-
-
-
-
-
-
-
