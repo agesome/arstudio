@@ -301,10 +301,11 @@ void Window3D::drawBitmap (Bitmap::ptr bitmap)
 	glColor3f (1, 1, 1);
 
 	glNormal3f (0.0, 0.0, 1.0);
+	double v = (double) bitmap->bitmap.cols / bitmap->bitmap.rows;
 	glTexCoord2d (1, 1); glVertex3f (0.0, 0.0, 0.0);
 	glTexCoord2d (1, 0); glVertex3f (0.0, 1.0, 0.0);
-	glTexCoord2d (0, 0); glVertex3f (1.0, 1.0, 0.0);
-	glTexCoord2d (0, 1); glVertex3f (1.0, 0.0, 0.0);
+	glTexCoord2d (0, 0); glVertex3f (v, 1.0, 0.0);
+	glTexCoord2d (0, 1); glVertex3f (v, 0.0, 0.0);
 	glEnd ();
 
 	glDisable (GL_TEXTURE_2D);
