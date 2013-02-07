@@ -11,25 +11,8 @@
 *.la
 *.a
 
-# CMake stuff
-src/Makefile
-src/cmake_install.cmake
-src/CMakeFiles/
-src/CMakeCache.txt
-
-
-# Qt stuff
-moc_*.cpp
-*_automoc.cpp
-
 # Sublime text project files
 *.sublime-*
 
-# CMake files
-*CMake*
-*Make*
-*cmake*
-
-# misc.
-cvdbg
-*.mkv
+# everything in the build directory
+src/build/*

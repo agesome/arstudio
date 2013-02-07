@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 
-project(cvdbg CXX C)
+project(arstudio CXX C)
 set(CMAKE_AUTOMOC TRUE)
 
-set(cvdbg_sources
+set(arstudio_sources
 
-	cvdbg.cpp
+	main.cpp
 	sequence.cpp
 	repository.cpp
 	scenegraph.cpp
@@ -18,10 +18,10 @@ set(cvdbg_sources
 	timeline.cpp
 	core.cpp
 	algo_pipeline.cpp
-    config_view.cpp
-    config.cpp
-    video.cpp)
-    	
+	config_view.cpp
+	config.cpp
+	video.cpp)
+		
 set(Boost_USE_MULTITHREADED ON)
 find_package(Boost REQUIRED COMPONENTS system filesystem)
 include_directories(${Boost_INCLUDE_DIRS})
@@ -40,9 +40,9 @@ set(CMAKE_CXX_FLAGS "-std=c++11")
 
 add_subdirectory (algorithms)
 
-add_executable(cvdbg ${cvdbg_sources})
+add_executable(arstudio ${arstudio_sources})
 target_link_libraries(
-	cvdbg
+	arstudio
 	adjuster
 
 	${QT_LIBRARIES}

@@ -2,7 +2,7 @@
 
 AlgoPipeline::AlgoPipeline ()
 {
-	Config * c = new Config ("algorithms/adjuster.xml");
+	Config * c = new Config ("../algorithms/adjuster.xml");
 	IAbstractAlgorithm * adjuster = new ImageAdjusterAlgorithm (c);
 
 	adjuster->create ();
