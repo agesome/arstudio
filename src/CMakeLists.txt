@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 
 project(arstudio CXX C)
-set(CMAKE_AUTOMOC TRUE)
 
 set(arstudio_sources
 
@@ -34,12 +33,20 @@ include_directories(${OPENGL_INCLUDE_DIR})
 find_package(OpenCV REQUIRED)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/ui/)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/algorithms/)
+
+file(GLOB arstudio_headers ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/*.hpp)
+qt4_wrap_cpp(arstudio_moc ${arstudio_headers})
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_FLAGS "-std=c++11")
 
-add_subdirectory (algorithms)
+add_subdirectory(algorithms)
 
-add_executable(arstudio ${arstudio_sources})
+add_executable(arstudio ${arstudio_sources} ${arstudio_moc})
+
 target_link_libraries(
 	arstudio
 	adjuster
