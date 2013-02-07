@@ -23,3 +23,10 @@ AlgoPipeline::processFrame (cv::Mat & image, cv::Mat & dmap)
 		it->run (image, dmap);
 	Logger::getInstance ().advanceFrame ();
 }
+
+void
+AlgoPipeline::reloadSettings (void)
+{
+	for (auto it : algorithms)
+		it->reconfigure ();
+}

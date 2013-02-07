@@ -16,7 +16,10 @@ public:
 	{
 		return pt.get<T> (prop);
 	}
+
+	void reload (void);
 private:
+	std::string xml_path;
 	ptree pt;
 };
 #endif // CONFIG_H

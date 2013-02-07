@@ -42,8 +42,10 @@ public:
 
 	bool create ();
 	bool run (Mat &, Mat &);
+	void reconfigure (void);
 
 private:
 	ImageAdjuster * adjuster;
+	void recreate (void);
 };
 #endif // ADJUSTER_HPP

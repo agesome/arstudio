@@ -4,12 +4,9 @@ Core::Core() :
 	QMainWindow ()
 {
 	initGUI ();
-	// apipe->loadModules (config);
-	// cview->setModel (config);
 	connect (tmlnmod, SIGNAL (newFrame (int)), wnd3d, SLOT (update (int)));
-	// connect (config, SIGNAL (itemChanged (QStandardItem *)),
-	// apipe, SLOT (itemChangedHandler (QStandardItem *)));
 	connect (vselect, SIGNAL (done_processing (void)), this, SLOT (updateTimeline (void)));
+	connect (reload_button, SIGNAL (clicked ()), this, SLOT (callSettingsReload ()));
 
 	Logger::setRepository (repo);
 }
@@ -20,11 +17,15 @@ void Core::updateTimeline (void)
 	tmln->updateWidget ();
 }
 
+void Core::callSettingsReload (void)
+{
+	apipe->reloadSettings ();
+}
+
 void Core::quit ()
 {
 	qApp->exit ();
 }
-
 
 void Core::initGUI ()
 {
@@ -50,7 +51,7 @@ void Core::initGUI ()
 	mainsplitter->addWidget (repo_view);
 	mainsplitter->addWidget (winsplitter);
 	mainsplitter->addWidget (rsplitter);
-	// rsplitter->addWidget (cview);
+	rsplitter->addWidget (reload_button);
 	rsplitter->addWidget (vselect);
 }
 

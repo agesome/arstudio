@@ -52,18 +52,16 @@ ImageAdjusterAlgorithm::~ImageAdjusterAlgorithm ()
 
 bool ImageAdjusterAlgorithm::create ()
 {
-	std::string path = "algorithm.runtime-parameters.";
-
 	if (type == "brightness")
 		{
 			BrightnessAdjuster * v = new BrightnessAdjuster ();
-			v->brightness = config->get<double>(path + type);
+			v->brightness = config->get<double>("algorithm.brightness");
 			adjuster = v;
 		}
 	else
 		{
 			ContrastAdjuster * v = new ContrastAdjuster ();
-			v->contrast = config->get<double>(path + type);
+			v->contrast = config->get<double>("algorithm.contrast");
 			adjuster = v;
 		}
 
@@ -78,4 +76,35 @@ bool ImageAdjusterAlgorithm::run (Mat & image, Mat & dmap)
 
 	l.addImage (result, type);
 	return true;
+}
+
+void ImageAdjusterAlgorithm::reconfigure (void)
+{
+	config->reload ();
+
+	std::string new_type = config->get<std::string> ("algorithm.type");
+
+	if (new_type != type)
+		{
+			type = new_type;
+			recreate ();
+			return;
+		}
+
+	if (type == "brightness")
+		{
+			BrightnessAdjuster * v = static_cast<BrightnessAdjuster *>(adjuster);
+			v->brightness = config->get<double>("algorithm.brightness");
+		}
+	else
+		{
+			ContrastAdjuster * v = static_cast<ContrastAdjuster *>(adjuster);
+			v->contrast = config->get<double>("algorithm.contrast");
+		}
+}
+
+void ImageAdjusterAlgorithm::recreate (void)
+{
+	delete adjuster;
+	create ();
 }

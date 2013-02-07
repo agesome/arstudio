@@ -47,6 +47,8 @@ private:
 	// Config * config = new Config ();
 	Video *vselect = new Video (NULL, apipe);
 
+	QPushButton *reload_button = new QPushButton ("Reload all settings");
+
 	void initGUI ();
 public:
 	Core();
@@ -59,5 +61,6 @@ public slots:
 	void help ();
 	void settings ();
 	void updateTimeline (void);
+	void callSettingsReload (void);
 };
 #endif // CORE_H
