@@ -11,7 +11,6 @@ set(arstudio_sources
 	scenegraph.cpp
 	timelinemodel.cpp
 	window3d.cpp
-	camera.cpp
 	point3d.cpp
 	repository_view.cpp
 	logger.cpp
