@@ -24,3 +24,12 @@ moc_*.cpp
 
 # Sublime text project files
 *.sublime-*
+
+# CMake files
+*CMake*
+*Make*
+*cmake*
+
+# misc.
+cvdbg
+*.mkv
