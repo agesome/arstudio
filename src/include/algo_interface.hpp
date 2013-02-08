@@ -7,24 +7,16 @@
 class IAbstractAlgorithm
 {
 public:
+
 	virtual bool create () = 0;
 	virtual bool run (cv::Mat &, cv::Mat &) = 0;
-	virtual void reconfigure (void) = 0;
 
-	IAbstractAlgorithm (Config * config)
+	IAbstractAlgorithm (Config::ptr config)
 	{
 		this->config = config;
 	};
 
-	~IAbstractAlgorithm ()
-	{
-		delete config;
-	}
-
 protected:
-	virtual void recreate (void)
-	{
-	};
-	Config * config;
+	Config::ptr config;
 };
 #endif // ALGO_INTERFACE_HPP

@@ -10,8 +10,8 @@ Config::~Config (void)
 {
 }
 
-void
-Config::reload (void)
+Config::ptr
+Config::make (const std::string & str)
 {
-	read_xml (xml_path, pt);
+	return boost::make_shared<Config> (str);
 }

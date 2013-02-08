@@ -2,12 +2,24 @@
 
 AlgoPipeline::AlgoPipeline ()
 {
-	Config * c = new Config ("../algorithms/adjuster.xml");
+	Config::ptr c = Config::make ("../algorithms/adjuster.xml");
 	IAbstractAlgorithm * adjuster = new ImageAdjusterAlgorithm (c);
 
 	adjuster->create ();
 
 	algorithms.push_back (adjuster);
+}
+
+AlgoPipeline::~AlgoPipeline ()
+{
+	for (auto it : algorithms)
+		delete it;
+}
+
+AlgoPipeline::ptr
+AlgoPipeline::make (void)
+{
+	return boost::make_shared<AlgoPipeline> ();
 }
 
 void

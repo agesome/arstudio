@@ -37,15 +37,13 @@ class ImageAdjusterAlgorithm : public IAbstractAlgorithm
 public:
 	std::string type;
 
-	ImageAdjusterAlgorithm (Config * config);
+	ImageAdjusterAlgorithm (Config::ptr config);
 	~ImageAdjusterAlgorithm ();
 
 	bool create ();
 	bool run (Mat &, Mat &);
-	void reconfigure (void);
 
 private:
 	ImageAdjuster * adjuster;
-	void recreate (void);
 };
 #endif // ADJUSTER_HPP

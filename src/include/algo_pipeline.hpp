@@ -3,6 +3,8 @@
 
 #include <opencv2/highgui/highgui.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 #include <string>
 #include <iostream>
 #include <list>
@@ -17,10 +19,13 @@ class AlgoPipeline
 {
 private:
 public:
+	typedef boost::shared_ptr<AlgoPipeline> ptr;
+
 	std::list <IAbstractAlgorithm *> algorithms;
 
 	AlgoPipeline ();
 	~AlgoPipeline ();
+	static ptr make (void);
 
 	void processFrame (cv::Mat &, cv::Mat &);
 };

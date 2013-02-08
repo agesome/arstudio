@@ -38,11 +38,12 @@ private:
 
 	TimeLineModel *tmlnmod = new TimeLineModel (1, 10);
 	TimeLine *tmln = new TimeLine (tmlnmod, this);
-	Workspace::Repository::ptr repo = Workspace::Repository::make ();
-	Workspace::Scenegraph::ptr scgr = Workspace::Scenegraph::make ();
 	RepositoryView * repo_view = new Workspace::RepositoryView (repo, scgr);
 	Window3D *wnd3d = new Window3D (scgr, central);
 	ProcessingDialog *processing = new ProcessingDialog ();
+
+	Workspace::Repository::ptr repo = Workspace::Repository::make ();
+	Workspace::Scenegraph::ptr scgr = Workspace::Scenegraph::make ();
 
 	void initGUI ();
 public:

@@ -40,7 +40,7 @@ Mat ContrastAdjuster::adjust (Mat & image)
 	return result;
 }
 
-ImageAdjusterAlgorithm::ImageAdjusterAlgorithm (Config * config)
+ImageAdjusterAlgorithm::ImageAdjusterAlgorithm (Config::ptr config)
 	: IAbstractAlgorithm (config)
 {
 	type = config->get<std::string> ("algorithm.type");
@@ -76,35 +76,4 @@ bool ImageAdjusterAlgorithm::run (Mat & image, Mat & dmap)
 
 	l.addImage (result, type);
 	return true;
-}
-
-void ImageAdjusterAlgorithm::reconfigure (void)
-{
-	config->reload ();
-
-	std::string new_type = config->get<std::string> ("algorithm.type");
-
-	if (new_type != type)
-		{
-			type = new_type;
-			recreate ();
-			return;
-		}
-
-	if (type == "brightness")
-		{
-			BrightnessAdjuster * v = static_cast<BrightnessAdjuster *>(adjuster);
-			v->brightness = config->get<double>("algorithm.brightness");
-		}
-	else
-		{
-			ContrastAdjuster * v = static_cast<ContrastAdjuster *>(adjuster);
-			v->contrast = config->get<double>("algorithm.contrast");
-		}
-}
-
-void ImageAdjusterAlgorithm::recreate (void)
-{
-	delete adjuster;
-	create ();
 }
