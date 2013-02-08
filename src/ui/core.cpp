@@ -1,12 +1,11 @@
-#include <core.hpp>
+#include <ui/core.hpp>
 
 Core::Core() :
 	QMainWindow ()
 {
 	initGUI ();
 	connect (tmlnmod, SIGNAL (newFrame (int)), wnd3d, SLOT (update (int)));
-	connect (vselect, SIGNAL (done_processing (void)), this, SLOT (updateTimeline (void)));
-	connect (reload_button, SIGNAL (clicked ()), this, SLOT (callSettingsReload ()));
+	connect (open_processing, SIGNAL (clicked ()), processing, SLOT (show ()));
 
 	Logger::setRepository (repo);
 }
@@ -15,11 +14,6 @@ void Core::updateTimeline (void)
 {
 	tmlnmod->setMax (scgr->getMaxFrame ());
 	tmln->updateWidget ();
-}
-
-void Core::callSettingsReload (void)
-{
-	apipe->reloadSettings ();
 }
 
 void Core::quit ()
@@ -48,11 +42,9 @@ void Core::initGUI ()
 	wnd3d->setMinimumSize (300, 300);
 	winsplitter->addWidget (wnd3d);
 	winsplitter->addWidget (tmln);
+	winsplitter->addWidget (open_processing);
 	mainsplitter->addWidget (repo_view);
 	mainsplitter->addWidget (winsplitter);
-	mainsplitter->addWidget (rsplitter);
-	rsplitter->addWidget (reload_button);
-	rsplitter->addWidget (vselect);
 }
 
 

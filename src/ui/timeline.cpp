@@ -1,6 +1,5 @@
-#include <timeline.hpp>
-#include <qapplication.h>
-#include <QDebug>
+#include <ui/timeline.hpp>
+
 TimeLine::TimeLine(TimeLineModel *tmlnmd, QMainWindow *MainWindow) :
 	QWidget (MainWindow)
 {

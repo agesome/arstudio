@@ -23,6 +23,5 @@ public:
 	~AlgoPipeline ();
 
 	void processFrame (cv::Mat &, cv::Mat &);
-	void reloadSettings (void);
 };
 #endif // ALGO_PIPELINE_H

@@ -1,4 +1,4 @@
-#include <repository_view.hpp>
+#include <ui/repository_view.hpp>
 
 namespace Workspace
 {
@@ -10,19 +10,19 @@ RepositoryView::RepositoryView (Repository::ptr r, Scenegraph::ptr sp, QWidget *
 	setHeaderLabel ("Repository");
 
 	repo->on_branch_add = [this](std::string s)
-	{
-		QTreeWidgetItem * i = new QTreeWidgetItem (invisibleRootItem ());
-		i->setText (0, s.c_str ());
-		i->setExpanded (true);
-	};
+												{
+													QTreeWidgetItem * i = new QTreeWidgetItem (invisibleRootItem ());
+													i->setText (0, s.c_str ());
+													i->setExpanded (true);
+												};
 	repo->on_leaf_add = [this](std::string l, std::string br)
-	{
-		QTreeWidgetItem * paren = this->findItems (br.c_str (), Qt::MatchExactly).first ();
-		QTreeWidgetItem * i = new QTreeWidgetItem (paren);
-		i->setText (0, l.c_str ());
-		i->setFlags (Qt::ItemIsUserCheckable | Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-		i->setCheckState (0, Qt::Checked);
-	};
+											{
+												QTreeWidgetItem * paren = this->findItems (br.c_str (), Qt::MatchExactly).first ();
+												QTreeWidgetItem * i = new QTreeWidgetItem (paren);
+												i->setText (0, l.c_str ());
+												i->setFlags (Qt::ItemIsUserCheckable | Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+												i->setCheckState (0, Qt::Checked);
+											};
 	connect (this, SIGNAL (itemChanged (QTreeWidgetItem *, int)), this,
 	         SLOT (onItemChanged (QTreeWidgetItem *, int)));
 }

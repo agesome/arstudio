@@ -4,21 +4,22 @@ project(arstudio CXX C)
 
 set(arstudio_sources
 
-	main.cpp
+	ui/main.cpp
+	ui/timelinemodel.cpp
+	ui/repository_view.cpp
+	ui/timeline.cpp
+	ui/processing_dialog.cpp
+	ui/window3d.cpp
+	ui/core.cpp
+	
+	algo_pipeline.cpp
 	sequence.cpp
 	repository.cpp
 	scenegraph.cpp
-	timelinemodel.cpp
-	window3d.cpp
 	point3d.cpp
-	repository_view.cpp
 	logger.cpp
-	timeline.cpp
-	core.cpp
-	algo_pipeline.cpp
-	config_view.cpp
 	config.cpp
-	video.cpp)
+)
 		
 set(Boost_USE_MULTITHREADED ON)
 find_package(Boost REQUIRED COMPONENTS system filesystem)
@@ -34,7 +35,6 @@ find_package(OpenCV REQUIRED)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/ui/)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/algorithms/)
 
 file(GLOB arstudio_headers ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/*.hpp)

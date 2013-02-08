@@ -1,10 +1,5 @@
 #include <QApplication>
-#include <repository.hpp>
-#include <scenegraph.hpp>
-#include <window3d.hpp>
-#include <point3d.hpp>
-#include <camera.hpp>
-#include <core.hpp>
+#include <ui/core.hpp>
 
 using namespace Workspace;
 

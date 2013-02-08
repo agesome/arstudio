@@ -1,4 +1,4 @@
-#include <window3d.hpp>
+#include <ui/window3d.hpp>
 
 using namespace std;
 using namespace boost;

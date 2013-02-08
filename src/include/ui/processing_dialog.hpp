@@ -1,5 +1,5 @@
-#ifndef VIDEO_H
-#define VIDEO_H
+#ifndef PROCESSING_DIALOG_H
+#define PROCESSING_DIALOG_H
 
 #include <QWidget>
 #include <QLabel>
@@ -8,17 +8,17 @@
 #include <QGridLayout>
 #include <QFileDialog>
 #include <QProgressBar>
-#include <opencv2/highgui/highgui.hpp>
-#include <algo_pipeline.hpp>
-#include <QDebug>
 #include <QFuture>
 #include <QtConcurrentRun>
 
-class Video : public QWidget
+#include <opencv2/highgui/highgui.hpp>
+#include <algo_pipeline.hpp>
+
+class ProcessingDialog : public QWidget
 {
 	Q_OBJECT
 public:
-	explicit Video(QWidget *parent = 0, AlgoPipeline * p = NULL);
+	explicit ProcessingDialog (QWidget *parent = 0);
 private:
 	QLabel *file_name_label = new QLabel (this);
 	QLabel *frames_count_label = new QLabel (this);
@@ -32,7 +32,6 @@ private:
 	QString file_path;
 
 	cv::VideoCapture *vcap = NULL;
-	AlgoPipeline * apipe = NULL;
 
 	void processing_thread (int, int);
 signals:
@@ -44,4 +43,4 @@ public slots:
 	void process_frames ();
 	void update_progress ();
 };
-#endif // VIDEO_H
+#endif // PROCESSING_DIALOG_H

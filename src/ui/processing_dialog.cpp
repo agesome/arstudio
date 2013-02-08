@@ -1,6 +1,6 @@
-#include <video.hpp>
+#include <ui/processing_dialog.hpp>
 
-Video::Video(QWidget *parent, AlgoPipeline *p) :
+ProcessingDialog::ProcessingDialog(QWidget *parent) :
 	QWidget (parent)
 {
 	file_name_label->setText ("File: ");
@@ -25,12 +25,10 @@ Video::Video(QWidget *parent, AlgoPipeline *p) :
 	this->adjustSize ();
 	this->resize (1, 1);
 	this->setMaximumHeight (this->height ());
-
-	apipe = p;
 }
 
 
-void Video::select_file ()
+void ProcessingDialog::select_file ()
 {
 	file_path = QFileDialog::getOpenFileName (this,
 	                                          tr ("Open Video"), "~", tr ("Video Files (*.avi *.mkv *.wmv *.mp4)"));
@@ -55,7 +53,7 @@ void Video::select_file ()
 	frames_count_label->setText ("Frames: " + QString::number (frames_count));
 }
 
-void Video::process_frames (void)
+void ProcessingDialog::process_frames (void)
 {
 	if (vcap == NULL)
 		return;
@@ -68,24 +66,24 @@ void Video::process_frames (void)
 	progress_bar->setMaximum (end - start);
 	progress_bar->setValue (0);
 
-	QFuture <void> thread = QtConcurrent::run (this, &Video::processing_thread, start, end);
+	QFuture <void> thread = QtConcurrent::run (this, &ProcessingDialog::processing_thread, start, end);
 }
 
-void Video::processing_thread (int start, int end)
+void ProcessingDialog::processing_thread (int start, int end)
 {
-	cv::Mat image, empty;
+	// cv::Mat image, empty;
 
-	vcap->set (CV_CAP_PROP_POS_FRAMES, start);
-	for (int i = start; i < end; i++)
-		{
-			*vcap >> image;
-			apipe->processFrame (image, empty);
-			progress_signal ();
-		}
-	done_processing ();
+	// vcap->set (CV_CAP_PROP_POS_FRAMES, start);
+	// for (int i = start; i < end; i++)
+	// {
+	// *vcap >> image;
+	// apipe->processFrame (image, empty);
+	// progress_signal ();
+	// }
+	// done_processing ();
 }
 
-void Video::update_progress (void)
+void ProcessingDialog::update_progress (void)
 {
 	progress_bar->setValue (progress_bar->value () + 1);
 }
