@@ -10,6 +10,7 @@
 #include <QProgressBar>
 #include <QFuture>
 #include <QtConcurrentRun>
+#include <QRadioButton>
 
 #include <opencv2/highgui/highgui.hpp>
 
@@ -25,19 +26,23 @@ public:
 private:
 	QLabel *file_name_label = new QLabel (this);
 	QLabel *frames_count_label = new QLabel (this);
-	QLabel *select_frames_label = new QLabel (this);
 	QPushButton *select_file_button = new QPushButton (this);
 	QPushButton *process_button = new QPushButton (this);
+	QPushButton *stop_button = new QPushButton (this);
 	QSpinBox *start_frame_spin = new QSpinBox (this);
 	QSpinBox *end_frame_spin = new QSpinBox (this);
 	QProgressBar *progress_bar = new QProgressBar (this);
 	QGridLayout *layout = new QGridLayout (this);
+	QRadioButton *radio_whole_file = new QRadioButton ("Process whole file", this);
+	QRadioButton *radio_select_frames = new QRadioButton ("Select frames", this);
 	QString file_path;
 
 	cv::VideoCapture *vcap = NULL;
 
 	Config::ptr config = Config::make ();
 	AlgoPipeline::ptr apipe = AlgoPipeline::make (config);
+
+	bool run_thread;
 
 	void processing_thread (int, int);
 signals:
@@ -48,5 +53,7 @@ public slots:
 	void select_file ();
 	void process_frames ();
 	void update_progress ();
+	void select_frames_changed (bool);
+	void stop_clicked ();
 };
 #endif // PROCESSING_DIALOG_H

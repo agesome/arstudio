@@ -6,6 +6,7 @@ Core::Core() :
 	initGUI ();
 	connect (tmlnmod, SIGNAL (newFrame (int)), wnd3d, SLOT (update (int)));
 	connect (open_processing, SIGNAL (clicked ()), processing, SLOT (show ()));
+	connect (processing, SIGNAL (done_processing ()), this, SLOT (updateTimeline ()));
 
 	Logger::setRepository (repo);
 }
