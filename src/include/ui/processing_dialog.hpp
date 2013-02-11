@@ -12,7 +12,10 @@
 #include <QtConcurrentRun>
 
 #include <opencv2/highgui/highgui.hpp>
+
 #include <algo_pipeline.hpp>
+#include <logger.hpp>
+#include <config.hpp>
 
 class ProcessingDialog : public QWidget
 {
@@ -32,6 +35,9 @@ private:
 	QString file_path;
 
 	cv::VideoCapture *vcap = NULL;
+
+	Config::ptr config = Config::make ();
+	AlgoPipeline::ptr apipe = AlgoPipeline::make (config);
 
 	void processing_thread (int, int);
 signals:

@@ -23,9 +23,9 @@ public:
 
 	std::list <IAbstractAlgorithm *> algorithms;
 
-	AlgoPipeline ();
+	AlgoPipeline (Config::ptr);
 	~AlgoPipeline ();
-	static ptr make (void);
+	static ptr make (Config::ptr);
 
 	void processFrame (cv::Mat &, cv::Mat &);
 };

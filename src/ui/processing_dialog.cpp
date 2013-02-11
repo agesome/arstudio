@@ -71,16 +71,16 @@ void ProcessingDialog::process_frames (void)
 
 void ProcessingDialog::processing_thread (int start, int end)
 {
-	// cv::Mat image, empty;
+	cv::Mat image, empty;
 
-	// vcap->set (CV_CAP_PROP_POS_FRAMES, start);
-	// for (int i = start; i < end; i++)
-	// {
-	// *vcap >> image;
-	// apipe->processFrame (image, empty);
-	// progress_signal ();
-	// }
-	// done_processing ();
+	vcap->set (CV_CAP_PROP_POS_FRAMES, start);
+	for (int i = start; i < end; i++)
+		{
+			*vcap >> image;
+			apipe->processFrame (image, empty);
+			progress_signal ();
+		}
+	done_processing ();
 }
 
 void ProcessingDialog::update_progress (void)

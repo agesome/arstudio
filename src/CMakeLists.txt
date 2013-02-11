@@ -41,7 +41,7 @@ file(GLOB arstudio_headers ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/*.hpp)
 qt4_wrap_cpp(arstudio_moc ${arstudio_headers})
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CMAKE_CXX_FLAGS "-std=c++11")
+set(CMAKE_CXX_FLAGS "-std=c++11 -O0 -ggdb3")
 
 add_subdirectory(algorithms)
 

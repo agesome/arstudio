@@ -1,9 +1,9 @@
 #include <algo_pipeline.hpp>
 
-AlgoPipeline::AlgoPipeline ()
+AlgoPipeline::AlgoPipeline (Config::ptr config)
 {
-	Config::ptr c = Config::make ("../algorithms/adjuster.xml");
-	IAbstractAlgorithm * adjuster = new ImageAdjusterAlgorithm (c);
+	config->importXml ("../algorithms/adjuster.xml");
+	IAbstractAlgorithm * adjuster = new ImageAdjusterAlgorithm (config);
 
 	adjuster->create ();
 
@@ -17,9 +17,9 @@ AlgoPipeline::~AlgoPipeline ()
 }
 
 AlgoPipeline::ptr
-AlgoPipeline::make (void)
+AlgoPipeline::make (Config::ptr config)
 {
-	return boost::make_shared<AlgoPipeline> ();
+	return boost::make_shared<AlgoPipeline> (config);
 }
 
 void

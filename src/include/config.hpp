@@ -5,6 +5,7 @@
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
+#include <iostream>
 
 using namespace boost::property_tree;
 
@@ -12,17 +13,22 @@ class Config
 {
 public:
 	typedef boost::shared_ptr<Config> ptr;
-	static ptr make (const std::string &);
+	static ptr make (void);
 
-	Config (const std::string &);
-	~Config ();
+	Config ()
+	{
+	};
+	~Config ()
+	{
+	};
 
 	template <typename T> T get (const std::string & prop)
 	{
-		return pt.get<T> (prop);
+		return main_tree.get<T> ("root." + prop);
 	}
+
+	void importXml (const std::string &);
 private:
-	std::string xml_path;
-	ptree pt;
+	ptree main_tree;
 };
 #endif // CONFIG_H

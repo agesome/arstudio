@@ -1,17 +1,29 @@
 #include <config.hpp>
 
-Config::Config (const std::string & filename)
+void
+Config::importXml (const std::string & filename)
 {
-	xml_path = filename;
-	read_xml (filename, pt);
-}
+	ptree tree;
 
-Config::~Config (void)
-{
+	read_xml (filename, tree);
+
+	std::function<void(const ptree &, std::string)> walk =
+	  [&walk, this](const ptree & t, std::string prefix)
+		{
+			for (auto it : t)
+				{
+					if (!it.second.empty ())
+						walk (it.second, prefix + it.first + ".");
+					else
+						main_tree.put (prefix + it.first, it.second.get_value<std::string> ());
+				}
+		};
+
+	walk (tree, "root.");
 }
 
 Config::ptr
-Config::make (const std::string & str)
+Config::make (void)
 {
-	return boost::make_shared<Config> (str);
+	return boost::make_shared<Config> ();
 }

@@ -17,10 +17,6 @@
 #include <ui/timelinemodel.hpp>
 #include <ui/processing_dialog.hpp>
 
-#include <algo_pipeline.hpp>
-#include <logger.hpp>
-#include <config.hpp>
-
 class Core : public QMainWindow
 {
 	Q_OBJECT
@@ -36,14 +32,14 @@ private:
 	QSplitter *winsplitter = new QSplitter (Qt:: Vertical, central);
 	QPushButton *open_processing = new QPushButton ("Process");
 
-	TimeLineModel *tmlnmod = new TimeLineModel (1, 10);
-	TimeLine *tmln = new TimeLine (tmlnmod, this);
-	RepositoryView * repo_view = new Workspace::RepositoryView (repo, scgr);
-	Window3D *wnd3d = new Window3D (scgr, central);
-	ProcessingDialog *processing = new ProcessingDialog ();
-
 	Workspace::Repository::ptr repo = Workspace::Repository::make ();
 	Workspace::Scenegraph::ptr scgr = Workspace::Scenegraph::make ();
+
+	TimeLineModel *tmlnmod = new TimeLineModel (1, 10);
+	TimeLine *tmln = new TimeLine (tmlnmod, this);
+	Window3D *wnd3d = new Window3D (scgr, central);
+	ProcessingDialog *processing = new ProcessingDialog ();
+	RepositoryView * repo_view = new Workspace::RepositoryView (repo, scgr);
 
 	void initGUI ();
 public:
