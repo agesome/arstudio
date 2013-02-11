@@ -43,7 +43,7 @@ Mat ContrastAdjuster::adjust (Mat & image)
 ImageAdjusterAlgorithm::ImageAdjusterAlgorithm (Config::ptr config)
 	: IAbstractAlgorithm (config)
 {
-	type = config->get<std::string> ("algorithm.type");
+	type = config->get<std::string> ("adjuster.type");
 }
 
 ImageAdjusterAlgorithm::~ImageAdjusterAlgorithm ()
@@ -55,13 +55,13 @@ bool ImageAdjusterAlgorithm::create ()
 	if (type == "brightness")
 		{
 			BrightnessAdjuster * v = new BrightnessAdjuster ();
-			v->brightness = config->get<double>("algorithm.brightness");
+			v->brightness = config->get<double>("adjuster.brightness");
 			adjuster = v;
 		}
 	else
 		{
 			ContrastAdjuster * v = new ContrastAdjuster ();
-			v->contrast = config->get<double>("algorithm.contrast");
+			v->contrast = config->get<double>("adjuster.contrast");
 			adjuster = v;
 		}
 
