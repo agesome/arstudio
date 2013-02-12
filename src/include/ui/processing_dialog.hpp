@@ -6,17 +6,21 @@
 #include <QSpinBox>
 #include <QPushButton>
 #include <QGridLayout>
+#include <QHBoxLayout>
 #include <QFileDialog>
 #include <QProgressBar>
 #include <QFuture>
 #include <QtConcurrentRun>
 #include <QRadioButton>
+#include <QFileInfo>
 
 #include <opencv2/highgui/highgui.hpp>
 
 #include <algo_pipeline.hpp>
 #include <logger.hpp>
 #include <config.hpp>
+
+#include <ui/config_editor.hpp>
 
 class ProcessingDialog : public QWidget
 {
@@ -40,7 +44,10 @@ private:
 	cv::VideoCapture *vcap = NULL;
 
 	Config::ptr config = Config::make ();
+	// has to be created before AlgoPipeline!
+	ConfigEditor * editor = new ConfigEditor (config);
 	AlgoPipeline::ptr apipe = AlgoPipeline::make (config);
+
 
 	bool run_thread;
 

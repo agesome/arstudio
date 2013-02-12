@@ -28,5 +28,6 @@ public:
 	static ptr make (Config::ptr);
 
 	void processFrame (cv::Mat &, cv::Mat &);
+	void create (void);
 };
 #endif // ALGO_PIPELINE_H

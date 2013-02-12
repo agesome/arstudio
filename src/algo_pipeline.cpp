@@ -4,10 +4,14 @@ AlgoPipeline::AlgoPipeline (Config::ptr config)
 {
 	config->importXml ("../algorithms/adjuster.xml");
 	IAbstractAlgorithm * adjuster = new ImageAdjusterAlgorithm (config);
-
-	adjuster->create ();
-
 	algorithms.push_back (adjuster);
+}
+
+void
+AlgoPipeline::create (void)
+{
+	for (auto it : algorithms)
+		it->create ();
 }
 
 AlgoPipeline::~AlgoPipeline ()

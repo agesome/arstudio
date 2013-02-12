@@ -38,9 +38,10 @@ ProcessingDialog::ProcessingDialog(QWidget *parent) :
 	         SLOT (select_frames_changed (bool)));
 	connect (stop_button, SIGNAL (clicked ()), this, SLOT (stop_clicked ()));
 
-	this->adjustSize ();
-	this->resize (1, 1);
-	this->setMaximumHeight (this->height ());
+	QSize ms = layout->minimumSize ();
+	// ms.setWidth (ms.width () + 200);
+	this->setFixedSize (ms);
+	editor->show ();
 }
 
 void ProcessingDialog::select_frames_changed (bool state)
@@ -58,7 +59,8 @@ void ProcessingDialog::select_file ()
 {
 	file_path = QFileDialog::getOpenFileName (this,
 	                                          tr ("Open Video"), "~", tr ("Video Files (*.avi *.mkv *.wmv *.mp4)"));
-	file_name_label->setText ("File: " + file_path);
+	QFileInfo f (file_path);
+	file_name_label->setText ("File: " + f.baseName ());
 	file_name_label->setToolTip (file_path);
 
 	cv::VideoCapture * c = new cv::VideoCapture (file_path.toStdString ());
@@ -121,6 +123,7 @@ void ProcessingDialog::processing_thread (int start, int end)
 {
 	cv::Mat image, empty;
 
+	apipe->create ();
 	vcap->set (CV_CAP_PROP_POS_FRAMES, start);
 	for (int i = start; i < end && run_thread; i++)
 		{

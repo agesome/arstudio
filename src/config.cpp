@@ -15,15 +15,28 @@ Config::importXml (const std::string & filename)
 					if (!it.second.empty ())
 						walk (it.second, prefix + it.first + ".");
 					else
-						main_tree.put (prefix + it.first, it.second.get_value<std::string> ());
+						{
+							std::string path = prefix + it.first;
+							std::string value = it.second.get_value<std::string> ();
+							main_tree.put ("root." + path, value);
+							if (haveImportCallback)
+								importCallback (path, value);
+						}
 				}
 		};
 
-	walk (tree, "root.");
+	walk (tree, "");
 }
 
 Config::ptr
 Config::make (void)
 {
 	return boost::make_shared<Config> ();
+}
+
+void
+Config::setImportCallback (importCallback_t callback)
+{
+	importCallback = callback;
+	haveImportCallback = true;
 }

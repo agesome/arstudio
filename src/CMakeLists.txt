@@ -11,6 +11,7 @@ set(arstudio_sources
 	ui/processing_dialog.cpp
 	ui/window3d.cpp
 	ui/core.cpp
+	ui/config_editor.cpp
 	
 	algo_pipeline.cpp
 	sequence.cpp
