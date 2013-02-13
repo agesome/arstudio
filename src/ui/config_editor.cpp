@@ -31,7 +31,5 @@ ConfigEditor::configCallback (std::string path, std::string name)
 void
 ConfigEditor::itemChangedHandler (QTreeWidgetItem * item, int column)
 {
-	std::cout << item->text (0).toStdString () << item->text (1).toStdString () << std::endl;
-
 	config->put (item->text (0).toStdString (), item->text (1).toStdString ());
 }

@@ -19,6 +19,7 @@ ProcessingDialog::ProcessingDialog(QWidget *parent) :
 	layout->addWidget (select_file_button, 5, 0, 1, 1, 0);
 	layout->addWidget (process_button, 5, 1, 1, 1, 0);
 	layout->addWidget (stop_button, 5, 2, 1, 1, 0);
+	layout->addWidget (editor, 0, 3, 6, 8);
 
 	radio_whole_file->setEnabled (false);
 	radio_select_frames->setEnabled (false);
@@ -37,11 +38,6 @@ ProcessingDialog::ProcessingDialog(QWidget *parent) :
 	connect (radio_select_frames, SIGNAL (toggled (bool)), this,
 	         SLOT (select_frames_changed (bool)));
 	connect (stop_button, SIGNAL (clicked ()), this, SLOT (stop_clicked ()));
-
-	QSize ms = layout->minimumSize ();
-	// ms.setWidth (ms.width () + 200);
-	this->setFixedSize (ms);
-	editor->show ();
 }
 
 void ProcessingDialog::select_frames_changed (bool state)

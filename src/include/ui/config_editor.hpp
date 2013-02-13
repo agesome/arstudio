@@ -8,8 +8,6 @@
 
 #include <config.hpp>
 
-#include <iostream>
-
 class ConfigEditor : public QTreeWidget
 {
 	Q_OBJECT;
