@@ -38,7 +38,7 @@ private:
 	TimeLineModel *tmlnmod = new TimeLineModel (1, 10);
 	TimeLine *tmln = new TimeLine (tmlnmod, this);
 	Window3D *wnd3d = new Window3D (scgr, central);
-	ProcessingDialog * processing;
+	ProcessingDialog * processing = new ProcessingDialog (this);
 	RepositoryView * repo_view = new Workspace::RepositoryView (repo, scgr);
 
 	void initGUI ();
@@ -53,6 +53,5 @@ public slots:
 	void help ();
 	void settings ();
 	void processingDone (void);
-	void openProcessingDialog (void);
 };
 #endif // CORE_H

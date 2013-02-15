@@ -5,7 +5,8 @@ Core::Core() :
 {
 	initGUI ();
 	connect (tmlnmod, SIGNAL (newFrame (int)), wnd3d, SLOT (update (int)));
-	connect (open_processing, SIGNAL (clicked ()), this, SLOT (openProcessingDialog ()));
+	connect (open_processing, SIGNAL (clicked ()), processing, SLOT (show ()));
+	connect (processing, SIGNAL (done_processing ()), this, SLOT (processingDone ()));
 
 	Logger::setRepository (repo);
 }
@@ -14,16 +15,6 @@ void Core::processingDone (void)
 {
 	tmlnmod->setMax (scgr->getMaxFrame ());
 	tmln->updateWidget ();
-	processing->hide ();
-	delete processing;
-}
-
-void Core::openProcessingDialog (void)
-{
-	processing = new ProcessingDialog (this);
-	connect (processing, SIGNAL (done_processing ()), this, SLOT (processingDone ()));
-	processing->setWindowFlags (Qt::Window);
-	processing->show ();
 }
 
 void Core::quit ()
@@ -55,6 +46,8 @@ void Core::initGUI ()
 	winsplitter->addWidget (open_processing);
 	mainsplitter->addWidget (repo_view);
 	mainsplitter->addWidget (winsplitter);
+
+	processing->setWindowFlags (Qt::Window);
 }
 
 

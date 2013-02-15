@@ -48,7 +48,6 @@ private:
 	ConfigEditor * editor = new ConfigEditor (config);
 	AlgoPipeline::ptr apipe = AlgoPipeline::make (config);
 
-
 	bool run_thread;
 
 	void processing_thread (int, int);

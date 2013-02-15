@@ -51,6 +51,9 @@ ImageAdjusterAlgorithm::~ImageAdjusterAlgorithm ()
 
 bool ImageAdjusterAlgorithm::create ()
 {
+	if (adjuster != nullptr)
+		delete adjuster;
+
 	type = config->get<std::string> ("adjuster.type");
 	if (type == "brightness")
 		{

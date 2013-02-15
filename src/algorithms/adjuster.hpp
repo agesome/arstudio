@@ -44,6 +44,6 @@ public:
 	bool run (Mat &, Mat &);
 
 private:
-	ImageAdjuster * adjuster;
+	ImageAdjuster * adjuster = nullptr;
 };
 #endif // ADJUSTER_HPP
