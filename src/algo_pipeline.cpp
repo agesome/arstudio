@@ -2,16 +2,21 @@
 
 AlgoPipeline::AlgoPipeline (Config::ptr config)
 {
-	config->importXml ("../algorithms/adjuster.xml");
 	IAbstractAlgorithm * adjuster = new ImageAdjusterAlgorithm (config);
-	algorithms.push_back (adjuster);
+
+	create (adjuster);
 }
 
-void
-AlgoPipeline::create (void)
+void AlgoPipeline::create (IAbstractAlgorithm * a)
 {
-	for (auto it : algorithms)
-		it->create ();
+	if (a->create ())
+		algorithms.push_back (a);
+	else
+		{
+			// std::cout << "throw!" << std::endl;
+			throw "Failed to create algo: " +
+			      std::string (typeid(ImageAdjusterAlgorithm).name ());
+		}
 }
 
 AlgoPipeline::~AlgoPipeline ()

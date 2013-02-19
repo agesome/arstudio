@@ -15,6 +15,7 @@
 #include <QFileInfo>
 
 #include <opencv2/highgui/highgui.hpp>
+#include <boost/filesystem.hpp>
 
 #include <algo_pipeline.hpp>
 #include <logger.hpp>
@@ -46,11 +47,12 @@ private:
 	Config::ptr config = Config::make ();
 	// has to be created before AlgoPipeline!
 	ConfigEditor * editor = new ConfigEditor (config);
-	AlgoPipeline::ptr apipe = AlgoPipeline::make (config);
+	AlgoPipeline::ptr apipe;
 
 	bool run_thread;
 
 	void processing_thread (int, int);
+	void populateConfig (std::string);
 signals:
 	void done_processing ();
 	void progress_signal ();

@@ -38,6 +38,23 @@ ProcessingDialog::ProcessingDialog(QWidget *parent) :
 	connect (radio_select_frames, SIGNAL (toggled (bool)), this,
 	         SLOT (select_frames_changed (bool)));
 	connect (stop_button, SIGNAL (clicked ()), this, SLOT (stop_clicked ()));
+
+// TODO: bad hardcode
+	populateConfig ("../algorithms/");
+}
+
+void ProcessingDialog::populateConfig (std::string path)
+{
+	boost::filesystem::directory_iterator dir (path), end;
+
+	for (; dir != end; dir++)
+		{
+			filesystem::path p = dir->path ();
+			if (p.extension () == ".xml")
+				{
+					config->importXml (p.string ());
+				}
+		}
 }
 
 void ProcessingDialog::select_frames_changed (bool state)
@@ -119,7 +136,8 @@ void ProcessingDialog::processing_thread (int start, int end)
 {
 	cv::Mat image, empty;
 
-	apipe->create ();
+	apipe = AlgoPipeline::make (config);
+
 	vcap->set (CV_CAP_PROP_POS_FRAMES, start);
 	for (int i = start; i < end && run_thread; i++)
 		{
@@ -128,6 +146,7 @@ void ProcessingDialog::processing_thread (int start, int end)
 			progress_signal ();
 		}
 	done_processing ();
+
 	process_button->setEnabled (true);
 	select_file_button->setEnabled (true);
 	stop_button->setEnabled (false);

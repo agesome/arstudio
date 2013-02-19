@@ -2,16 +2,18 @@
 #define ALGO_PIPELINE_H
 
 #include <opencv2/highgui/highgui.hpp>
-#include <boost/filesystem.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
-#include <string>
-#include <iostream>
-#include <list>
+
 #include <logger.hpp>
 #include <config.hpp>
 #include <adjuster.hpp>
 #include <algo_interface.hpp>
+
+#include <exception>
+#include <string>
+#include <list>
+#include <iostream>
 
 using namespace boost;
 
@@ -28,6 +30,7 @@ public:
 	static ptr make (Config::ptr);
 
 	void processFrame (cv::Mat &, cv::Mat &);
-	void create (void);
+private:
+	void create (IAbstractAlgorithm *);
 };
 #endif // ALGO_PIPELINE_H

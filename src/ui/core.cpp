@@ -50,24 +50,20 @@ void Core::initGUI ()
 	processing->setWindowFlags (Qt::Window);
 }
 
-
 void Core::open ()
 {
 	qDebug () << "Open file";
 }
-
 
 void Core::about ()
 {
 	qDebug () << "About";
 }
 
-
 void Core::settings ()
 {
 	qDebug () << "Settings";
 }
-
 
 void Core::help ()
 {

@@ -47,13 +47,11 @@ ImageAdjusterAlgorithm::ImageAdjusterAlgorithm (Config::ptr config)
 
 ImageAdjusterAlgorithm::~ImageAdjusterAlgorithm ()
 {
+	delete adjuster;
 }
 
 bool ImageAdjusterAlgorithm::create ()
 {
-	if (adjuster != nullptr)
-		delete adjuster;
-
 	type = config->get<std::string> ("adjuster.type");
 	if (type == "brightness")
 		{
@@ -61,12 +59,18 @@ bool ImageAdjusterAlgorithm::create ()
 			v->brightness = config->get<double>("adjuster.brightness");
 			adjuster = v;
 		}
-	else
+	else if (type == "contrast")
 		{
 			ContrastAdjuster * v = new ContrastAdjuster ();
 			v->contrast = config->get<double>("adjuster.contrast");
 			adjuster = v;
 		}
+	else
+		{
+			std::cout << "create failed!" << std::endl;
+			return false;
+		}
+
 
 	return true;
 }
