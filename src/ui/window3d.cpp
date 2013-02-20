@@ -23,7 +23,7 @@ Window3D::Window3D(Scenegraph::ptr s, QWidget* parent) : QGLWidget (parent)
 void Window3D::initializeGL ()
 {
 // инициализация GL
-	qglClearColor (Qt::white);
+    qglClearColor (Qt::black);
 	glFrontFace (GL_CW);
 	// для работы с буффером глубины 3 стр
 	glClearDepth (1.0f);
@@ -239,28 +239,28 @@ void Window3D::drawSceneElements ()
 
 void Window3D::drawAxis ()
 {
-	glLineWidth (3.0f);
+    glLineWidth (3.0f);
 
-	glColor4f (1.00f, 0.00f, 0.00f, 1.0f);
+    glColor4f (1.00f, 0.00f, 0.00f, 1.0f);
 	glBegin (GL_LINES);
 	glVertex3f (1.0f, 0.0f, 0.0f);
 	glVertex3f (-1.0f, 0.0f, 0.0f);
-	glEnd ();
+    //glEnd ();
 
-	QColor halfGreen (0, 128, 0, 255);
+    QColor halfGreen (0, 128, 0, 255);
 	qglColor (halfGreen);
-	glBegin (GL_LINES);
+    //glBegin (GL_LINES);
 	glVertex3f (0.0f, 1.0f, -0.0f);
 	glVertex3f (0.0f, -1.0f, 0.0f);
 
-	glColor4f (0.00f, 0.00f, 1.00f, 1.0f);
-	glVertex3f (0.0f, 0.0f, 1.0f);
-	glVertex3f (0.0f, 0.0f, -1.0f);
+    glColor4f (0.00f, 0.00f, 1.00f, 1.0f);
+    glVertex3f (0.0f, 0.0f, 1.0f);
+    glVertex3f (0.0f, 0.0f, -1.0f);
 	glEnd ();
 
-	drawCam (1, 0, 0, 0.02, 0, -90, 0);
-	drawCam (0, 1, 0, 0.02, 90, 0, 0);
-	drawCam (0, 0, 1, 0.02, 180, 0, 0);
+    drawCam (1, 0, 0, 0.02, 0, -90, 0);
+    drawCam (0, 1, 0, 0.02, 90, 0, 0);
+    drawCam (0, 0, 1, 0.02, 180, 0, 0);
 }
 
 
@@ -337,7 +337,7 @@ void Window3D::drawCam (double x, double y, double z, double a, double rx, doubl
 	glBegin (GL_TRIANGLES);
 
 
-	glColor3f (0.0f, 0.0f, 0.0f);                 // ч
+    glColor3f (0.0f, 1.0f, 0.0f);                 // ч
 	glVertex3d (0, 0, -2 * a);             // Низ лево
 	glVertex3d (a, -a, +a);               // Верх право квадрата (Низ)
 	glVertex3d (-a, -a, +a);               // Верх лево
@@ -348,12 +348,12 @@ void Window3D::drawCam (double x, double y, double z, double a, double rx, doubl
 	glVertex3d (a, -a, +a);               // Верх лево
 
 
-	glColor3f (1.0f, 0.0f, 0.0f);                 // Оранжевый
+    glColor3f (1.0f, 0.0f, 0.0f);                 // Красный
 	glVertex3d (0, 0, -2 * a);             // Низ лево
 	glVertex3d (-a, -a, +a);               // Верх право квадрата (Низ)
 	glVertex3d (-a, a, +a);               // Верх лево
 
-	glColor3f (0.0f, 0.0f, 0.0f);                 // Оранжевый
+    glColor3f (0.0f, 1.0f, 0.0f);
 	glVertex3d (0, 0, -2 * a);             // Низ лево
 	glVertex3d (-a, a, +a);              // Верх право квадрата (Низ)
 	glVertex3d (a, a, +a);               // Верх лево

@@ -14,8 +14,8 @@ void AlgoPipeline::create (IAbstractAlgorithm * a)
 	else
 		{
 			// std::cout << "throw!" << std::endl;
-			throw "Failed to create algo: " +
-			      std::string (typeid(ImageAdjusterAlgorithm).name ());
+            throw "Failed to create algo: " +
+                  std::string (typeid(ImageAdjusterAlgorithm).name ());
 		}
 }
 
