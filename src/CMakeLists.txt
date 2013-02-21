@@ -45,6 +45,8 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_FLAGS "-std=c++11 -O0 -ggdb3")
 
 add_subdirectory(algorithms)
+add_subdirectory(../KinectRecorder/src/ ${CMAKE_CURRENT_BINARY_DIR}/KinectRecorder/
+				EXCLUDE_FROM_ALL)
 
 add_executable(arstudio ${arstudio_sources} ${arstudio_moc})
 
@@ -52,6 +54,7 @@ target_link_libraries(
 	arstudio
 	adjuster
 
+	kinectCapture
 	${QT_LIBRARIES}
 	${Boost_LIBRARIES}
 	${OPENGL_LIBRARIES}

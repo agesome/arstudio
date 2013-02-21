@@ -1,0 +1,3 @@
+[submodule "KinectRecorder"]
+	path = KinectRecorder
+	url = git://github.com/sanomaster/KinectRecorder.git
