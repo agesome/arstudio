@@ -37,6 +37,8 @@ find_package(OpenCV REQUIRED)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/algorithms/)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/algorithms/NewOfNewSlam)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../KinectRecorder/src/)
 
 file(GLOB arstudio_headers ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/*.hpp)
 qt4_wrap_cpp(arstudio_moc ${arstudio_headers})
@@ -44,15 +46,17 @@ qt4_wrap_cpp(arstudio_moc ${arstudio_headers})
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_FLAGS "-std=c++11 -O0 -ggdb3")
 
-add_subdirectory(algorithms)
-add_subdirectory(../KinectRecorder/src/ ${CMAKE_CURRENT_BINARY_DIR}/KinectRecorder/
+
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../KinectRecorder/src/ ${CMAKE_CURRENT_BINARY_DIR}/KinectRecorder/
 				EXCLUDE_FROM_ALL)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/algorithms/NewOfNewSlam/)
+
 
 add_executable(arstudio ${arstudio_sources} ${arstudio_moc})
-
 target_link_libraries(
 	arstudio
-	adjuster
+
+	NewOfNewSlam
 
 	kinectCapture
 	${QT_LIBRARIES}

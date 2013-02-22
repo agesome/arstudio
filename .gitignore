@@ -14,5 +14,8 @@
 # Sublime text project files
 *.sublime-*
 
+*~
+
 # everything in the build directory
 src/build/*
+src/algorithms

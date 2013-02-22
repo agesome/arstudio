@@ -128,8 +128,23 @@ void ProcessingDialog::process_frames (void)
 	select_file_button->setEnabled (false);
 	stop_button->setEnabled (true);
 
-	run_thread = true;
-	QFuture <void> thread = QtConcurrent::run (this, &ProcessingDialog::processing_thread, start, end);
+
+	apipe = AlgoPipeline::make (config);
+
+	//vcap->set (CV_CAP_PROP_POS_FRAMES, start);
+	kincap = new KinectCapture ();
+	for (int i = start; i < end; i++)
+		{
+		        kincap->readFrame();
+		        LuxFrame *f = kincap->getFrame();
+			//*vcap >> image;
+			apipe->processFrame (f->image, f->depth_map);
+			//progress_signal ();
+		}
+	delete kincap;
+
+	//run_thread = true;
+	//QFuture <void> thread = QtConcurrent::run (this, &ProcessingDialog::processing_thread, start, end);
 }
 
 void ProcessingDialog::processing_thread (int start, int end)
@@ -138,13 +153,17 @@ void ProcessingDialog::processing_thread (int start, int end)
 
 	apipe = AlgoPipeline::make (config);
 
-	vcap->set (CV_CAP_PROP_POS_FRAMES, start);
+	//vcap->set (CV_CAP_PROP_POS_FRAMES, start);
+	kincap = new KinectCapture ();
 	for (int i = start; i < end && run_thread; i++)
 		{
-			*vcap >> image;
-			apipe->processFrame (image, empty);
-			progress_signal ();
+		        kincap->readFrame();
+		        LuxFrame *f = kincap->getFrame();
+			//*vcap >> image;
+			apipe->processFrame (f->image, f->depth_map);
+			//progress_signal ();
 		}
+	delete kincap;
 	done_processing ();
 
 	process_button->setEnabled (true);

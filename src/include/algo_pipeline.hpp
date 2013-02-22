@@ -7,13 +7,14 @@
 
 #include <logger.hpp>
 #include <config.hpp>
-#include <adjuster.hpp>
 #include <algo_interface.hpp>
 
 #include <exception>
 #include <string>
 #include <list>
 #include <iostream>
+
+#include <NewOfNewSlam/debugger_interface.hpp>
 
 using namespace boost;
 

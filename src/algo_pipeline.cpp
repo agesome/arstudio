@@ -2,27 +2,22 @@
 
 AlgoPipeline::AlgoPipeline (Config::ptr config)
 {
-	IAbstractAlgorithm * adjuster = new ImageAdjusterAlgorithm (config);
+	IAbstractAlgorithm * slam = new SlamInterface (config);
 
-	create (adjuster);
+	create (slam);
 }
 
 void AlgoPipeline::create (IAbstractAlgorithm * a)
 {
 	if (a->create ())
 		algorithms.push_back (a);
-	else
-		{
-			// std::cout << "throw!" << std::endl;
-            throw "Failed to create algo: " +
-                  std::string (typeid(ImageAdjusterAlgorithm).name ());
-		}
+
 }
 
 AlgoPipeline::~AlgoPipeline ()
 {
-	for (auto it : algorithms)
-		delete it;
+	//for (auto it : algorithms)
+	//	delete it;
 }
 
 AlgoPipeline::ptr

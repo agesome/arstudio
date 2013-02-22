@@ -27,6 +27,14 @@ Logger::advanceFrame (void)
 }
 
 void
+Logger::logPoint (cv::Point3d point)
+{
+	Point3d::ptr p = Point3d::make (point.x/4, point.y/4, point.z/4, 1, 1, 1);
+
+	repo->addItem (p, current_frame, Item::POINT3D, "points");
+}
+
+void
 Logger::addImage (cv::Mat & m, std::string source)
 {
 	Bitmap::ptr map = Bitmap::make ();

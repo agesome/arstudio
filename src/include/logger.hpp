@@ -4,6 +4,7 @@
 #include <repository.hpp>
 #include <pcloud.hpp>
 #include <bitmap.hpp>
+#include <point3d.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/nonfree/features2d.hpp>
@@ -16,6 +17,7 @@ public:
 	static void setRepository (const Workspace::Repository::ptr);
 
 	void addImage (cv::Mat &, std::string);
+	void logPoint (cv::Point3d point);
 	void advanceFrame (void);
 private:
 	Logger ();

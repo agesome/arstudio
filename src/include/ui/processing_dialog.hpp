@@ -23,6 +23,8 @@
 
 #include <ui/config_editor.hpp>
 
+#include <kinectcapture.hpp>
+
 class ProcessingDialog : public QWidget
 {
 	Q_OBJECT
@@ -43,6 +45,7 @@ private:
 	QString file_path;
 
 	cv::VideoCapture *vcap = NULL;
+	ICapture *kincap = NULL;
 
 	Config::ptr config = Config::make ();
 	// has to be created before AlgoPipeline!
