@@ -34,32 +34,48 @@ include_directories(${OPENGL_INCLUDE_DIR})
 
 find_package(OpenCV REQUIRED)
 
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../KinectRecorder/src/ ${CMAKE_CURRENT_BINARY_DIR}/KinectRecorder/
+				EXCLUDE_FROM_ALL)
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/algorithms/)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/algorithms/NewOfNewSlam)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../KinectRecorder/src/)
+include_directories(${GLOBAL_INCLUDES})
 
 file(GLOB arstudio_headers ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/*.hpp)
 qt4_wrap_cpp(arstudio_moc ${arstudio_headers})
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CMAKE_CXX_FLAGS "-std=c++11 -O0 -ggdb3")
+set(CMAKE_CXX_FLAGS "-std=c++11 -O2 -ggdb3")
 
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../KinectRecorder/src/ ${CMAKE_CURRENT_BINARY_DIR}/KinectRecorder/
-				EXCLUDE_FROM_ALL)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/algorithms/NewOfNewSlam/)
+macro(subdirlist result curdir)
+  file(GLOB children RELATIVE ${curdir} ${curdir}/*)
+  set(dirlist "")
+  foreach(child ${children})
+    if(IS_DIRECTORY ${curdir}/${child})
+        set(dirlist ${dirlist} ${child})
+    endif()
+  endforeach()
+  set(${result} ${dirlist})
+endmacro()
 
+subdirlist(subdirs ${CMAKE_CURRENT_SOURCE_DIR}/algorithms/)
+
+foreach(subdir ${subdirs})
+	include_directories(${CMAKE_CURRENT_SOURCE_DIR}/algorithms${subdir}/)
+	add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/algorithms${subdir}/)
+endforeach()
 
 add_executable(arstudio ${arstudio_sources} ${arstudio_moc})
 target_link_libraries(
 	arstudio
 
-	NewOfNewSlam
+	${GLOBAL_LIBS}
 
 	kinectCapture
 	${QT_LIBRARIES}
 	${Boost_LIBRARIES}
 	${OPENGL_LIBRARIES}
-	${OpenCV_LIBS})
+	${OpenCV_LIBS}
+)
