@@ -71,43 +71,56 @@ void ProcessingDialog::stop_clicked (void)
 void ProcessingDialog::select_file ()
 {
 	file_path = QFileDialog::getOpenFileName (this,
-	                                          tr ("Open Video"), "~", tr ("Video Files (*.avi *.mkv *.wmv *.mp4)"));
+	                                          tr ("Open Video"), "~",
+	                                          tr ("Video Files (*.avi *.mkv *.wmv *.mp4 *.kinvideo)"));
 	QFileInfo f (file_path);
 	file_name_label->setText ("File: " + f.baseName ());
 	file_name_label->setToolTip (file_path);
-
-	cv::VideoCapture * c = new cv::VideoCapture (file_path.toStdString ());
 	int frames_count;
-	if (!c->isOpened ())
-		{
-			frames_count = -1;
-			vcap = NULL;
-		}
-	else
-		{
-			frames_count = c->get (CV_CAP_PROP_FRAME_COUNT);
-			start_frame_spin->setRange (0, frames_count - 1);
-			end_frame_spin->setRange (1, frames_count);
-			vcap = c;
-		}
-	frames_count_label->setText ("Frames: " + QString::number (frames_count));
+	cv::VideoCapture * c;
 
 	radio_whole_file->setEnabled (true);
 	radio_whole_file->setChecked (true);
-	radio_select_frames->setEnabled (true);
 	process_button->setEnabled (true);
+
+	if (f.suffix () == "kinvideo")
+		{
+			kincap = new FileCapture (file_path.toStdString ());
+			frames_count = kincap->getFrameCount ();
+		}
+	else
+		{
+			c = new cv::VideoCapture (file_path.toStdString ());
+			if (!c->isOpened ())
+				{
+					frames_count = -1;
+					vcap = NULL;
+				}
+			else
+				{
+					frames_count = c->get (CV_CAP_PROP_FRAME_COUNT);
+					start_frame_spin->setRange (0, frames_count - 1);
+					end_frame_spin->setRange (1, frames_count);
+					vcap = c;
+					radio_select_frames->setEnabled (true);
+				}
+		}
+	frames_count_label->setText ("Frames: " + QString::number (frames_count));
 }
 
 void ProcessingDialog::process_frames (void)
 {
-	if (vcap == NULL)
+	if (!vcap && !kincap)
 		return;
 
 	int start, end;
 	if (radio_whole_file->isChecked ())
 		{
 			start = 0;
-			end = vcap->get (CV_CAP_PROP_FRAME_COUNT);
+			if (vcap)
+				end = vcap->get (CV_CAP_PROP_FRAME_COUNT);
+			else
+				end = kincap->getFrameCount () - 1;
 		}
 	else
 		{
@@ -128,23 +141,8 @@ void ProcessingDialog::process_frames (void)
 	select_file_button->setEnabled (false);
 	stop_button->setEnabled (true);
 
-
-	apipe = AlgoPipeline::make (config);
-
-	//vcap->set (CV_CAP_PROP_POS_FRAMES, start);
-	kincap = new KinectCapture ();
-	for (int i = start; i < end; i++)
-		{
-		        kincap->readFrame();
-		        LuxFrame *f = kincap->getFrame();
-			//*vcap >> image;
-			apipe->processFrame (f->image, f->depth_map);
-			//progress_signal ();
-		}
-	delete kincap;
-
-	//run_thread = true;
-	//QFuture <void> thread = QtConcurrent::run (this, &ProcessingDialog::processing_thread, start, end);
+	run_thread = true;
+	QFuture <void> thread = QtConcurrent::run (this, &ProcessingDialog::processing_thread, start, end);
 }
 
 void ProcessingDialog::processing_thread (int start, int end)
@@ -153,15 +151,22 @@ void ProcessingDialog::processing_thread (int start, int end)
 
 	apipe = AlgoPipeline::make (config);
 
-	//vcap->set (CV_CAP_PROP_POS_FRAMES, start);
-	kincap = new KinectCapture ();
+	if (vcap)
+		vcap->set (CV_CAP_PROP_POS_FRAMES, start);
 	for (int i = start; i < end && run_thread; i++)
 		{
-		        kincap->readFrame();
-		        LuxFrame *f = kincap->getFrame();
-			//*vcap >> image;
-			apipe->processFrame (f->image, f->depth_map);
-			//progress_signal ();
+			if (vcap)
+				{
+					*vcap >> image;
+					apipe->processFrame (image, empty);
+				}
+			else
+				{
+					kincap->readFrame ();
+					LuxFrame *f = kincap->getFrame ();
+					apipe->processFrame (f->image, f->depth_map);
+				}
+			progress_signal ();
 		}
 	delete kincap;
 	done_processing ();

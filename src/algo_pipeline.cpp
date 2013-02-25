@@ -10,14 +10,15 @@ AlgoPipeline::AlgoPipeline (Config::ptr config)
 void AlgoPipeline::create (IAbstractAlgorithm * a)
 {
 	if (a->create ())
-		algorithms.push_back (a);
-
+		{
+			algorithms.push_back (a);
+		}
 }
 
 AlgoPipeline::~AlgoPipeline ()
 {
-	//for (auto it : algorithms)
-	//	delete it;
+	for (auto it : algorithms)
+		delete it;
 }
 
 AlgoPipeline::ptr
