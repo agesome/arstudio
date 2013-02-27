@@ -2,9 +2,7 @@
 
 AlgoPipeline::AlgoPipeline (Config::ptr config)
 {
-	IAbstractAlgorithm * slam = new SlamInterface (config);
-
-	create (slam);
+	@ALGO_CODE@
 }
 
 void AlgoPipeline::create (IAbstractAlgorithm * a)

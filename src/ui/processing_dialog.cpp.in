@@ -40,7 +40,7 @@ ProcessingDialog::ProcessingDialog(QWidget *parent) :
 	connect (stop_button, SIGNAL (clicked ()), this, SLOT (stop_clicked ()));
 
 // defined in CMakeLists.txt
-	populateConfig (CONFIG_DIRECTORY);
+	populateConfig ("@CONFIG_DIRECTORY@");
 }
 
 void ProcessingDialog::populateConfig (std::string path)

@@ -45,7 +45,10 @@ qt4_wrap_cpp(arstudio_moc ${arstudio_headers})
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_FLAGS "-std=c++11 -O2 -ggdb3")
+
 set(GLOBAL_LIBS "")
+set(ALGO_INCLUDES "")
+set(ALGO_CODE "")
 
 macro(subdirlist result curdir)
   file(GLOB children RELATIVE ${curdir} ${curdir}/*)
@@ -77,15 +80,22 @@ foreach(subdir ${subdirs})
 	endif ()
 endforeach()
 
-add_definitions(-DCONFIG_DIRECTORY="${CMAKE_CURRENT_SOURCE_DIR}/../submodules/")
+set(CONFIG_DIRECTORY "../../submodules/")
+
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/ui/processing_dialog.cpp.in
+				${CMAKE_CURRENT_SOURCE_DIR}/ui/processing_dialog.cpp)
+
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/include/algo_pipeline.hpp.in
+				${CMAKE_CURRENT_SOURCE_DIR}/include/algo_pipeline.hpp)
+
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/algo_pipeline.cpp.in
+				${CMAKE_CURRENT_SOURCE_DIR}/algo_pipeline.cpp)
 
 add_executable(arstudio ${arstudio_sources} ${arstudio_moc})
 target_link_libraries(
 	arstudio
 
 	${GLOBAL_LIBS}
-
-	#kinectCapture
 	${QT_LIBRARIES}
 	${Boost_LIBRARIES}
 	${OPENGL_LIBRARIES}

@@ -14,7 +14,7 @@
 #include <list>
 #include <iostream>
 
-#include <debugger_interface.hpp>
+@ALGO_INCLUDES@
 
 using namespace boost;
 
