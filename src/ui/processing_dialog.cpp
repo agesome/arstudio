@@ -39,8 +39,8 @@ ProcessingDialog::ProcessingDialog(QWidget *parent) :
 	         SLOT (select_frames_changed (bool)));
 	connect (stop_button, SIGNAL (clicked ()), this, SLOT (stop_clicked ()));
 
-// TODO: bad hardcode
-	populateConfig ("../algorithms/");
+// defined in CMakeLists.txt
+	populateConfig (CONFIG_DIRECTORY);
 }
 
 void ProcessingDialog::populateConfig (std::string path)

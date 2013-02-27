@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 
 project(arstudio CXX C)
+set(CMAKE_COLOR_MAKEFILE ON)
 
 set(arstudio_sources
 
@@ -34,9 +35,6 @@ include_directories(${OPENGL_INCLUDE_DIR})
 
 find_package(OpenCV REQUIRED)
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../KinectRecorder/src/ ${CMAKE_CURRENT_BINARY_DIR}/KinectRecorder/
-				EXCLUDE_FROM_ALL)
-
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/algorithms/)
@@ -47,7 +45,7 @@ qt4_wrap_cpp(arstudio_moc ${arstudio_headers})
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_FLAGS "-std=c++11 -O2 -ggdb3")
-
+set(GLOBAL_LIBS "")
 
 macro(subdirlist result curdir)
   file(GLOB children RELATIVE ${curdir} ${curdir}/*)
@@ -60,12 +58,26 @@ macro(subdirlist result curdir)
   set(${result} ${dirlist})
 endmacro()
 
-subdirlist(subdirs ${CMAKE_CURRENT_SOURCE_DIR}/algorithms/)
+subdirlist(subdirs ${CMAKE_CURRENT_SOURCE_DIR}/../submodules/)
 
+message ("\tWill now add submodules")
 foreach(subdir ${subdirs})
-	include_directories(${CMAKE_CURRENT_SOURCE_DIR}/algorithms${subdir}/)
-	add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/algorithms${subdir}/)
+	message ("\tAdding submodule "${subdir})
+	include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../submodules/${subdir}/)
+	if (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../submodules/${subdir}/include/)
+		include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../submodules/${subdir}/include/)
+	endif ()
+	if (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../submodules/${subdir}/src/)
+		include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../submodules/${subdir}/src/)
+		add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../submodules/${subdir}/src/
+				${CMAKE_CURRENT_BINARY_DIR}/${subdir} EXCLUDE_FROM_ALL)
+	else ()
+		add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../submodules/${subdir}/
+				${CMAKE_CURRENT_BINARY_DIR}/${subdir} EXCLUDE_FROM_ALL)
+	endif ()
 endforeach()
+
+add_definitions(-DCONFIG_DIRECTORY="${CMAKE_CURRENT_SOURCE_DIR}/../submodules/")
 
 add_executable(arstudio ${arstudio_sources} ${arstudio_moc})
 target_link_libraries(
@@ -73,7 +85,7 @@ target_link_libraries(
 
 	${GLOBAL_LIBS}
 
-	kinectCapture
+	#kinectCapture
 	${QT_LIBRARIES}
 	${Boost_LIBRARIES}
 	${OPENGL_LIBRARIES}

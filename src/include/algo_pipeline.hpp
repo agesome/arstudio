@@ -14,7 +14,7 @@
 #include <list>
 #include <iostream>
 
-#include <NewOfNewSlam/debugger_interface.hpp>
+#include <debugger_interface.hpp>
 
 using namespace boost;
 
