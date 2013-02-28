@@ -37,7 +37,6 @@ find_package(OpenCV REQUIRED)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/algorithms/)
 include_directories(${GLOBAL_INCLUDES})
 
 file(GLOB arstudio_headers ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/*.hpp)

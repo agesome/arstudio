@@ -46,8 +46,8 @@ private:
 	QRadioButton *radio_select_frames = new QRadioButton ("Select frames", this);
 	QString file_path;
 
-	cv::VideoCapture *vcap = NULL;
-	FileCapture *kincap = NULL;
+	cv::VideoCapture *vcap = nullptr;
+	FileCapture *kincap = nullptr;
 
 	Config::ptr config = Config::make ();
 	// has to be created before AlgoPipeline!

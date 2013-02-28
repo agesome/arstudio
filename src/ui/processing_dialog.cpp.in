@@ -80,6 +80,11 @@ void ProcessingDialog::select_file ()
 	radio_whole_file->setChecked (true);
 	process_button->setEnabled (true);
 
+	if (kincap)
+		delete kincap;
+	else if (vcap)
+		delete vcap;
+
 	if (f.suffix () == "kinvideo")
 		{
 			kincap = new FileCapture (file_path.toStdString ());
@@ -117,7 +122,7 @@ void ProcessingDialog::process_frames (void)
 			if (vcap)
 				end = vcap->get (CV_CAP_PROP_FRAME_COUNT);
 			else
-				end = kincap->getFrameCount () - 1;
+				end = kincap->getFrameCount ();
 		}
 	else
 		{
@@ -157,21 +162,34 @@ void ProcessingDialog::processing_thread (int start, int end)
 		vcap->set (CV_CAP_PROP_POS_FRAMES, start);
 	for (int i = start; i < end && run_thread; i++)
 		{
-			if (vcap)
-				{
-					*vcap >> image;
-					apipe->processFrame (image, empty);
-				}
-			else
-				{
-					kincap->readFrame ();
-					LuxFrame *f = kincap->getFrame ();
-					apipe->processFrame (f->image, f->depth_map);
-				}
+			try
+			{
+				if (vcap)
+					{
+						*vcap >> image;
+						apipe->processFrame (image, empty);
+					}
+				else
+					{
+						kincap->readFrame ();
+						LuxFrame *f = kincap->getFrame ();
+						apipe->processFrame (f->image, f->depth_map);
+					}
+			}
+			catch (std::out_of_range e)
+			{
+				done_processing (false, std::string(e.what()));
+				unlockUI ();
+				return;
+			}
+			catch (std::exception e) // oops!
+			{
+				done_processing (false, std::string(e.what()));
+				return;
+			}
 			progress_signal ();
 		}
 	done_processing (true, es);
-	delete kincap;
 
 	unlockUI ();
 }
