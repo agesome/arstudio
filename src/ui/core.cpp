@@ -6,15 +6,23 @@ Core::Core() :
 	initGUI ();
 	connect (tmlnmod, SIGNAL (newFrame (int)), wnd3d, SLOT (update (int)));
 	connect (open_processing, SIGNAL (clicked ()), processing, SLOT (show ()));
-	connect (processing, SIGNAL (done_processing ()), this, SLOT (processingDone ()));
+	connect (processing, SIGNAL (done_processing (bool, std::string)), this,
+	         SLOT (processingDone (bool, std::string)));
 
 	Logger::setRepository (repo);
 }
 
-void Core::processingDone (void)
+void Core::processingDone (bool success, std::string e)
 {
-	tmlnmod->setMax (scgr->getMaxFrame ());
-	tmln->updateWidget ();
+	if (success)
+		{
+			tmlnmod->setMax (scgr->getMaxFrame ());
+			tmln->updateWidget ();
+			return;
+		}
+	QMessageBox msg;
+	msg.setText (QString ("Processing failed: ") + QString::fromStdString (e));
+	msg.exec ();
 }
 
 void Core::quit ()
@@ -48,6 +56,8 @@ void Core::initGUI ()
 	mainsplitter->addWidget (winsplitter);
 
 	processing->setWindowFlags (Qt::Window);
+
+	qRegisterMetaType<std::string>("std::string");
 }
 
 void Core::open ()

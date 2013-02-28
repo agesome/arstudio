@@ -7,6 +7,7 @@
 #include <QPushButton>
 #include <QFrame>
 #include <QSplitter>
+#include <QMessageBox>
 
 #include <opencv2/highgui/highgui.hpp>
 #include <fstream>
@@ -52,6 +53,6 @@ public slots:
 	void about ();
 	void help ();
 	void settings ();
-	void processingDone (void);
+	void processingDone (bool, std::string);
 };
 #endif // CORE_H

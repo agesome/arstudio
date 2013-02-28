@@ -21,11 +21,8 @@ ProcessingDialog::ProcessingDialog(QWidget *parent) :
 	layout->addWidget (stop_button, 5, 2, 1, 1, 0);
 	layout->addWidget (editor, 0, 3, 6, 8);
 
-	radio_whole_file->setEnabled (false);
-	radio_select_frames->setEnabled (false);
-	start_frame_spin->setEnabled (false);
-	end_frame_spin->setEnabled (false);
-	process_button->setEnabled (false);
+	lockUI ();
+	select_file_button->setEnabled (true);
 	stop_button->setEnabled (false);
 
 	progress_bar->setFormat ("%v / %m");
@@ -133,13 +130,7 @@ void ProcessingDialog::process_frames (void)
 	progress_bar->setRange (0, end - start);
 	progress_bar->setValue (1);
 
-	radio_whole_file->setEnabled (false);
-	radio_select_frames->setEnabled (false);
-	start_frame_spin->setEnabled (false);
-	end_frame_spin->setEnabled (false);
-	process_button->setEnabled (false);
-	select_file_button->setEnabled (false);
-	stop_button->setEnabled (true);
+	lockUI ();
 
 	run_thread = true;
 	QFuture <void> thread = QtConcurrent::run (this, &ProcessingDialog::processing_thread, start, end);
@@ -148,8 +139,19 @@ void ProcessingDialog::process_frames (void)
 void ProcessingDialog::processing_thread (int start, int end)
 {
 	cv::Mat image, empty;
+	std::string es;
 
-	apipe = AlgoPipeline::make (config);
+	try
+	{
+		apipe = AlgoPipeline::make (config);
+	}
+	catch (std::runtime_error &e)
+	{
+		es = e.what ();
+		done_processing (false, es);
+		unlockUI ();
+		return;
+	}
 
 	if (vcap)
 		vcap->set (CV_CAP_PROP_POS_FRAMES, start);
@@ -168,9 +170,30 @@ void ProcessingDialog::processing_thread (int start, int end)
 				}
 			progress_signal ();
 		}
+	done_processing (true, es);
 	delete kincap;
-	done_processing ();
 
+	unlockUI ();
+}
+
+void ProcessingDialog::update_progress (void)
+{
+	progress_bar->setValue (progress_bar->value () + 1);
+}
+
+void ProcessingDialog::lockUI ()
+{
+	radio_whole_file->setEnabled (false);
+	radio_select_frames->setEnabled (false);
+	start_frame_spin->setEnabled (false);
+	end_frame_spin->setEnabled (false);
+	process_button->setEnabled (false);
+	select_file_button->setEnabled (false);
+	stop_button->setEnabled (true);
+}
+
+void ProcessingDialog::unlockUI ()
+{
 	process_button->setEnabled (true);
 	select_file_button->setEnabled (true);
 	stop_button->setEnabled (false);
@@ -178,9 +201,4 @@ void ProcessingDialog::processing_thread (int start, int end)
 	radio_select_frames->setEnabled (true);
 	start_frame_spin->setEnabled (true);
 	end_frame_spin->setEnabled (true);
-}
-
-void ProcessingDialog::update_progress (void)
-{
-	progress_bar->setValue (progress_bar->value () + 1);
 }

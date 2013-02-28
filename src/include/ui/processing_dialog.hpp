@@ -14,6 +14,8 @@
 #include <QRadioButton>
 #include <QFileInfo>
 
+#include <exception>
+
 #include <opencv2/highgui/highgui.hpp>
 #include <boost/filesystem.hpp>
 
@@ -56,8 +58,10 @@ private:
 
 	void processing_thread (int, int);
 	void populateConfig (std::string);
+	void lockUI ();
+	void unlockUI ();
 signals:
-	void done_processing ();
+	void done_processing (bool, std::string);
 	void progress_signal ();
 
 public slots:
