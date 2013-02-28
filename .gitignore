@@ -18,4 +18,7 @@
 
 # everything in the build directory
 src/build/*
-src/algorithms
+
+algo_pipeline.cpp
+algo_pipeline.hpp
+processing_dialog.cpp

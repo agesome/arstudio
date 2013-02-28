@@ -63,9 +63,9 @@ endmacro()
 
 subdirlist(subdirs ${CMAKE_CURRENT_SOURCE_DIR}/../submodules/)
 
-message ("\tWill now add submodules")
+message (STATUS "Will now add submodules")
 foreach(subdir ${subdirs})
-	message ("\tAdding submodule "${subdir})
+	message (STATUS "  Adding submodule "${subdir})
 	include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../submodules/${subdir}/)
 	if (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../submodules/${subdir}/include/)
 		include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../submodules/${subdir}/include/)
