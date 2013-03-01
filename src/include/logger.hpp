@@ -5,6 +5,7 @@
 #include <pcloud.hpp>
 #include <bitmap.hpp>
 #include <point3d.hpp>
+#include <camera.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/nonfree/features2d.hpp>
