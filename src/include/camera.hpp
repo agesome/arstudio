@@ -15,7 +15,9 @@ public:
 		return boost::make_shared<Camera> ();
 	}
 
-	Camera();
+	Camera()
+	{
+	};
 
 
 	GLfloat tx;
@@ -26,5 +28,4 @@ public:
 	GLfloat ry;
 	GLfloat rz;
 };
-
 #endif // CAMERA_H
