@@ -35,6 +35,10 @@ include_directories(${OPENGL_INCLUDE_DIR})
 
 find_package(OpenCV REQUIRED)
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../submodules/KinectRecorder/src/)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../submodules/KinectRecorder/src/
+		${CMAKE_CURRENT_BINARY_DIR}/KinectRecorder EXCLUDE_FROM_ALL)
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/)
 include_directories(${GLOBAL_INCLUDES})
@@ -60,26 +64,26 @@ macro(subdirlist result curdir)
   set(${result} ${dirlist})
 endmacro()
 
-subdirlist(subdirs ${CMAKE_CURRENT_SOURCE_DIR}/../submodules/)
+subdirlist(subdirs ${CMAKE_CURRENT_SOURCE_DIR}/algorithms/)
 
-message (STATUS "Will now add submodules")
+message (STATUS "Will now add algorithms")
 foreach(subdir ${subdirs})
-	message (STATUS "  Adding submodule "${subdir})
-	include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../submodules/${subdir}/)
-	if (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../submodules/${subdir}/include/)
-		include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../submodules/${subdir}/include/)
+	message (STATUS "  Adding algorithm "${subdir})
+	include_directories(${CMAKE_CURRENT_SOURCE_DIR}/algorithms/${subdir}/)
+	if (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/algorithms/${subdir}/include/)
+		include_directories(${CMAKE_CURRENT_SOURCE_DIR}/algorithms/${subdir}/include/)
 	endif ()
-	if (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../submodules/${subdir}/src/)
-		include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../submodules/${subdir}/src/)
-		add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../submodules/${subdir}/src/
+	if (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/algorithms/${subdir}/src/)
+		include_directories(${CMAKE_CURRENT_SOURCE_DIR}/algorithms/${subdir}/src/)
+		add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/algorithms/${subdir}/src/
 				${CMAKE_CURRENT_BINARY_DIR}/${subdir} EXCLUDE_FROM_ALL)
 	else ()
-		add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../submodules/${subdir}/
+		add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/algorithms/${subdir}/
 				${CMAKE_CURRENT_BINARY_DIR}/${subdir} EXCLUDE_FROM_ALL)
 	endif ()
 endforeach()
 
-set(CONFIG_DIRECTORY "../../submodules/")
+set(CONFIG_DIRECTORY "../algorithms/")
 
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/ui/processing_dialog.cpp.in
 				${CMAKE_CURRENT_SOURCE_DIR}/ui/processing_dialog.cpp)
@@ -94,6 +98,7 @@ add_executable(arstudio ${arstudio_sources} ${arstudio_moc})
 target_link_libraries(
 	arstudio
 
+	kinectCapture
 	${GLOBAL_LIBS}
 	${QT_LIBRARIES}
 	${Boost_LIBRARIES}
