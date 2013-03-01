@@ -35,11 +35,11 @@ Logger::logPoint (cv::Point3d point)
 }
 
 void
-Logger::logCamera (double x, double y, double z, double rx, double ry, double rz)
+Logger::logCamera (cv::Point3d p, double rx, double ry, double rz)
 {
 	Camera::ptr c = Camera::make ();
 
-	c.tx = x; c.ty = y; c.tz = z;
+	c.tx = p.x; c.ty = p.y; c.tz = p.z;
 	c.rx = rx; c.ry = ry; c.tz = rz;
 
 	repo->addItem (c, current_frame, Item::CAMERA, "camera");

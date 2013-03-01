@@ -18,7 +18,7 @@ public:
 
 	void addImage (cv::Mat &, std::string);
 	void logPoint (cv::Point3d point);
-	void logCamera (double, double, double, double, double, double);
+	void logCamera (cv::Point3d, double, double, double);
 	void advanceFrame (void);
 private:
 	Logger ();
