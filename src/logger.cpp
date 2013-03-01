@@ -35,6 +35,17 @@ Logger::logPoint (cv::Point3d point)
 }
 
 void
+Logger::logCamera (double x, double y, double z, double rx, double ry, double rz)
+{
+	Camera::ptr c = Camera::make ();
+
+	c.tx = x; c.ty = y; c.tz = z;
+	c.rx = rx; c.ry = ry; c.tz = rz;
+
+	repo->addItem (c, current_frame, Item::CAMERA, "camera");
+}
+
+void
 Logger::addImage (cv::Mat & m, std::string source)
 {
 	Bitmap::ptr map = Bitmap::make ();
