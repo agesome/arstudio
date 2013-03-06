@@ -30,7 +30,7 @@ Repository::addItem (Item::ptr i, unsigned int nfr, Item::type type,
 	else
 		{
 			it->second->addItem (nfr, i);
-		}
+        }
 }
 
 Repository::branch &

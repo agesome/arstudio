@@ -10,9 +10,13 @@ namespace Workspace
 class Repository
 {
 public:
+    // для удобства листочек
 	typedef std::pair <std::string, Sequence::ptr> leaf;
+    // ветка
 	typedef std::map <std::string, Sequence::ptr> branch;
+    // дерево
 	typedef std::map <std::string, branch> tree;
+    // для удобства
 	typedef std::pair <std::string, branch> tree_pair;
 	typedef boost::shared_ptr <Repository> ptr;
 

@@ -202,8 +202,7 @@ void Window3D::drawSceneElements ()
 	Sequence::ptr temp;
 	Item::ptr item;
 	Camera::ptr c;
-
-	for (Scenegraph::list::const_iterator iter = sg->getSequences ().begin ();
+    for (Scenegraph::list::const_iterator iter = sg->getSequences ().begin ();
 	     iter != sg->getSequences ().end ();
 	     iter++)
 		{
