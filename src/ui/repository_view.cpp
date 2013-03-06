@@ -27,7 +27,7 @@ RepositoryView::RepositoryView (Repository::ptr r, Scenegraph::ptr sp, QWidget *
                                                 Sequence::ptr seq = (*(b.find (l))).second;
                                                 scgr->addSequence (seq);
 											};
-    connect (this, SIGNAL (itemSelectionChanged (QTreeWidgetItem *, int)), this,
+    connect (this, SIGNAL (itemClicked (QTreeWidgetItem *, int)), this,
 	         SLOT (onItemChanged (QTreeWidgetItem *, int)));
 }
 

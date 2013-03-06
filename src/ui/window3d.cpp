@@ -63,7 +63,7 @@ void Window3D::paintGL ()
 	glLoadIdentity ();
 
 	glScalef (nSca, nSca, nSca);
-	glTranslatef (0.0f, zTra, 0.0f);
+    glTranslatef (0.0f, zTra, 0.0f);
 	glRotatef (xRot, 1.0f, 0.0f, 0.0f);
 	glRotatef (yRot, 0.0f, 1.0f, 0.0f);
 	glRotatef (zRot, 0.0f, 0.0f, 1.0f);
@@ -235,7 +235,8 @@ void Window3D::drawSceneElements ()
 									prev = c;
 								}
 							c = Item::ptr_cast_to<Camera> (item);
-							drawCam (c->tx, c->ty, c->tz, cam_size, c->rx, c->ry, c->rz);
+                            drawCam (c->tx, c->ty, c->tz, cam_size, c->rx, c->ry, c->rz);
+                            //drawCam (c->tx, c->ty, c->tz, cam_size, 0, 0, 0);
 							break;
 						}
 
@@ -284,7 +285,7 @@ void Window3D::drawAxis ()
 void Window3D::drawPoint3D (Point3d::ptr p, GLfloat size)
 {
 	glPointSize (size);
-	glTranslatef (0, 0, 0);
+    glTranslatef (0, 0, 0);
 	glColor3f (p->r, p->g, p->b);
 	glBegin (GL_POINTS);
 	glVertex3d (p->x, p->y, p->z);
@@ -316,7 +317,7 @@ void Window3D::drawBitmap (Bitmap::ptr bitmap)
 	glBegin (GL_QUADS);
 	glColor3f (1, 1, 1);
 
-	glNormal3f (0.0, 0.0, 1.0);
+    glNormal3f (0.0, 0.0, 1.0);
 	double v = (double) bitmap->bitmap.cols / bitmap->bitmap.rows;
 	glTexCoord2d (1, 1); glVertex3f (0.0, 0.0, 0.0);
 	glTexCoord2d (1, 0); glVertex3f (0.0, 1.0, 0.0);
@@ -331,11 +332,12 @@ void Window3D::drawBitmap (Bitmap::ptr bitmap)
 // рисуем Cam из полученного Sequence
 void Window3D::drawCam (double x, double y, double z, double a, double rx, double ry, double rz)
 {
-	glTranslatef (x, y, z);
+    glPushMatrix();
+    glTranslatef (x, y, z);
 
-	glRotatef (rx, 1.0f, 0.0f, 0.0f);
-	glRotatef (ry, 0.0f, 1.0f, 0.0f);
-	glRotatef (rz, 0.0f, 0.0f, 1.0f);
+    glRotatef (rx, 1.0f, 0.0f, 0.0f);
+    glRotatef (ry, 0.0f, 1.0f, 0.0f);
+    glRotatef (rz, 0.0f, 0.0f, 1.0f);
 
 	glBegin (GL_QUADS);
 
@@ -377,9 +379,5 @@ void Window3D::drawCam (double x, double y, double z, double a, double rx, doubl
 
 	glEnd ();
 
-	glRotatef (-rz, 0.0f, 0.0f, 1.0f);
-	glRotatef (-rx, 1.0f, 0.0f, 0.0f);
-	glRotatef (-ry, 0.0f, 1.0f, 0.0f);
-
-	glTranslatef (-x, -y, -z);
+    glPopMatrix();
 }

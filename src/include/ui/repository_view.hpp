@@ -7,6 +7,7 @@
 #include <string>
 #include <repository.hpp>
 #include <scenegraph.hpp>
+#include <QDebug>
 
 namespace Workspace
 {
