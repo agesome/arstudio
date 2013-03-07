@@ -214,7 +214,7 @@ void Window3D::drawSceneElements ()
 					item = temp->getItems ().find (currNframe)->second;
 
 					switch (temp->getType ())
-						{
+                    {
 						case Item::CAMERA:
 						{
 							Camera::ptr prev;
@@ -225,18 +225,19 @@ void Window3D::drawSceneElements ()
 										{
 											prev = c;
 											continue;
-										}
-									glLineWidth (5.0f);
-									glColor4f (1.00f, 0.00f, 0.00f, 1.0f);
-									glBegin (GL_LINES);
-									glVertex3f (c->tx, c->ty, c->tz);
-									glVertex3f (prev->tx, prev->ty, prev->tz);
+                                        }
+
+                                    glBegin (GL_LINES);
+                                        glLineWidth (2.0f);
+                                        glColor4f (1.00f, 0.00f, 0.00f, 1.0f);
+                                        glVertex3f (c->tx, c->ty, c->tz);
+                                        glVertex3f (prev->tx, prev->ty, prev->tz);
 									glEnd ();
+
 									prev = c;
 								}
 							c = Item::ptr_cast_to<Camera> (item);
                             drawCam (c->tx, c->ty, c->tz, cam_size, c->rx, c->ry, c->rz);
-                            //drawCam (c->tx, c->ty, c->tz, cam_size, 0, 0, 0);
 							break;
 						}
 
@@ -258,21 +259,23 @@ void Window3D::drawSceneElements ()
 
 void Window3D::drawAxis ()
 {
-	glLineWidth (3.0f);
+    glLineWidth (2.0f);
 
-	glColor4f (1.00f, 0.00f, 0.00f, 1.0f);
 	glBegin (GL_LINES);
-	glVertex3f (1.0f, 0.0f, 0.0f);
-	glVertex3f (-1.0f, 0.0f, 0.0f);
+        // x (red)
+        glColor4f (1.00f, 0.00f, 0.00f, 1.0f);
+        glVertex3f (1.0f, 0.0f, 0.0f);
+        glVertex3f (-1.0f, 0.0f, 0.0f);
 
-	QColor halfGreen (0, 128, 0, 255);
-	qglColor (halfGreen);
-	glVertex3f (0.0f, 1.0f, -0.0f);
-	glVertex3f (0.0f, -1.0f, 0.0f);
+        // y (green)
+        glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
+        glVertex3f (0.0f, 1.0f, -0.0f);
+        glVertex3f (0.0f, -1.0f, 0.0f);
 
-	glColor4f (0.00f, 0.00f, 1.00f, 1.0f);
-	glVertex3f (0.0f, 0.0f, 1.0f);
-	glVertex3f (0.0f, 0.0f, -1.0f);
+        // z (blue)
+        glColor4f (0.00f, 0.00f, 1.00f, 1.0f);
+        glVertex3f (0.0f, 0.0f, 1.0f);
+        glVertex3f (0.0f, 0.0f, -1.0f);
 	glEnd ();
 
 	drawCam (1, 0, 0, 0.02, 0, -90, 0);
@@ -286,10 +289,11 @@ void Window3D::drawPoint3D (Point3d::ptr p, GLfloat size)
 {
 	glPointSize (size);
     glTranslatef (0, 0, 0);
-	glColor3f (p->r, p->g, p->b);
+
 	glBegin (GL_POINTS);
-	glVertex3d (p->x, p->y, p->z);
-	glColor3f (1, 1, 1);
+        glColor3f (p->r, p->g, p->b);
+        glVertex3d (p->x, p->y, p->z);
+        glColor3f (1, 1, 1);            // ?
 	glEnd ();
 }
 
@@ -305,79 +309,82 @@ void Window3D::drawBitmap (Bitmap::ptr bitmap)
 	GLuint texture;
 	unsigned char *data = bitmap->bitmap.data;
 
-	glGenTextures (1, &texture);
-	glBindTexture (GL_TEXTURE_2D, texture);
-	glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glGenTextures (1, &texture);            // массив текстур
+    glBindTexture (GL_TEXTURE_2D, texture); // привязываем к текстуре фотографии
+    glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexImage2D (GL_TEXTURE_2D, 0, 3, bitmap->bitmap.cols, bitmap->bitmap.rows,
-	              0, GL_BGR, GL_UNSIGNED_BYTE, data);
-	glEnable (GL_TEXTURE_2D);
-	glBegin (GL_QUADS);
-	glColor3f (1, 1, 1);
 
-    glNormal3f (0.0, 0.0, 1.0);
-	double v = (double) bitmap->bitmap.cols / bitmap->bitmap.rows;
-	glTexCoord2d (1, 1); glVertex3f (0.0, 0.0, 0.0);
-	glTexCoord2d (1, 0); glVertex3f (0.0, 1.0, 0.0);
-	glTexCoord2d (0, 0); glVertex3f (v, 1.0, 0.0);
-	glTexCoord2d (0, 1); glVertex3f (v, 0.0, 0.0);
-	glEnd ();
+    glTexImage2D (GL_TEXTURE_2D,
+                0,                  // уровень детализации исходное изображение
+                3,                  // RGB
+                bitmap->bitmap.cols,// ширина
+                bitmap->bitmap.rows,// высота
+                0,                  // ширина границы
+                GL_BGR,             // формат хранения пикселей в массиве
+                GL_UNSIGNED_BYTE,   // тип хранения пикселей в массиве
+                data                // указатель на массив данных
+                  );
 
-	glDisable (GL_TEXTURE_2D);
-	glDeleteTextures (1, &texture);
+    glEnable (GL_TEXTURE_2D);       // разрешаем наложение текстур
+
+    // выделение пространства для текстуры
+    glBegin (GL_QUADS);
+        glColor3f (1, 1, 1);
+        glNormal3f (0.0, 0.0, 1.0);
+        double v = (double) bitmap->bitmap.cols / bitmap->bitmap.rows;
+        glTexCoord2d (1, 1); glVertex3f (0.0, 0.0, 0.0);
+        glTexCoord2d (1, 0); glVertex3f (0.0, 1.0, 0.0);
+        glTexCoord2d (0, 0); glVertex3f (v, 1.0, 0.0);
+        glTexCoord2d (0, 1); glVertex3f (v, 0.0, 0.0);
+    glEnd ();
+
+    glDisable (GL_TEXTURE_2D);      // выключить текстурирование
+    glDeleteTextures (1, &texture); // удалить текстуру
 }
 
 // рисуем Cam из полученного Sequence
 void Window3D::drawCam (double x, double y, double z, double a, double rx, double ry, double rz)
 {
-    glPushMatrix();
-    glTranslatef (x, y, z);
+    glPushMatrix();                         // сохранить текущюю систему координат
 
+    // повернуть и переместить систему координат
+    glTranslatef (x, y, z);
     glRotatef (rx, 1.0f, 0.0f, 0.0f);
     glRotatef (ry, 0.0f, 1.0f, 0.0f);
     glRotatef (rz, 0.0f, 0.0f, 1.0f);
 
+    // основание пирамиды
 	glBegin (GL_QUADS);
-
-
-	glColor3f (1.0f, 1.0f, 0.0f);                 // Желтый
-
-	glVertex3d (-a, -a, a);              // Верх лево
-	glVertex3d (a, -a, a);               // Верх право квадрата (Зад)
-	glVertex3d (+a, a, a);               // Низ право
-	glVertex3d (-a, a, a);               // Низ лево
-
-
+        glColor3f (1.0f, 1.0f, 0.0f);        // Желтый
+        glVertex3d (-a, -a, a);              // Верх лево
+        glVertex3d (a, -a, a);               // Верх право квадрата (Зад)
+        glVertex3d (+a, a, a);               // Низ право
+        glVertex3d (-a, a, a);               // Низ лево
 	glEnd ();
 
 	glBegin (GL_TRIANGLES);
+        glColor3f (0.0f, 1.0f, 0.0f);       // Зеленый
+        glVertex3d (0, 0, -2 * a);          // Низ лево
+        glVertex3d (a, -a, +a);             // Верх право квадрата (Низ)
+        glVertex3d (-a, -a, +a);            // Верх лево
 
+        glColor3f (1.0f, 0.0f, 0.0f);       // Красный
+        glVertex3d (0, 0, -2 * a);          // Низ лево
+        glVertex3d (a, a, +a);              // Верх право квадрата (Низ)
+        glVertex3d (a, -a, +a);             // Верх лево
 
-	glColor3f (0.0f, 1.0f, 0.0f);                 // ч
-	glVertex3d (0, 0, -2 * a);             // Низ лево
-	glVertex3d (a, -a, +a);               // Верх право квадрата (Низ)
-	glVertex3d (-a, -a, +a);               // Верх лево
+        glColor3f (1.0f, 0.0f, 0.0f);       // Красный
+        glVertex3d (0, 0, -2 * a);          // Низ лево
+        glVertex3d (-a, -a, +a);            // Верх право квадрата (Низ)
+        glVertex3d (-a, a, +a);             // Верх лево
 
-	glColor3f (1.0f, 0.0f, 0.0f);                 // Оранжевый
-	glVertex3d (0, 0, -2 * a);             // Низ лево
-	glVertex3d (a, a, +a);                // Верх право квадрата (Низ)
-	glVertex3d (a, -a, +a);               // Верх лево
-
-
-	glColor3f (1.0f, 0.0f, 0.0f);                 // Красный
-	glVertex3d (0, 0, -2 * a);             // Низ лево
-	glVertex3d (-a, -a, +a);               // Верх право квадрата (Низ)
-	glVertex3d (-a, a, +a);               // Верх лево
-
-	glColor3f (0.0f, 1.0f, 0.0f);
-	glVertex3d (0, 0, -2 * a);             // Низ лево
-	glVertex3d (-a, a, +a);              // Верх право квадрата (Низ)
-	glVertex3d (a, a, +a);               // Верх лево
-
-
+        glColor3f (0.0f, 1.0f, 0.0f);       // Зеленый
+        glVertex3d (0, 0, -2 * a);          // Низ лево
+        glVertex3d (-a, a, +a);             // Верх право квадрата (Низ)
+        glVertex3d (a, a, +a);              // Верх лево
 	glEnd ();
 
-    glPopMatrix();
+    glPopMatrix();                          // Восстановление исходную систему координат
 }
