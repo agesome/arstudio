@@ -138,7 +138,9 @@ void ProcessingDialog::process_frames (void)
 	lockUI ();
 
 	run_thread = true;
-	QFuture <void> thread = QtConcurrent::run (this, &ProcessingDialog::processing_thread, start, end);
+	// FIXME: threading bugs?
+	// QFuture <void> thread = QtConcurrent::run (this, &ProcessingDialog::processing_thread, start, end);
+	processing_thread (start, end);
 }
 
 void ProcessingDialog::processing_thread (int start, int end)
