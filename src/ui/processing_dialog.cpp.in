@@ -12,12 +12,20 @@ ProcessingDialog::ProcessingDialog(QWidget *parent) :
 	         SLOT (select_frames_changed (bool)));
 	connect (stop_button, SIGNAL (clicked ()), this, SLOT (stop_clicked ()));
 
+	connect (this, SIGNAL (done_processing (bool, std::string)), this,
+			SLOT (doneProcessingSlot (bool, std::string)));
+
 // defined in CMakeLists.txt
 	populateConfig ("@CONFIG_DIRECTORY@");
 
 	lastSelectedFile = settings.value("ProcessingDialog/lastSelectedFile", "~").toString();
 	if (lastSelectedFile != "~")
 		loadFile (lastSelectedFile.toStdString());
+}
+
+void ProcessingDialog::doneProcessingSlot (bool, std::string)
+{
+	unlockUI ();
 }
 
 ProcessingDialog::~ProcessingDialog()
@@ -167,9 +175,7 @@ void ProcessingDialog::process_frames (void)
 	lockUI ();
 
 	run_thread = true;
-	// FIXME: threading bugs?
-	// QFuture <void> thread = QtConcurrent::run (this, &ProcessingDialog::processing_thread, start, end);
-	processing_thread (start, end);
+	QFuture <void> thread = QtConcurrent::run (this, &ProcessingDialog::processing_thread, start, end);
 }
 
 void ProcessingDialog::processing_thread (int start, int end)
@@ -185,7 +191,6 @@ void ProcessingDialog::processing_thread (int start, int end)
 	{
 		es = e.what ();
 		done_processing (false, es);
-		unlockUI ();
 		return;
 	}
 
@@ -210,7 +215,6 @@ void ProcessingDialog::processing_thread (int start, int end)
 			catch (std::out_of_range e)
 			{
 				done_processing (false, std::string(e.what()));
-				unlockUI ();
 				return;
 			}
 			catch (std::exception e) // oops!
@@ -221,8 +225,6 @@ void ProcessingDialog::processing_thread (int start, int end)
 			progress_signal ();
 		}
 	done_processing (true, es);
-
-	unlockUI ();
 }
 
 void ProcessingDialog::update_progress (void)

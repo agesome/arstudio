@@ -35,6 +35,7 @@ public:
 	explicit ProcessingDialog (QWidget *parent = nullptr);
 	~ProcessingDialog ();
 private:
+
 	QLabel *file_name_label = new QLabel (this);
 	QLabel *frames_count_label = new QLabel (this);
 	QPushButton *select_file_button = new QPushButton (this);
@@ -77,5 +78,6 @@ public slots:
 	void update_progress ();
 	void select_frames_changed (bool);
 	void stop_clicked ();
+	void doneProcessingSlot (bool, std::string);
 };
 #endif // PROCESSING_DIALOG_H
