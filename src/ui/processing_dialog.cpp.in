@@ -15,7 +15,9 @@ ProcessingDialog::ProcessingDialog(QWidget *parent) :
 // defined in CMakeLists.txt
 	populateConfig ("@CONFIG_DIRECTORY@");
 
-	lastSelectedFile = settings.value("ProcessingDialog/lastSelectedFile", "none").toString();
+	lastSelectedFile = settings.value("ProcessingDialog/lastSelectedFile", "~").toString();
+	if (lastSelectedFile != "~")
+		loadFile (lastSelectedFile.toStdString());
 }
 
 ProcessingDialog::~ProcessingDialog()
@@ -79,19 +81,24 @@ void ProcessingDialog::stop_clicked (void)
 
 void ProcessingDialog::select_file ()
 {
-	QString currentPath = (lastSelectedFile == "none") ? "~" : lastSelectedFile;
 	selectedFile = QFileDialog::getOpenFileName (this,
-	                                          tr ("Open Video"), currentPath,
+	                                          tr ("Open Video"), lastSelectedFile,
 	                                          tr ("Video Files (*.avi *.mkv *.wmv *.mp4 *.kinvideo)"));
 	if (selectedFile.isNull())
 		return;
 	lastSelectedFile = selectedFile;
-	QFileInfo f (selectedFile);
-	file_name_label->setText ("File: " + f.baseName ());
-	file_name_label->setToolTip (selectedFile);
-	int frames_count;
-	cv::VideoCapture * c;
 
+	loadFile (selectedFile.toStdString());
+}
+
+void ProcessingDialog::loadFile (std::string path)
+{
+	QFileInfo fileInfo (QString::fromStdString (path));
+	unsigned int frames_count;
+
+	cv::VideoCapture * c;
+	file_name_label->setText ("File: " + fileInfo.baseName ());
+	file_name_label->setToolTip (selectedFile);
 	radio_whole_file->setEnabled (true);
 	radio_whole_file->setChecked (true);
 	process_button->setEnabled (true);
@@ -101,14 +108,14 @@ void ProcessingDialog::select_file ()
 	else if (vcap)
 		delete vcap;
 
-	if (f.suffix () == "kinvideo")
+	if (fileInfo.suffix () == "kinvideo")
 		{
-			kincap = new FileCapture (selectedFile.toStdString ());
+			kincap = new FileCapture (path);
 			frames_count = kincap->getFrameCount ();
 		}
 	else
 		{
-			c = new cv::VideoCapture (selectedFile.toStdString ());
+			c = new cv::VideoCapture (path);
 			if (!c->isOpened ())
 				{
 					frames_count = -1;
