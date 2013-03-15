@@ -66,6 +66,7 @@ private:
 	void lockUI ();
 	void unlockUI ();
 	void createLayout ();
+	void loadFile (std::string);
 signals:
 	void done_processing (bool, std::string);
 	void progress_signal ();
