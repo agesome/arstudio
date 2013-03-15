@@ -3,6 +3,38 @@
 ProcessingDialog::ProcessingDialog(QWidget *parent) :
 	QWidget (parent)
 {
+	createLayout();
+
+	connect (select_file_button, SIGNAL (clicked ()), this, SLOT (select_file ()));
+	connect (process_button, SIGNAL (clicked ()), this, SLOT (process_frames ()));
+	connect (this, SIGNAL (progress_signal ()), this, SLOT (update_progress ()));
+	connect (radio_select_frames, SIGNAL (toggled (bool)), this,
+	         SLOT (select_frames_changed (bool)));
+	connect (stop_button, SIGNAL (clicked ()), this, SLOT (stop_clicked ()));
+
+	connect (this, SIGNAL (done_processing (bool, std::string)), this,
+			SLOT (doneProcessingSlot (bool, std::string)));
+
+// defined in CMakeLists.txt
+	populateConfig ("@CONFIG_DIRECTORY@");
+
+	lastSelectedFile = settings.value("ProcessingDialog/lastSelectedFile", "~").toString();
+	if (lastSelectedFile != "~")
+		loadFile (lastSelectedFile.toStdString());
+}
+
+void ProcessingDialog::doneProcessingSlot (bool, std::string)
+{
+	unlockUI ();
+}
+
+ProcessingDialog::~ProcessingDialog()
+{
+	settings.setValue ("ProcessingDialog/lastSelectedFile", lastSelectedFile);
+}
+
+void ProcessingDialog::createLayout ()
+{
 	file_name_label->setText ("File: ");
 	frames_count_label->setText ("Frames: ");
 	select_file_button->setText ("Select file");
@@ -28,16 +60,6 @@ ProcessingDialog::ProcessingDialog(QWidget *parent) :
 	progress_bar->setFormat ("%v / %m");
 	progress_bar->setValue (0);
 	progress_bar->setMaximum (-1);
-
-	connect (select_file_button, SIGNAL (clicked ()), this, SLOT (select_file ()));
-	connect (process_button, SIGNAL (clicked ()), this, SLOT (process_frames ()));
-	connect (this, SIGNAL (progress_signal ()), this, SLOT (update_progress ()));
-	connect (radio_select_frames, SIGNAL (toggled (bool)), this,
-	         SLOT (select_frames_changed (bool)));
-	connect (stop_button, SIGNAL (clicked ()), this, SLOT (stop_clicked ()));
-
-// defined in CMakeLists.txt
-	populateConfig ("@CONFIG_DIRECTORY@");
 }
 
 void ProcessingDialog::populateConfig (std::string path)
@@ -67,32 +89,48 @@ void ProcessingDialog::stop_clicked (void)
 
 void ProcessingDialog::select_file ()
 {
-	file_path = QFileDialog::getOpenFileName (this,
-	                                          tr ("Open Video"), "~",
+	selectedFile = QFileDialog::getOpenFileName (this,
+	                                          tr ("Open Video"), lastSelectedFile,
 	                                          tr ("Video Files (*.avi *.mkv *.wmv *.mp4 *.kinvideo)"));
-	QFileInfo f (file_path);
-	file_name_label->setText ("File: " + f.baseName ());
-	file_name_label->setToolTip (file_path);
-	int frames_count;
-	cv::VideoCapture * c;
+	if (selectedFile.isNull())
+		return;
+	lastSelectedFile = selectedFile;
 
+	loadFile (selectedFile.toStdString());
+}
+
+bool ProcessingDialog::loadFile(std::string path)
+{
+	QFileInfo fileInfo (QString::fromStdString (path));
+    if (fileInfo.isFile() == false) return false;
+    unsigned int frames_count;
+
+	cv::VideoCapture * c;
+	file_name_label->setText ("File: " + fileInfo.baseName ());
+	file_name_label->setToolTip (selectedFile);
 	radio_whole_file->setEnabled (true);
 	radio_whole_file->setChecked (true);
 	process_button->setEnabled (true);
 
 	if (kincap)
+	{
 		delete kincap;
+		kincap = nullptr;
+	}
 	else if (vcap)
+	{
 		delete vcap;
+		vcap = nullptr;
+	}
 
-	if (f.suffix () == "kinvideo")
+	if (fileInfo.suffix () == "kinvideo")
 		{
-			kincap = new FileCapture (file_path.toStdString ());
+			kincap = new FileCapture (path);
 			frames_count = kincap->getFrameCount ();
 		}
 	else
 		{
-			c = new cv::VideoCapture (file_path.toStdString ());
+			c = new cv::VideoCapture (path);
 			if (!c->isOpened ())
 				{
 					frames_count = -1;
@@ -138,9 +176,7 @@ void ProcessingDialog::process_frames (void)
 	lockUI ();
 
 	run_thread = true;
-	// FIXME: threading bugs?
-	// QFuture <void> thread = QtConcurrent::run (this, &ProcessingDialog::processing_thread, start, end);
-	processing_thread (start, end);
+	QFuture <void> thread = QtConcurrent::run (this, &ProcessingDialog::processing_thread, start, end);
 }
 
 void ProcessingDialog::processing_thread (int start, int end)
@@ -156,7 +192,6 @@ void ProcessingDialog::processing_thread (int start, int end)
 	{
 		es = e.what ();
 		done_processing (false, es);
-		unlockUI ();
 		return;
 	}
 
@@ -181,7 +216,6 @@ void ProcessingDialog::processing_thread (int start, int end)
 			catch (std::out_of_range e)
 			{
 				done_processing (false, std::string(e.what()));
-				unlockUI ();
 				return;
 			}
 			catch (std::exception e) // oops!
@@ -192,8 +226,6 @@ void ProcessingDialog::processing_thread (int start, int end)
 			progress_signal ();
 		}
 	done_processing (true, es);
-
-	unlockUI ();
 }
 
 void ProcessingDialog::update_progress (void)

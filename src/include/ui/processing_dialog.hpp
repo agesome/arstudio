@@ -13,6 +13,7 @@
 #include <QtConcurrentRun>
 #include <QRadioButton>
 #include <QFileInfo>
+#include <QSettings>
 
 #include <exception>
 
@@ -31,8 +32,10 @@ class ProcessingDialog : public QWidget
 {
 	Q_OBJECT
 public:
-	explicit ProcessingDialog (QWidget *parent = 0);
+	explicit ProcessingDialog (QWidget *parent = nullptr);
+	~ProcessingDialog ();
 private:
+
 	QLabel *file_name_label = new QLabel (this);
 	QLabel *frames_count_label = new QLabel (this);
 	QPushButton *select_file_button = new QPushButton (this);
@@ -44,7 +47,10 @@ private:
 	QGridLayout *layout = new QGridLayout (this);
 	QRadioButton *radio_whole_file = new QRadioButton ("Process whole file", this);
 	QRadioButton *radio_select_frames = new QRadioButton ("Select frames", this);
-	QString file_path;
+	QString selectedFile;
+	QString lastSelectedFile;
+
+	QSettings settings;
 
 	cv::VideoCapture *vcap = nullptr;
 	FileCapture *kincap = nullptr;
@@ -60,6 +66,8 @@ private:
 	void populateConfig (std::string);
 	void lockUI ();
 	void unlockUI ();
+	void createLayout ();
+    bool loadFile (std::string);
 signals:
 	void done_processing (bool, std::string);
 	void progress_signal ();
@@ -70,5 +78,6 @@ public slots:
 	void update_progress ();
 	void select_frames_changed (bool);
 	void stop_clicked ();
+	void doneProcessingSlot (bool, std::string);
 };
 #endif // PROCESSING_DIALOG_H

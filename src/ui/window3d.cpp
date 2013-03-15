@@ -375,12 +375,12 @@ void Window3D::drawCam (double x, double y, double z, double a, double rx, doubl
         glVertex3d (a, a, +a);              // Верх право квадрата (Низ)
         glVertex3d (a, -a, +a);             // Верх лево
 
-        glColor3f (1.0f, 0.0f, 0.0f);       // Красный
+        glColor3f (0.0f, 0.0f, 1.0f);       // Синий
         glVertex3d (0, 0, -2 * a);          // Низ лево
         glVertex3d (-a, -a, +a);            // Верх право квадрата (Низ)
         glVertex3d (-a, a, +a);             // Верх лево
 
-        glColor3f (0.0f, 1.0f, 0.0f);       // Зеленый
+        glColor3f (1.0f, 1.0f, 1.0f);       // Белый
         glVertex3d (0, 0, -2 * a);          // Низ лево
         glVertex3d (-a, a, +a);             // Верх право квадрата (Низ)
         glVertex3d (a, a, +a);              // Верх лево
