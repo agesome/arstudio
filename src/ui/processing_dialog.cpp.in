@@ -3,6 +3,28 @@
 ProcessingDialog::ProcessingDialog(QWidget *parent) :
 	QWidget (parent)
 {
+	createLayout();
+
+	connect (select_file_button, SIGNAL (clicked ()), this, SLOT (select_file ()));
+	connect (process_button, SIGNAL (clicked ()), this, SLOT (process_frames ()));
+	connect (this, SIGNAL (progress_signal ()), this, SLOT (update_progress ()));
+	connect (radio_select_frames, SIGNAL (toggled (bool)), this,
+	         SLOT (select_frames_changed (bool)));
+	connect (stop_button, SIGNAL (clicked ()), this, SLOT (stop_clicked ()));
+
+// defined in CMakeLists.txt
+	populateConfig ("@CONFIG_DIRECTORY@");
+
+	lastSelectedFile = settings.value("ProcessingDialog/lastSelectedFile", "none").toString();
+}
+
+ProcessingDialog::~ProcessingDialog()
+{
+	settings.setValue ("ProcessingDialog/lastSelectedFile", lastSelectedFile);
+}
+
+void ProcessingDialog::createLayout ()
+{
 	file_name_label->setText ("File: ");
 	frames_count_label->setText ("Frames: ");
 	select_file_button->setText ("Select file");
@@ -28,16 +50,6 @@ ProcessingDialog::ProcessingDialog(QWidget *parent) :
 	progress_bar->setFormat ("%v / %m");
 	progress_bar->setValue (0);
 	progress_bar->setMaximum (-1);
-
-	connect (select_file_button, SIGNAL (clicked ()), this, SLOT (select_file ()));
-	connect (process_button, SIGNAL (clicked ()), this, SLOT (process_frames ()));
-	connect (this, SIGNAL (progress_signal ()), this, SLOT (update_progress ()));
-	connect (radio_select_frames, SIGNAL (toggled (bool)), this,
-	         SLOT (select_frames_changed (bool)));
-	connect (stop_button, SIGNAL (clicked ()), this, SLOT (stop_clicked ()));
-
-// defined in CMakeLists.txt
-	populateConfig ("@CONFIG_DIRECTORY@");
 }
 
 void ProcessingDialog::populateConfig (std::string path)
@@ -67,12 +79,16 @@ void ProcessingDialog::stop_clicked (void)
 
 void ProcessingDialog::select_file ()
 {
-	file_path = QFileDialog::getOpenFileName (this,
-	                                          tr ("Open Video"), "~",
+	QString currentPath = (lastSelectedFile == "none") ? "~" : lastSelectedFile;
+	selectedFile = QFileDialog::getOpenFileName (this,
+	                                          tr ("Open Video"), currentPath,
 	                                          tr ("Video Files (*.avi *.mkv *.wmv *.mp4 *.kinvideo)"));
-	QFileInfo f (file_path);
+	if (selectedFile.isNull())
+		return;
+	lastSelectedFile = selectedFile;
+	QFileInfo f (selectedFile);
 	file_name_label->setText ("File: " + f.baseName ());
-	file_name_label->setToolTip (file_path);
+	file_name_label->setToolTip (selectedFile);
 	int frames_count;
 	cv::VideoCapture * c;
 
@@ -87,12 +103,12 @@ void ProcessingDialog::select_file ()
 
 	if (f.suffix () == "kinvideo")
 		{
-			kincap = new FileCapture (file_path.toStdString ());
+			kincap = new FileCapture (selectedFile.toStdString ());
 			frames_count = kincap->getFrameCount ();
 		}
 	else
 		{
-			c = new cv::VideoCapture (file_path.toStdString ());
+			c = new cv::VideoCapture (selectedFile.toStdString ());
 			if (!c->isOpened ())
 				{
 					frames_count = -1;
