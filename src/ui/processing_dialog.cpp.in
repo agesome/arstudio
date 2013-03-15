@@ -104,9 +104,15 @@ void ProcessingDialog::loadFile (std::string path)
 	process_button->setEnabled (true);
 
 	if (kincap)
+	{
 		delete kincap;
+		kincap = nullptr;
+	}
 	else if (vcap)
+	{
 		delete vcap;
+		vcap = nullptr;
+	}
 
 	if (fileInfo.suffix () == "kinvideo")
 		{
