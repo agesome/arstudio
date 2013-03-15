@@ -99,10 +99,11 @@ void ProcessingDialog::select_file ()
 	loadFile (selectedFile.toStdString());
 }
 
-void ProcessingDialog::loadFile (std::string path)
+bool ProcessingDialog::loadFile(std::string path)
 {
 	QFileInfo fileInfo (QString::fromStdString (path));
-	unsigned int frames_count;
+    if (fileInfo.isFile() == false) return false;
+    unsigned int frames_count;
 
 	cv::VideoCapture * c;
 	file_name_label->setText ("File: " + fileInfo.baseName ());
