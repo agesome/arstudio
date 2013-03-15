@@ -184,9 +184,9 @@ void Window3D::translate_up ()
 
 void Window3D::defaultScene ()
 {
-	xRot = 180;
+    xRot = 0;
 	yRot = 0;
-	zRot = 180;
+    zRot = 0;
 	zTra = 0;
 	nSca = 1;
 }
