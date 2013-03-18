@@ -17,6 +17,9 @@ class ImageAdjuster
 {
 public:
 	virtual Mat adjust (Mat & image) = 0;
+	virtual ~ImageAdjuster()
+	{
+	};
 };
 
 class BrightnessAdjuster : public ImageAdjuster

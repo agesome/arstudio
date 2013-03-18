@@ -20,19 +20,19 @@ RepositoryView::RepositoryView (Repository::ptr r, Scenegraph::ptr sp, QWidget *
 												QTreeWidgetItem * paren = this->findItems (br.c_str (), Qt::MatchExactly).first ();
 												QTreeWidgetItem * i = new QTreeWidgetItem (paren);
 												i->setText (0, l.c_str ());
-                                                i->setFlags (Qt::ItemIsUserCheckable | Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-                                                i->setCheckState (0, Qt::Checked);
+												i->setFlags (Qt::ItemIsUserCheckable | Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+												i->setCheckState (0, Qt::Checked);
 
-                                                Repository::branch & b = repo->accessBranch (br);
-                                                Sequence::ptr seq = (*(b.find (l))).second;
-                                                scgr->addSequence (seq);
+												Repository::branch & b = repo->accessBranch (br);
+												Sequence::ptr seq = (*(b.find (l))).second;
+												scgr->addSequence (seq);
 											};
-    connect (this, SIGNAL (itemClicked (QTreeWidgetItem *, int)), this,
+	connect (this, SIGNAL (itemClicked (QTreeWidgetItem *, int)), this,
 	         SLOT (onItemChanged (QTreeWidgetItem *, int)));
 }
 
 void
-RepositoryView::onItemChanged (QTreeWidgetItem * item, int col)
+RepositoryView::onItemChanged (QTreeWidgetItem * item, int)
 {
 	QTreeWidgetItem * par = item->parent ();
 
@@ -50,7 +50,7 @@ RepositoryView::onItemChanged (QTreeWidgetItem * item, int col)
 		}
 	else
 		{
-            scgr->removeSequence (seq);
+			scgr->removeSequence (seq);
 		}
 }
 }

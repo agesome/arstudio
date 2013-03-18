@@ -146,6 +146,7 @@ bool ProcessingDialog::loadFile(std::string path)
 				}
 		}
 	frames_count_label->setText ("Frames: " + QString::number (frames_count));
+	return true;
 }
 
 void ProcessingDialog::process_frames (void)

@@ -15,6 +15,9 @@ public:
 	{
 		this->config = config;
 	};
+	virtual ~IAbstractAlgorithm(void)
+	{
+	};
 
 protected:
 	Config::ptr config;
