@@ -184,10 +184,10 @@ void Window3D::translate_up ()
 
 void Window3D::defaultScene ()
 {
-    xRot = 0;
-	yRot = 0;
-    zRot = 0;
-	zTra = 0;
+    xRot = 180;
+    yRot = 0;
+    zRot = 180;
+    zTra = 0;
 	nSca = 1;
 }
 
@@ -232,9 +232,9 @@ void Window3D::drawSceneElements ()
                                         glColor4f (1.00f, 0.00f, 0.00f, 1.0f);
                                         glVertex3f (c->tx, c->ty, c->tz);
                                         glVertex3f (prev->tx, prev->ty, prev->tz);
-									glEnd ();
-
-									prev = c;
+                                    glEnd ();
+                                    drawCam(c->tx,c->ty,c->tz,cam_size/6, c->rx, c->ry, c->rz);
+                                    prev = c;
 								}
 							c = Item::ptr_cast_to<Camera> (item);
                             drawCam (c->tx, c->ty, c->tz, cam_size, c->rx, c->ry, c->rz);
@@ -365,7 +365,7 @@ void Window3D::drawCam (double x, double y, double z, double a, double rx, doubl
 	glEnd ();
 
 	glBegin (GL_TRIANGLES);
-        glColor3f (0.0f, 1.0f, 0.0f);       // Зеленый
+        glColor3f (1.0f, 1.0f, 1.0f);       // Белый
         glVertex3d (0, 0, -2 * a);          // Низ лево
         glVertex3d (a, -a, +a);             // Верх право квадрата (Низ)
         glVertex3d (-a, -a, +a);            // Верх лево
@@ -380,7 +380,7 @@ void Window3D::drawCam (double x, double y, double z, double a, double rx, doubl
         glVertex3d (-a, -a, +a);            // Верх право квадрата (Низ)
         glVertex3d (-a, a, +a);             // Верх лево
 
-        glColor3f (1.0f, 1.0f, 1.0f);       // Белый
+        glColor3f (0.0f, 1.0f, 0.0f);       // Зеленый
         glVertex3d (0, 0, -2 * a);          // Низ лево
         glVertex3d (-a, a, +a);             // Верх право квадрата (Низ)
         glVertex3d (a, a, +a);              // Верх лево
