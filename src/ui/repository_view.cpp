@@ -9,24 +9,27 @@ RepositoryView::RepositoryView (Repository::ptr r, Scenegraph::ptr sp, QWidget *
 	setColumnCount (1);
 	setHeaderLabel ("Repository");
 
-	repo->on_branch_add = [this](std::string s)
-												{
-													QTreeWidgetItem * i = new QTreeWidgetItem (invisibleRootItem ());
-													i->setText (0, s.c_str ());
-													i->setExpanded (true);
-												};
-	repo->on_leaf_add = [this](std::string l, std::string br)
-											{
-												QTreeWidgetItem * paren = this->findItems (br.c_str (), Qt::MatchExactly).first ();
-												QTreeWidgetItem * i = new QTreeWidgetItem (paren);
-												i->setText (0, l.c_str ());
-												i->setFlags (Qt::ItemIsUserCheckable | Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-												i->setCheckState (0, Qt::Checked);
+	repo->newBranchCallback =
+	  [this](std::string s)
+		{
+			QTreeWidgetItem * i = new QTreeWidgetItem (invisibleRootItem ());
+			i->setText (0, s.c_str ());
+			i->setExpanded (true);
+		};
+	repo->newSequenceCallback =
+	  [this](std::string l, std::string br)
+		{
+			QTreeWidgetItem * paren = this->findItems (br.c_str (), Qt::MatchExactly).first ();
+			QTreeWidgetItem * i = new QTreeWidgetItem (paren);
+			i->setText (0, l.c_str ());
+			i->setFlags (Qt::ItemIsUserCheckable | Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+			i->setCheckState (0, Qt::Checked);
 
-												Repository::branch & b = repo->accessBranch (br);
-												Sequence::ptr seq = (*(b.find (l))).second;
-												scgr->addSequence (seq);
-											};
+			Repository::sequenceMap & sm = repo->getSequenceMap (br);
+			Repository::mapItem mi = *(sm.find (l));
+			Sequence::ptr seq = mi.second;
+			scgr->addSequence (seq);
+		};
 	connect (this, SIGNAL (itemClicked (QTreeWidgetItem *, int)), this,
 	         SLOT (onItemChanged (QTreeWidgetItem *, int)));
 }
@@ -41,8 +44,9 @@ RepositoryView::onItemChanged (QTreeWidgetItem * item, int)
 	std::string branch = par->text (0).toStdString ();
 	std::string leaf = item->text (0).toStdString ();
 
-	Repository::branch & b = repo->accessBranch (branch);
-	Sequence::ptr seq = (*(b.find (leaf))).second;
+	Repository::sequenceMap & sm = repo->getSequenceMap (branch);
+	Repository::mapItem mi = *(sm.find (leaf));
+	Sequence::ptr seq = mi.second;
 
 	if (item->checkState (0) == Qt::Checked)
 		{

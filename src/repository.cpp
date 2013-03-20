@@ -3,45 +3,49 @@
 namespace Workspace
 {
 void
-Repository::addSequence (Sequence::ptr p, std::string id,
-                         std::string branch_name)
+Repository::addSequence (Sequence::ptr sequence, std::string id,
+                         std::string branchName)
 {
-	branch & br = accessBranch (branch_name);
+	sequenceMap & mtr = getSequenceMap (branchName);
 
-	br.insert (leaf (id, p));
-	on_leaf_add (id, branch_name);
+	mtr.insert (mapItem (id, sequence));
+	if (newSequenceCallback)
+		newSequenceCallback (id, branchName);
 }
 
 void
-Repository::addItem (Item::ptr i, unsigned int nfr, Item::type type,
-                     std::string id, std::string branch_name)
+Repository::addItem (Item::ptr item, unsigned int nframe, Item::type type,
+                     std::string id, std::string branchName)
 {
-	branch & br = accessBranch (branch_name);
+	sequenceMap & sm = getSequenceMap (branchName);
 
-	branch::iterator it = br.find (id);
+	sequenceMap::iterator it = sm.find (id);
 
-	if (it == br.end ())
+	if (it == sm.end ())
 		{
 			Sequence::ptr p = Sequence::make (type);
-			br.insert (leaf (id, p));
-			on_leaf_add (id, branch_name);
-			p->addItem (nfr, i);
+			sm.insert (mapItem (id, p));
+			if (newSequenceCallback)
+				newSequenceCallback (id, branchName);
+			p->addItem (nframe, item);
 		}
 	else
 		{
-			it->second->addItem (nfr, i);
-        }
+			it->second->addItem (nframe, item);
+		}
 }
 
-Repository::branch &
-Repository::accessBranch (std::string branch_name = "default")
+Repository::sequenceMap &
+Repository::getSequenceMap (std::string branchName = "default")
 {
-	tree::iterator it = sequences.find (branch_name);
+	mapTree::iterator it = sequences.find (branchName);
 
 	if (it == sequences.end ())
 		{
-			it = sequences.insert (tree_pair (branch_name, branch ())).first;
-			on_branch_add (branch_name);
+			auto treeItem = std::pair<std::string, sequenceMap> (branchName, sequenceMap ());
+			it = sequences.insert (treeItem).first;
+			if (newBranchCallback)
+				newBranchCallback (branchName);
 			return it->second;
 		}
 	else
@@ -56,9 +60,13 @@ Repository::make (void)
 	return boost::make_shared <Repository> ();
 }
 
-const Repository::tree &
+const Repository::mapTree &
 Repository::getTree (void)
 {
 	return sequences;
+}
+
+void Repository::Clear (void)
+{
 }
 }
