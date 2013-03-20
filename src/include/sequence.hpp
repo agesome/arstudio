@@ -40,8 +40,8 @@ class Sequence
 {
 public:
 	typedef boost::shared_ptr<Sequence> ptr;
-	typedef std::pair<int, ptr> pair;
-	typedef std::map <int, Item::ptr> map;
+	typedef std::pair<unsigned int, ptr> pair;
+	typedef std::map <unsigned int, Item::ptr> map;
 
 	Sequence (Item::type);
 	static ptr make (Item::type);

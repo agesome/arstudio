@@ -29,7 +29,7 @@ ConfigEditor::configCallback (std::string path, std::string name)
 }
 
 void
-ConfigEditor::itemChangedHandler (QTreeWidgetItem * item, int column)
+ConfigEditor::itemChangedHandler (QTreeWidgetItem * item, int)
 {
 	config->put (item->text (0).toStdString (), item->text (1).toStdString ());
 }

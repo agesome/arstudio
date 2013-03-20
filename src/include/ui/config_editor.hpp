@@ -10,7 +10,7 @@
 
 class ConfigEditor : public QTreeWidget
 {
-	Q_OBJECT;
+	Q_OBJECT
 public:
 	explicit ConfigEditor (Config::ptr, QWidget * parent = nullptr);
 	void configCallback (std::string, std::string);

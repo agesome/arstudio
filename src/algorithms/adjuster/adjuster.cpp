@@ -75,7 +75,7 @@ bool ImageAdjusterAlgorithm::create ()
 	return true;
 }
 
-bool ImageAdjusterAlgorithm::run (Mat & image, Mat & dmap)
+bool ImageAdjusterAlgorithm::run (Mat & image, Mat &)
 {
 	Mat result = adjuster->adjust (image);
 
