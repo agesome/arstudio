@@ -54,5 +54,6 @@ public slots:
 	void help ();
 	void settings ();
 	void processingDone (bool, std::string);
+	void clearRepository (void);
 };
 #endif // CORE_H

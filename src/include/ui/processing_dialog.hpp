@@ -67,10 +67,11 @@ private:
 	void lockUI ();
 	void unlockUI ();
 	void createLayout ();
-    bool loadFile (std::string);
+	bool loadFile (std::string);
 signals:
 	void done_processing (bool, std::string);
 	void progress_signal ();
+	void clearRepository (void);
 
 public slots:
 	void select_file ();

@@ -68,5 +68,18 @@ Repository::getTree (void)
 
 void Repository::Clear (void)
 {
+	std::string branchName;
+
+	for (auto sm : sequences)
+		{
+			branchName = sm.first;
+			for (auto mi : sm.second)
+				{
+					sequenceRemovedCallback (branchName, mi.first);
+					sm.second.erase (mi.first);
+				}
+			branchRemovedCallback (branchName);
+			sequences.erase (branchName);
+		}
 }
 }

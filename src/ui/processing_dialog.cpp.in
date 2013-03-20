@@ -176,6 +176,8 @@ void ProcessingDialog::process_frames (void)
 
 	lockUI ();
 
+// clear all data from Repository
+	clearRepository ();
 	run_thread = true;
 	QFuture <void> thread = QtConcurrent::run (this, &ProcessingDialog::processing_thread, start, end);
 }

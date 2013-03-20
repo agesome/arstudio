@@ -8,8 +8,16 @@ Core::Core() :
 	connect (open_processing, SIGNAL (clicked ()), processing, SLOT (show ()));
 	connect (processing, SIGNAL (done_processing (bool, std::string)), this,
 	         SLOT (processingDone (bool, std::string)));
+	connect (processing, SIGNAL (clearRepository ()), this, SLOT (clearRepository ()));
 
 	Logger::setRepository (repo);
+}
+
+void Core::clearRepository (void)
+{
+	Logger::getInstance ().resetFrameCounter ();
+
+	repo->Clear ();
 }
 
 void Core::processingDone (bool success, std::string e)

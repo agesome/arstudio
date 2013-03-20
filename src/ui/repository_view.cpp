@@ -16,6 +16,12 @@ RepositoryView::RepositoryView (Repository::ptr r, Scenegraph::ptr sp, QWidget *
 			i->setText (0, s.c_str ());
 			i->setExpanded (true);
 		};
+	repo->branchRemovedCallback =
+	  [this](std::string s)
+		{
+			QTreeWidgetItem * br = this->findItems (s.c_str (), Qt::MatchExactly).first ();
+			delete br;
+		};
 	repo->newSequenceCallback =
 	  [this](std::string l, std::string br)
 		{
@@ -30,6 +36,20 @@ RepositoryView::RepositoryView (Repository::ptr r, Scenegraph::ptr sp, QWidget *
 			Sequence::ptr seq = mi.second;
 			scgr->addSequence (seq);
 		};
+	repo->sequenceRemovedCallback =
+	  [this](std::string l, std::string br)
+		{
+			QTreeWidgetItem * i = this->findItems (br.c_str (), Qt::MatchExactly
+			                                       | Qt::MatchRecursive).first ();
+
+			delete i;
+
+			Repository::sequenceMap & sm = repo->getSequenceMap (l);
+			Repository::mapItem mi = *(sm.find (br));
+			Sequence::ptr seq = mi.second;
+			scgr->removeSequence (seq);
+		};
+
 	connect (this, SIGNAL (itemClicked (QTreeWidgetItem *, int)), this,
 	         SLOT (onItemChanged (QTreeWidgetItem *, int)));
 }
