@@ -13,6 +13,20 @@ Core::Core() :
 	Logger::setRepository (repo);
 }
 
+void Core::makeScreenshot (void)
+{
+	QPixmap p = QPixmap::grabWidget (wnd3d);
+
+	QString fileName = QFileDialog::getSaveFileName (this,
+	                                                 tr ("Save Screenshot"), lastSaveLocation,
+	                                                 tr ("PNG Image (*.png)"));
+
+	if (fileName.isNull ())
+		return;
+	lastSaveLocation = QFileInfo (fileName).absolutePath ();
+	p.save (fileName);
+}
+
 void Core::clearRepository (void)
 {
 	Logger::getInstance ().resetFrameCounter ();
@@ -64,6 +78,11 @@ void Core::initGUI ()
 	mainsplitter->addWidget (winsplitter);
 
 	processing->setWindowFlags (Qt::Window);
+
+	QAction * s = new QAction ("Screenshot", toolbar);
+	toolbar->addAction (s);
+	connect (s, SIGNAL (triggered ()), this, SLOT (makeScreenshot ()));
+	this->addToolBar (toolbar);
 
 	qRegisterMetaType<std::string>("std::string");
 }

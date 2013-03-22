@@ -8,6 +8,7 @@
 #include <QFrame>
 #include <QSplitter>
 #include <QMessageBox>
+#include <QToolBar>
 
 #include <opencv2/highgui/highgui.hpp>
 #include <fstream>
@@ -32,6 +33,9 @@ private:
 	QSplitter *mainsplitter = new QSplitter (Qt:: Horizontal, central);
 	QSplitter *winsplitter = new QSplitter (Qt:: Vertical, central);
 	QPushButton *open_processing = new QPushButton ("Process");
+	QToolBar *toolbar = new QToolBar (this);
+
+	QString lastSaveLocation = QDir::currentPath ();
 
 	Workspace::Repository::ptr repo = Workspace::Repository::make ();
 	Workspace::Scenegraph::ptr scgr = Workspace::Scenegraph::make ();
@@ -55,5 +59,6 @@ public slots:
 	void settings ();
 	void processingDone (bool, std::string);
 	void clearRepository (void);
+	void makeScreenshot (void);
 };
 #endif // CORE_H
