@@ -32,8 +32,7 @@ private:
 	QPushButton *butt;
 	QSplitter *mainsplitter = new QSplitter (Qt:: Horizontal, central);
 	QSplitter *winsplitter = new QSplitter (Qt:: Vertical, central);
-	QPushButton *open_processing = new QPushButton ("Process");
-	QToolBar *toolbar = new QToolBar (this);
+	QToolBar *toolbar = new QToolBar ("Toolbar", this);
 
 	QString lastSaveLocation = QDir::currentPath ();
 

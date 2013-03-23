@@ -5,7 +5,6 @@ Core::Core() :
 {
 	initGUI ();
 	connect (tmlnmod, SIGNAL (newFrame (int)), wnd3d, SLOT (update (int)));
-	connect (open_processing, SIGNAL (clicked ()), processing, SLOT (show ()));
 	connect (processing, SIGNAL (done_processing (bool, std::string)), this,
 	         SLOT (processingDone (bool, std::string)));
 	connect (processing, SIGNAL (clearRepository ()), this, SLOT (clearRepository ()));
@@ -73,7 +72,6 @@ void Core::initGUI ()
 	wnd3d->setMinimumSize (300, 300);
 	winsplitter->addWidget (wnd3d);
 	winsplitter->addWidget (tmln);
-	winsplitter->addWidget (open_processing);
 	mainsplitter->addWidget (repo_view);
 	mainsplitter->addWidget (winsplitter);
 
@@ -83,6 +81,16 @@ void Core::initGUI ()
 	                                    "Screenshot", toolbar);
 	connect (screenshot, SIGNAL (triggered ()), this, SLOT (makeScreenshot ()));
 	toolbar->addAction (screenshot);
+
+	QAction * clear = new QAction (QIcon::fromTheme ("edit-clear"),
+	                               "Clear Repository", toolbar);
+	connect (clear, SIGNAL (triggered ()), this, SLOT (clearRepository ()));
+	toolbar->addAction (clear);
+
+	QAction * process = new QAction (QIcon::fromTheme ("system-run"),
+	                                 "Process", toolbar);
+	connect (process, SIGNAL (triggered ()), processing, SLOT (show ()));
+	toolbar->addAction (process);
 
 	toolbar->setToolButtonStyle (Qt::ToolButtonTextUnderIcon);
 	this->addToolBar (toolbar);
