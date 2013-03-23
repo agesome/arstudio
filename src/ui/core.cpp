@@ -79,9 +79,12 @@ void Core::initGUI ()
 
 	processing->setWindowFlags (Qt::Window);
 
-	QAction * s = new QAction ("Screenshot", toolbar);
-	toolbar->addAction (s);
-	connect (s, SIGNAL (triggered ()), this, SLOT (makeScreenshot ()));
+	QAction * screenshot = new QAction (QIcon::fromTheme ("image-x-generic"),
+	                                    "Screenshot", toolbar);
+	connect (screenshot, SIGNAL (triggered ()), this, SLOT (makeScreenshot ()));
+	toolbar->addAction (screenshot);
+
+	toolbar->setToolButtonStyle (Qt::ToolButtonTextUnderIcon);
 	this->addToolBar (toolbar);
 
 	qRegisterMetaType<std::string>("std::string");
