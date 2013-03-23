@@ -4,6 +4,8 @@
 #include <sequence.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
+using namespace Workspace;
+
 class Bitmap : public Item
 {
 public:
@@ -15,5 +17,4 @@ public:
 
 	cv::Mat bitmap;
 };
-
 #endif // BITMAP_HPP

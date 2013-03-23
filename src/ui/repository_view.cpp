@@ -76,5 +76,6 @@ RepositoryView::onItemChanged (QTreeWidgetItem * item, int)
 		{
 			scgr->removeSequence (seq);
 		}
+	selectionChanged ();
 }
 }

@@ -26,6 +26,7 @@ ProcessingDialog::ProcessingDialog(QWidget *parent) :
 void ProcessingDialog::doneProcessingSlot (bool, std::string)
 {
 	unlockUI ();
+	this->hide ();
 }
 
 ProcessingDialog::~ProcessingDialog()
@@ -179,7 +180,8 @@ void ProcessingDialog::process_frames (void)
 // clear all data from Repository
 	clearRepository ();
 	run_thread = true;
-	QFuture <void> thread = QtConcurrent::run (this, &ProcessingDialog::processing_thread, start, end);
+	QFuture <void> thread = QtConcurrent::run (this,
+		&ProcessingDialog::processing_thread, start, end);
 }
 
 void ProcessingDialog::processing_thread (int start, int end)

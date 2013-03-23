@@ -46,7 +46,6 @@ void TimeLine::setMax (int value)
 
 void TimeLine::onPlayPressed ()
 {
-	qDebug () << "play";
 	playButton->setEnabled (false);
 	stopButton->setEnabled (true);
 	toolButton_next->setEnabled (false);

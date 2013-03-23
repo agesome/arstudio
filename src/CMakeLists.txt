@@ -13,7 +13,8 @@ set(arstudio_sources
 	ui/window3d.cpp
 	ui/core.cpp
 	ui/config_editor.cpp
-	
+	ui/window2d.cpp
+
 	algo_pipeline.cpp
 	sequence.cpp
 	repository.cpp
@@ -22,7 +23,7 @@ set(arstudio_sources
 	logger.cpp
 	config.cpp
 )
-		
+
 set(Boost_USE_MULTITHREADED ON)
 find_package(Boost REQUIRED COMPONENTS system filesystem)
 include_directories(${Boost_INCLUDE_DIRS})

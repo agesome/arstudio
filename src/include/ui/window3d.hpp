@@ -12,7 +12,6 @@
 #include <sequence.hpp>
 #include <scenegraph.hpp>
 #include <pcloud.hpp>
-#include <bitmap.hpp>
 
 using namespace std;
 using namespace Workspace;
@@ -21,16 +20,13 @@ using namespace Workspace;
 class Window3D : public QGLWidget
 {
 	Q_OBJECT
-
-
-
 public:
 
 private:
 
 	Scenegraph::ptr sg;
 
-	int currNframe;
+	int currNframe = 1;
 
 	GLfloat xRot;
 	GLfloat yRot;
@@ -55,7 +51,6 @@ private:
 	void drawCam (double x, double y, double z, double a, double rx, double ry, double rz);
 	void drawPoint3D (Point3d::ptr, GLfloat);
 	void drawPointCloud (PointCloud::ptr);
-	void drawBitmap (Bitmap::ptr);
 
 protected:
 	void initializeGL ();
@@ -71,6 +66,7 @@ signals:
 
 public slots:
 	void update (int);
+	void update (void);
 public:
 	Window3D(Scenegraph::ptr, QWidget *parent = 0);
 };

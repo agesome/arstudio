@@ -22,6 +22,7 @@ private:
 	Repository::ptr repo;
 
 signals:
+	void selectionChanged (void);
 
 private slots:
 	void onItemChanged (QTreeWidgetItem * item, int col);

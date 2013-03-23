@@ -5,9 +5,13 @@ Core::Core() :
 {
 	initGUI ();
 	connect (tmlnmod, SIGNAL (newFrame (int)), wnd3d, SLOT (update (int)));
+	connect (tmlnmod, SIGNAL (newFrame (int)), wnd2d, SLOT (update (int)));
 	connect (processing, SIGNAL (done_processing (bool, std::string)), this,
 	         SLOT (processingDone (bool, std::string)));
 	connect (processing, SIGNAL (clearRepository ()), this, SLOT (clearRepository ()));
+
+	connect (repo_view, SIGNAL (selectionChanged ()), wnd3d, SLOT (update ()));
+	connect (repo_view, SIGNAL (selectionChanged ()), wnd2d, SLOT (update ()));
 
 	Logger::setRepository (repo);
 }
@@ -17,8 +21,7 @@ void Core::makeScreenshot (void)
 	QPixmap p = QPixmap::grabWidget (wnd3d);
 
 	QString fileName = QFileDialog::getSaveFileName (this,
-	                                                 tr ("Save Screenshot"), lastSaveLocation,
-	                                                 tr ("PNG Image (*.png)"));
+	                                                 tr ("Save Screenshot"), lastSaveLocation, tr ("PNG Image (*.png)"));
 
 	if (fileName.isNull ())
 		return;
@@ -31,19 +34,28 @@ void Core::clearRepository (void)
 	Logger::getInstance ().resetFrameCounter ();
 
 	repo->Clear ();
+	updateWindows ();
 }
 
 void Core::processingDone (bool success, std::string e)
 {
 	if (success)
+		updateWindows ();
+	else
 		{
-			tmlnmod->setMax (scgr->getMaxFrame ());
-			tmln->updateWidget ();
-			return;
+			QMessageBox msg;
+			msg.setText (QString ("Processing failed: ") + QString::fromStdString (e));
+			msg.exec ();
 		}
-	QMessageBox msg;
-	msg.setText (QString ("Processing failed: ") + QString::fromStdString (e));
-	msg.exec ();
+}
+
+void Core::updateWindows ()
+{
+	tmlnmod->setMin (1);
+	tmlnmod->setMax (scgr->getMaxFrame ());
+	tmln->updateWidget ();
+	wnd3d->update (1);
+	wnd2d->update (1);
 }
 
 void Core::quit ()
@@ -70,10 +82,17 @@ void Core::initGUI ()
 
 	layout->addWidget (mainsplitter, 0, 0, 1, 1);
 	wnd3d->setMinimumSize (300, 300);
-	winsplitter->addWidget (wnd3d);
-	winsplitter->addWidget (tmln);
+	wnd2d->setMinimumSize (300, 300);
+	// have nothing to show yet
+	wnd2d->hide ();
+
 	mainsplitter->addWidget (repo_view);
-	mainsplitter->addWidget (winsplitter);
+	mainsplitter->addWidget (rightsplitter);
+
+	winsplitter->addWidget (wnd3d);
+	winsplitter->addWidget (wnd2d);
+	rightsplitter->addWidget (winsplitter);
+	rightsplitter->addWidget (tmln);
 
 	processing->setWindowFlags (Qt::Window);
 
