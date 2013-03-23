@@ -204,58 +204,60 @@ void Window3D::drawSceneElements ()
 	float cam_size = 0.05;
 	float point_size = 20;
 
-	Sequence::ptr temp;
 	Item::ptr item;
 	Camera::ptr c;
-	for (Scenegraph::list::const_iterator iter = sg->getSequences ().begin ();
-	     iter != sg->getSequences ().end ();
-	     iter++)
+
+	for (const auto seq : sg->getSequences ())
 		{
-			temp = *iter;
-
-			if (temp->getItems ().find (currNframe) != temp->getItems ().end ())
+			// skip bitmaps
+			if (seq->getType () == Item::BITMAP)
+				continue;
+			const Sequence::map items = seq->getItems ();
+			try
 				{
-					const Sequence::map m = temp->getItems ();
-					item = temp->getItems ().find (currNframe)->second;
-
-					switch (temp->getType ())
+					item = items.at (currNframe);
+				}
+			catch (out_of_range)
+				{
+					continue;
+				}
+			switch (seq->getType ())
+				{
+				case Item::CAMERA:
+				{
+					Camera::ptr prev;
+					for (auto it : items)
 						{
-						case Item::CAMERA:
-						{
-							Camera::ptr prev;
-							for (auto it : temp->getItems ())
+							c = Item::ptr_cast_to<Camera> (it.second);
+							if (!prev)
 								{
-									c = Item::ptr_cast_to<Camera> (it.second);
-									if (!prev)
-										{
-											prev = c;
-											continue;
-										}
-
-									glBegin (GL_LINES);
-									glLineWidth (2.0f);
-									glColor4f (1.00f, 0.00f, 0.00f, 1.0f);
-									glVertex3f (c->tx, c->ty, c->tz);
-									glVertex3f (prev->tx, prev->ty, prev->tz);
-									glEnd ();
-									drawCam (c->tx, c->ty, c->tz, cam_size / 6, c->rx, c->ry, c->rz);
 									prev = c;
+									continue;
 								}
-							c = Item::ptr_cast_to<Camera> (item);
-							drawCam (c->tx, c->ty, c->tz, cam_size, c->rx, c->ry, c->rz);
-							break;
+
+							glBegin (GL_LINES);
+							glLineWidth (2.0f);
+							glColor4f (1.00f, 0.00f, 0.00f, 1.0f);
+							glVertex3f (c->tx, c->ty, c->tz);
+							glVertex3f (prev->tx, prev->ty, prev->tz);
+							glEnd ();
+							drawCam (c->tx, c->ty, c->tz, cam_size / 6, c->rx, c->ry, c->rz);
+							prev = c;
 						}
+					c = Item::ptr_cast_to<Camera> (item);
+					drawCam (c->tx, c->ty, c->tz, cam_size, c->rx, c->ry, c->rz);
+					break;
+				}
 
-						case Item::POINT3D:
-							drawPoint3D (Item::ptr_cast_to<Point3d> (item), point_size);
-							break;
+				case Item::POINT3D:
+					drawPoint3D (Item::ptr_cast_to<Point3d> (item), point_size);
+					break;
 
-						case Item::PCLOUD:
-							drawPointCloud (Item::ptr_cast_to<PointCloud> (item));
-							break;
+				case Item::PCLOUD:
+					drawPointCloud (Item::ptr_cast_to<PointCloud> (item));
+					break;
 
-						default: break;
-						}
+				default: break;
 				}
 		}
 }

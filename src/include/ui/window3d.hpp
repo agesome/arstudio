@@ -2,10 +2,13 @@
 #define SCENE3D_H
 
 #include <QGLWidget>
-#include <QDebug>
-#include <GL/glu.h>
 #include <QtGui>
+
+#include <GL/glu.h>
+
 #include <map>
+#include <stdexcept>
+
 #include <scenegraph.hpp>
 #include <point3d.hpp>
 #include <camera.hpp>
