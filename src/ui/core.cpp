@@ -20,12 +20,13 @@ void Core::makeScreenshot (void)
 {
 	QPixmap p = QPixmap::grabWidget (wnd3d);
 
-	QString fileName = QFileDialog::getSaveFileName (this,
-	                                                 tr ("Save Screenshot"), lastSaveLocation, tr ("PNG Image (*.png)"));
+	QString fileName = QFileDialog::getSaveFileName (this, "Save Screenshot",
+	                                                 lastSaveLocation,
+	                                                 "PNG Image (*.png)");
 
 	if (fileName.isNull ())
 		return;
-	lastSaveLocation = QFileInfo (fileName).absolutePath ();
+	lastSaveLocation = fileName;
 	p.save (fileName);
 }
 

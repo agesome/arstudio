@@ -35,7 +35,7 @@ private:
 	QSplitter *winsplitter = new QSplitter (Qt::Horizontal, central);
 	QToolBar *toolbar = new QToolBar ("Toolbar", this);
 
-	QString lastSaveLocation = QDir::currentPath ();
+	QString lastSaveLocation = QDir::currentPath () + "/untitled.png";
 
 	Workspace::Repository::ptr repo = Workspace::Repository::make ();
 	Workspace::Scenegraph::ptr scgr = Workspace::Scenegraph::make ();
