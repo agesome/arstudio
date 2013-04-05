@@ -1,7 +1,12 @@
 cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 
 project(arstudio CXX C)
-set(CMAKE_COLOR_MAKEFILE ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Debug CACHE STRING
+  	"Choose the type of build: Debug/Release" FORCE)
+endif()
 
 set(arstudio_sources
 
@@ -26,31 +31,29 @@ set(arstudio_sources
 
 set(Boost_USE_MULTITHREADED ON)
 find_package(Boost REQUIRED COMPONENTS system filesystem)
-include_directories(${Boost_INCLUDE_DIRS})
-
 find_package(Qt4 REQUIRED QtCore QtGui QtOpenGL QtXml)
 include(${QT_USE_FILE})
-
 find_package(OpenGL REQUIRED)
-include_directories(${OPENGL_INCLUDE_DIR})
-
 find_package(OpenCV REQUIRED)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../submodules/KinectRecorder/src/)
+include_directories(
+	${CMAKE_CURRENT_SOURCE_DIR}/../submodules/KinectRecorder/src/
+	${OPENGL_INCLUDE_DIR}
+	${Boost_INCLUDE_DIRS}
+	${CMAKE_CURRENT_SOURCE_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}/include/
+	${GLOBAL_INCLUDES}
+)
+
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../submodules/KinectRecorder/src/
 		${CMAKE_CURRENT_BINARY_DIR}/KinectRecorder EXCLUDE_FROM_ALL)
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/)
-include_directories(${GLOBAL_INCLUDES})
 
 file(GLOB arstudio_headers ${CMAKE_CURRENT_SOURCE_DIR}/include/ui/*.hpp)
 qt4_wrap_cpp(arstudio_moc ${arstudio_headers})
 
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
-if(UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O2 -ggdb3 -Wall -Wextra -pedantic")
+if(CMAKE_COMPILER_IS_GNUCXX)
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -std=c++11 -O2 -ggdb3 -Wall -Wextra -pedantic")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -std=c++11 -O2")
 endif()
 
 set(GLOBAL_LIBS "")
@@ -97,6 +100,8 @@ configure_file (${CMAKE_CURRENT_SOURCE_DIR}/include/algo_pipeline.hpp.in
 
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/algo_pipeline.cpp.in
 				${CMAKE_CURRENT_SOURCE_DIR}/algo_pipeline.cpp)
+
+message(STATUS "Build type is: ${CMAKE_BUILD_TYPE}")
 
 add_executable(arstudio ${arstudio_sources} ${arstudio_moc})
 target_link_libraries(
