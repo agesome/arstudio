@@ -23,12 +23,8 @@ using namespace Workspace;
 class Window3D : public QGLWidget
 {
 	Q_OBJECT
-public:
-
 private:
-
 	Scenegraph::ptr sg;
-
 	int currNframe = 1;
 
 	GLfloat xRot;
@@ -39,16 +35,7 @@ private:
 
 	QPoint ptrMousePosition;
 
-	void scale_plus ();
-	void scale_minus ();
-	void rotate_up ();
-	void rotate_down ();
-	void rotate_left ();
-	void rotate_right ();
-	void translate_down ();
-	void translate_up ();
 	void defaultScene ();
-
 	void drawSceneElements ();
 	void drawAxis ();
 	void drawCam (double x, double y, double z, double a, double rx, double ry, double rz);
@@ -61,11 +48,8 @@ protected:
 	void paintGL ();
 	void mousePressEvent (QMouseEvent* pe);
 	void mouseMoveEvent (QMouseEvent* pe);
-	void mouseReleaseEvent (QMouseEvent* pe);
 	void wheelEvent (QWheelEvent* pe);
 	void keyPressEvent (QKeyEvent* pe);
-
-signals:
 
 public slots:
 	void update (int);

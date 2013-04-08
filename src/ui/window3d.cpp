@@ -18,10 +18,10 @@ void Window3D::update (void)
 Window3D::Window3D(Scenegraph::ptr s, QWidget* parent) : QGLWidget (parent)
 {
 	sg = s;
-
-	defaultScene ();
-
 	currNframe = 1;
+
+	this->setFocusPolicy (Qt::ClickFocus);
+	defaultScene ();
 }
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -38,7 +38,6 @@ void Window3D::initializeGL ()
 
 	glShadeModel (GL_FLAT);
 
-
 	glEnableClientState (GL_VERTEX_ARRAY);
 	glEnableClientState (GL_COLOR_ARRAY);
 }
@@ -47,7 +46,6 @@ void Window3D::resizeGL (int nWidth, int nHeight)
 {
 	glMatrixMode (GL_PROJECTION);     // команды отн. к проекту
 	glLoadIdentity ();
-
 
 	GLfloat ratio = (GLfloat) nHeight / (GLfloat) nWidth;
 
@@ -62,7 +60,6 @@ void Window3D::resizeGL (int nWidth, int nHeight)
 void Window3D::paintGL ()
 {
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 
 	glMatrixMode (GL_MODELVIEW);     // команды отн. к модели
 	glLoadIdentity ();
@@ -81,10 +78,6 @@ void Window3D::mousePressEvent (QMouseEvent* pe)
 	ptrMousePosition = pe->pos ();
 }
 
-void Window3D::mouseReleaseEvent (QMouseEvent *)
-{
-}
-
 void Window3D::mouseMoveEvent (QMouseEvent* pe)
 {
 	xRot += 180 / nSca * (GLfloat) (pe->y () - ptrMousePosition.y ()) / height ();
@@ -97,10 +90,10 @@ void Window3D::mouseMoveEvent (QMouseEvent* pe)
 
 void Window3D::wheelEvent (QWheelEvent* pe)
 {
-	if ((pe->delta ()) > 0)
-		scale_plus ();
-	else if ((pe->delta ()) < 0)
-		scale_minus ();
+	if (pe->delta () > 0)
+		nSca = nSca * 1.1;
+	else if (pe->delta () < 0)
+		nSca = nSca / 1.1;
 
 	updateGL ();
 }
@@ -110,31 +103,28 @@ void Window3D::keyPressEvent (QKeyEvent* pe)
 	switch (pe->key ())
 		{
 		case Qt::Key_Plus:
-			scale_plus ();
-			break;
-
 		case Qt::Key_Equal:
-			scale_plus ();
+			nSca = nSca * 1.1;
 			break;
 
 		case Qt::Key_Minus:
-			scale_minus ();
+			nSca = nSca / 1.1;
 			break;
 
 		case Qt::Key_Up:
-			rotate_up ();
+			xRot += 1.0;
 			break;
 
 		case Qt::Key_Down:
-			rotate_down ();
+			xRot -= 1.0;
 			break;
 
 		case Qt::Key_Left:
-			rotate_left ();
+			zRot += 1.0;
 			break;
 
 		case Qt::Key_Right:
-			rotate_right ();
+			zRot -= 1.0;
 			break;
 
 		case Qt::Key_Space:
@@ -145,48 +135,6 @@ void Window3D::keyPressEvent (QKeyEvent* pe)
 	updateGL ();
 }
 
-
-
-void Window3D::scale_plus ()
-{
-	nSca = nSca * 1.1;
-}
-
-void Window3D::scale_minus ()
-{
-	nSca = nSca / 1.1;
-}
-
-void Window3D::rotate_up ()
-{
-	xRot += 1.0;
-}
-
-void Window3D::rotate_down ()
-{
-	xRot -= 1.0;
-}
-
-void Window3D::rotate_left ()
-{
-	zRot += 1.0;
-}
-
-void Window3D::rotate_right ()
-{
-	zRot -= 1.0;
-}
-
-void Window3D::translate_down ()
-{
-	zTra -= 0.05;
-}
-
-void Window3D::translate_up ()
-{
-	zTra += 0.05;
-}
-
 void Window3D::defaultScene ()
 {
 	xRot = 180;
@@ -195,7 +143,6 @@ void Window3D::defaultScene ()
 	zTra = 0;
 	nSca = 1;
 }
-
 
 void Window3D::drawSceneElements ()
 {
@@ -288,7 +235,6 @@ void Window3D::drawAxis ()
 	drawCam (0, 0, 1, 0.02, 180, 0, 0);
 }
 
-
 // рисуем точки из полученного Sequence
 void Window3D::drawPoint3D (Point3d::ptr p, GLfloat size)
 {
@@ -309,7 +255,8 @@ void Window3D::drawPointCloud (PointCloud::ptr pc)
 }
 
 // рисуем Cam из полученного Sequence
-void Window3D::drawCam (double x, double y, double z, double a, double rx, double ry, double rz)
+void Window3D::drawCam (double x, double y, double z, double a, double rx,
+                        double ry, double rz)
 {
 	glPushMatrix ();                         // сохранить текущюю систему координат
 
