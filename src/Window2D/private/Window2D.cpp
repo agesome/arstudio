@@ -15,6 +15,7 @@ void
 Window2D::update (int frame)
 {
 	cv::Mat rgb;
+	bool haveImage = false;
 
 	currentFrame = frame;
 	for (auto seq : scenegraph->getSequences ())
@@ -30,9 +31,9 @@ Window2D::update (int frame)
 				}
 			catch (std::out_of_range ex)
 				{
-					this->hide ();
-					return;
+					continue;
 				}
+			haveImage = true;
 
 			Bitmap::ptr bm = Item::ptr_cast_to<Bitmap> (image);
 			cvtColor (bm->bitmap, rgb, CV_BGR2RGB);
@@ -40,10 +41,11 @@ Window2D::update (int frame)
 			                                            rgb.step, QImage::Format_RGB888));
 			this->setPixmap (currentPixmap.scaled (this->width (), this->height (),
 			                                       Qt::KeepAspectRatio));
-			this->show ();
-			return;
 		}
-	this->hide ();
+	if (haveImage)
+		this->show ();
+	else
+		this->hide ();
 }
 
 void
