@@ -7,9 +7,9 @@
 
 #include <iostream>
 
-#include <logger.hpp>
-#include <config.hpp>
-#include <algo_interface.hpp>
+#include <Logger.hpp>
+#include <Config.hpp>
+#include <AlgoInterface.hpp>
 
 using namespace cv;
 
