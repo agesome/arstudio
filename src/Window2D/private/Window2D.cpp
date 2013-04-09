@@ -28,7 +28,7 @@ Window2D::update (int frame)
 				{
 					image = items.at (frame);
 				}
-			catch (out_of_range ex)
+			catch (std::out_of_range ex)
 				{
 					this->hide ();
 					return;

@@ -16,8 +16,6 @@
 
 @ALGO_INCLUDES@
 
-using namespace boost;
-
 class AlgoPipeline
 {
 private:

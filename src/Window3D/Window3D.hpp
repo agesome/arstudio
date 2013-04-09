@@ -6,17 +6,14 @@
 
 #include <GL/glu.h>
 
-#include <map>
 #include <stdexcept>
 
-#include <Scenegraph.hpp>
+#include <Sequence.hpp>
 #include <Point3D.hpp>
 #include <Camera.hpp>
-#include <Sequence.hpp>
 #include <Scenegraph.hpp>
 #include <PointCloud.hpp>
 
-using namespace std;
 using namespace Workspace;
 
 class Window3D : public QGLWidget

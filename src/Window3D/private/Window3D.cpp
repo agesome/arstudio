@@ -1,9 +1,5 @@
 #include <Window3D.hpp>
 
-using namespace std;
-using namespace boost;
-using namespace Workspace;
-
 void Window3D::update (int nframe)
 {
 	currNframe = nframe;
@@ -164,7 +160,7 @@ void Window3D::drawSceneElements ()
 				{
 					item = items.at (currNframe);
 				}
-			catch (out_of_range)
+			catch (std::out_of_range)
 				{
 					continue;
 				}

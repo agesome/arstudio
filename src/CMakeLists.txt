@@ -14,7 +14,6 @@ set(arstudio_sources
 	ConfigEditor/private/ConfigEditor.cpp
 	Core/private/Core.cpp
 	Logger/private/Logger.cpp
-	main.cpp
 	Repository/private/Repository.cpp
 	RepositoryView/private/RepositoryView.cpp
 	Scenegraph/private/Scenegraph.cpp
@@ -24,10 +23,10 @@ set(arstudio_sources
 	TimeLine/private/TimeLineModel.cpp
 	Window2D/private/Window2D.cpp
 	Window3D/private/Window3D.cpp
-
 #	generated with process_file
 	${CMAKE_BINARY_DIR}/ProcessingDialog.cpp
 	${CMAKE_BINARY_DIR}/AlgoPipeline.cpp
+	main.cpp
 )
 
 set (arstudio_headers
