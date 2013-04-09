@@ -17,7 +17,7 @@ Core::Core() : QMainWindow ()
 
 void Core::makeScreenshot (void)
 {
-	QPixmap p = QPixmap::grabWidget (wnd3d);
+	QPixmap p = wnd3d->renderPixmap ();
 
 	QString fileName = QFileDialog::getSaveFileName (this, "Save Screenshot",
 	                                                 lastSaveLocation,
