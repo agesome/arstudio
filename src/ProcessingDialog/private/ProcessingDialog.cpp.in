@@ -70,10 +70,8 @@ void ProcessingDialog::populateConfig (std::string path)
 	for (; dir != end; dir++)
 		{
 			boost::filesystem::path p = dir->path ();
-			if (p.extension () == ".xml")
-				{
-					config->importXml (p.string ());
-				}
+			if (boost::filesystem::is_directory (p))
+				config->importXml (p.string () + "/settings.xml");
 		}
 }
 
