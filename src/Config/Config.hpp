@@ -38,7 +38,6 @@ public:
 	void setImportCallback (importCallback_t);
 private:
 	importCallback_t importCallback;
-	bool haveImportCallback = false;
 	ptree main_tree;
 };
 #endif // CONFIG_H

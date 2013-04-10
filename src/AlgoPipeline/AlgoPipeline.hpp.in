@@ -18,11 +18,8 @@
 
 class AlgoPipeline
 {
-private:
 public:
 	typedef boost::shared_ptr<AlgoPipeline> ptr;
-
-	std::list <IAbstractAlgorithm *> algorithms;
 
 	AlgoPipeline (Config::ptr);
 	~AlgoPipeline ();
@@ -30,6 +27,7 @@ public:
 
 	void processFrame (cv::Mat &, cv::Mat &);
 private:
+	std::list <IAbstractAlgorithm *> algorithms;
 	void create (IAbstractAlgorithm *);
 };
 #endif // ALGO_PIPELINE_H

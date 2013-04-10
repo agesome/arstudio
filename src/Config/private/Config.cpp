@@ -19,7 +19,7 @@ Config::importXml (const std::string & filename)
 							std::string path = prefix + it.first;
 							std::string value = it.second.get_value<std::string> ();
 							main_tree.put ("root." + path, value);
-							if (haveImportCallback)
+							if (importCallback)
 								importCallback (path, value);
 						}
 				}
@@ -38,5 +38,4 @@ void
 Config::setImportCallback (importCallback_t callback)
 {
 	importCallback = callback;
-	haveImportCallback = true;
 }

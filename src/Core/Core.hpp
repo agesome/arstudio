@@ -29,7 +29,6 @@ private:
 	QMenu *menu_edit = new QMenu ("&Edit");
 	QMenu *menu_help = new QMenu ("&Help");
 	QGridLayout *layout = new QGridLayout (central);
-	QPushButton *butt;
 	QSplitter *mainsplitter = new QSplitter (Qt::Horizontal, central);
 	QSplitter *rightsplitter = new QSplitter (Qt::Vertical, central);
 	QSplitter *winsplitter = new QSplitter (Qt::Horizontal, central);
