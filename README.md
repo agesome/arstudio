@@ -6,10 +6,10 @@ Computer vision algorithm debugging tool.
 Repository structure
 =====
 
-doc/ 		-- documentation, class diagrams and alike;
-git-hooks/ 	-- useful git hooks to use when working on this project;
-src/ 		-- the source three;
-submodules/ -- contains KinectRecorder, a dependency to support .kinvideo files.
+- doc/ 		-- documentation, class diagrams and alike;
+- git-hooks/ 	-- useful git hooks to use when working on this project;
+- src/ 		-- the source three;
+- submodules/ -- contains KinectRecorder, a dependency to support .kinvideo files.
 
 Dependencies
 =====
