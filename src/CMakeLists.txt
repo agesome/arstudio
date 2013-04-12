@@ -91,31 +91,39 @@ macro(subdirlist result curdir)
   set(${result} ${dirlist})
 endmacro()
 
-subdirlist(subdirs ${CMAKE_CURRENT_SOURCE_DIR}/algorithms/)
+if(NOT ALGORITHMS)
+	subdirlist(subdirs ${CMAKE_CURRENT_SOURCE_DIR}/algorithms/)
+  	set(ALGORITHMS ${subdirs} CACHE STRING
+		"List algorithms to build" FORCE)
+endif()
 
-message (STATUS "Will now add algorithms")
-foreach(subdir ${subdirs})
-	message (STATUS "  Adding algorithm "${subdir})
-	include_directories(${CMAKE_CURRENT_SOURCE_DIR}/algorithms/${subdir}/)
-	if (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/algorithms/${subdir}/include/)
-		include_directories(${CMAKE_CURRENT_SOURCE_DIR}/algorithms/${subdir}/include/)
-	endif ()
-	if (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/algorithms/${subdir}/src/)
-		include_directories(${CMAKE_CURRENT_SOURCE_DIR}/algorithms/${subdir}/src/)
-		add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/algorithms/${subdir}/src/
-				${CMAKE_CURRENT_BINARY_DIR}/${subdir} EXCLUDE_FROM_ALL)
-	else ()
-		add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/algorithms/${subdir}/
-				${CMAKE_CURRENT_BINARY_DIR}/${subdir} EXCLUDE_FROM_ALL)
-	endif ()
-endforeach()
+message (STATUS "Algorithms to build: " ${ALGORITHMS})
+
+if (NOT ALGORITHMS STREQUAL "")
+	message (STATUS "Will now add algorithms")
+	foreach(subdir ${ALGORITHMS})
+		message (STATUS "  Adding algorithm "${subdir})
+		include_directories(${CMAKE_CURRENT_SOURCE_DIR}/algorithms/${subdir}/)
+		if (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/algorithms/${subdir}/include/)
+			include_directories(${CMAKE_CURRENT_SOURCE_DIR}/algorithms/${subdir}/include/)
+		endif ()
+		if (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/algorithms/${subdir}/src/)
+			include_directories(${CMAKE_CURRENT_SOURCE_DIR}/algorithms/${subdir}/src/)
+			add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/algorithms/${subdir}/src/
+					${CMAKE_CURRENT_BINARY_DIR}/${subdir} EXCLUDE_FROM_ALL)
+		else ()
+			add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/algorithms/${subdir}/
+					${CMAKE_CURRENT_BINARY_DIR}/${subdir} EXCLUDE_FROM_ALL)
+		endif ()
+	endforeach()
+endif ()
 
 set(CONFIG_DIRECTORY "../algorithms/")
-configure_file (${CMAKE_CURRENT_SOURCE_DIR}/ProcessingDialog/private/ProcessingDialog.cpp.in
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/ProcessingDialog/private/ProcessingDialog.cpp
 				${CMAKE_BINARY_DIR}/ProcessingDialog.cpp)
-configure_file (${CMAKE_CURRENT_SOURCE_DIR}/AlgoPipeline/AlgoPipeline.hpp.in
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/AlgoPipeline/AlgoPipeline.hpp
 				${CMAKE_BINARY_DIR}/AlgoPipeline.hpp)
-configure_file (${CMAKE_CURRENT_SOURCE_DIR}/AlgoPipeline/private/AlgoPipeline.cpp.in
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/AlgoPipeline/private/AlgoPipeline.cpp
 				${CMAKE_BINARY_DIR}/AlgoPipeline.cpp)
 
 qt4_wrap_cpp(arstudio_moc ${arstudio_headers})

@@ -8,20 +8,20 @@ AlgoPipeline::AlgoPipeline (Config::ptr config)
 void AlgoPipeline::create (IAbstractAlgorithm * a)
 {
 	try
-	{
-		if (a->create ())
-			{
-				algorithms.push_back (a);
-			}
-		else
-			{
-				throw std::runtime_error ("create() failed");
-			}
-	}
+		{
+			if (a->create ())
+				{
+					algorithms.push_back (a);
+				}
+			else
+				{
+					throw std::runtime_error ("create() failed");
+				}
+		}
 	catch (std::runtime_error & e)
-	{
-		throw e;
-	}
+		{
+			throw e;
+		}
 }
 
 AlgoPipeline::~AlgoPipeline ()

@@ -3,7 +3,7 @@
 ProcessingDialog::ProcessingDialog(QWidget *parent) :
 	QWidget (parent)
 {
-	createLayout();
+	createLayout ();
 
 	connect (select_file_button, SIGNAL (clicked ()), this, SLOT (select_file ()));
 	connect (process_button, SIGNAL (clicked ()), this, SLOT (process_frames ()));
@@ -13,14 +13,14 @@ ProcessingDialog::ProcessingDialog(QWidget *parent) :
 	connect (stop_button, SIGNAL (clicked ()), this, SLOT (stop_clicked ()));
 
 	connect (this, SIGNAL (done_processing (bool, std::string)), this,
-			SLOT (doneProcessingSlot (bool, std::string)));
+	         SLOT (doneProcessingSlot (bool, std::string)));
 
 // defined in CMakeLists.txt
 	populateConfig ("@CONFIG_DIRECTORY@");
 
-	lastSelectedFile = settings.value("ProcessingDialog/lastSelectedFile", "~").toString();
+	lastSelectedFile = settings.value ("ProcessingDialog/lastSelectedFile", "~").toString ();
 	if (lastSelectedFile != "~")
-		loadFile (lastSelectedFile.toStdString());
+		loadFile (lastSelectedFile.toStdString ());
 }
 
 void ProcessingDialog::doneProcessingSlot (bool, std::string)
@@ -89,20 +89,22 @@ void ProcessingDialog::stop_clicked (void)
 void ProcessingDialog::select_file ()
 {
 	selectedFile = QFileDialog::getOpenFileName (this,
-	                                          tr ("Open Video"), lastSelectedFile,
-	                                          tr ("Video Files (*.avi *.mkv *.wmv *.mp4 *.kinvideo)"));
-	if (selectedFile.isNull())
+	                                             tr ("Open Video"), lastSelectedFile,
+	                                             tr ("Video Files (*.avi *.mkv *.wmv *.mp4 *.kinvideo)"));
+	if (selectedFile.isNull ())
 		return;
 	lastSelectedFile = selectedFile;
 
-	loadFile (selectedFile.toStdString());
+	loadFile (selectedFile.toStdString ());
 }
 
-bool ProcessingDialog::loadFile(std::string path)
+bool ProcessingDialog::loadFile (std::string path)
 {
 	QFileInfo fileInfo (QString::fromStdString (path));
-    if (fileInfo.isFile() == false) return false;
-    unsigned int frames_count;
+
+	if (fileInfo.isFile () == false)
+		return false;
+	unsigned int frames_count;
 
 	cv::VideoCapture * c;
 	file_name_label->setText ("File: " + fileInfo.baseName ());
@@ -112,15 +114,15 @@ bool ProcessingDialog::loadFile(std::string path)
 	process_button->setEnabled (true);
 
 	if (kincap)
-	{
-		delete kincap;
-		kincap = nullptr;
-	}
+		{
+			delete kincap;
+			kincap = nullptr;
+		}
 	else if (vcap)
-	{
-		delete vcap;
-		vcap = nullptr;
-	}
+		{
+			delete vcap;
+			vcap = nullptr;
+		}
 
 	if (fileInfo.suffix () == "kinvideo")
 		{
@@ -179,7 +181,7 @@ void ProcessingDialog::process_frames (void)
 	clearRepository ();
 	run_thread = true;
 	QFuture <void> thread = QtConcurrent::run (this,
-		&ProcessingDialog::processing_thread, start, end);
+	                                           &ProcessingDialog::processing_thread, start, end);
 }
 
 void ProcessingDialog::processing_thread (int start, int end)
@@ -188,44 +190,44 @@ void ProcessingDialog::processing_thread (int start, int end)
 	std::string es;
 
 	try
-	{
-		apipe = AlgoPipeline::make (config);
-	}
+		{
+			apipe = AlgoPipeline::make (config);
+		}
 	catch (std::runtime_error &e)
-	{
-		es = e.what ();
-		done_processing (false, es);
-		return;
-	}
+		{
+			es = e.what ();
+			done_processing (false, es);
+			return;
+		}
 
 	if (vcap)
 		vcap->set (CV_CAP_PROP_POS_FRAMES, start);
 	for (int i = start; i < end && run_thread; i++)
 		{
 			try
-			{
-				if (vcap)
-					{
-						*vcap >> image;
-						apipe->processFrame (image, empty);
-					}
-				else
-					{
-						kincap->readFrame ();
-						LuxFrame *f = kincap->getFrame ();
-						apipe->processFrame (f->image, f->depth_map);
-					}
-			}
+				{
+					if (vcap)
+						{
+							*vcap >> image;
+							apipe->processFrame (image, empty);
+						}
+					else
+						{
+							kincap->readFrame ();
+							LuxFrame *f = kincap->getFrame ();
+							apipe->processFrame (f->image, f->depth_map);
+						}
+				}
 			catch (std::out_of_range e)
-			{
-				done_processing (false, std::string(e.what()));
-				return;
-			}
+				{
+					done_processing (false, std::string (e.what ()));
+					return;
+				}
 			catch (std::exception e) // oops!
-			{
-				done_processing (false, std::string(e.what()));
-				return;
-			}
+				{
+					done_processing (false, std::string (e.what ()));
+					return;
+				}
 			progress_signal ();
 		}
 	done_processing (true, es);
