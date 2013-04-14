@@ -6,9 +6,9 @@ Computer vision algorithm debugging tool.
 Repository structure
 =====
 
-- doc/ 		-- documentation, class diagrams and alike;
+- docs/ 			-- documentation;
 - git-hooks/ 	-- useful git hooks to use when working on this project;
-- src/ 		-- the source three;
+- src/ 				-- the source three;
 - submodules/ -- contains KinectRecorder, a dependency to support .kinvideo files.
 
 Dependencies
@@ -19,7 +19,13 @@ Dependencies
 - OpenGL
 - OpenCV
 
-This project is built with CMake. Features from C++11 are used here and there, so you'll need a compiler that supports it.
+To generate documentation, optional:
+
+- Doxygen
+- Graphviz
+
+This project is built with CMake. Features from C++11 are used here and there,
+so you'll need a compiler that supports it.
 
 Cloning & Compiling
 =====
@@ -34,3 +40,10 @@ Cloning & Compiling
 	$ cmake ..
 	$ make [-jN]
 	$ ./arstudio
+
+Building documentation
+=====
+
+	$ cd docs
+	$ doxygen
+	$ xdg-open html/index.html

@@ -16,10 +16,14 @@
 
 @ALGO_INCLUDES@
 
+/**
+        This class handles image processing algorithms.
+ */
+
 class AlgoPipeline
 {
 public:
-	typedef boost::shared_ptr<AlgoPipeline> ptr;
+	typedef boost::shared_ptr<AlgoPipeline> ptr; // < a convenience typedef
 
 	AlgoPipeline (Config::ptr);
 	~AlgoPipeline ();
@@ -27,7 +31,7 @@ public:
 
 	void processFrame (cv::Mat &, cv::Mat &);
 private:
-	std::list <IAbstractAlgorithm *> algorithms;
+	std::list <IAbstractAlgorithm *> algorithms; // < list of all created algorithms
 	void create (IAbstractAlgorithm *);
 };
 #endif // ALGO_PIPELINE_H
