@@ -19,6 +19,10 @@ public:
 		return boost::dynamic_pointer_cast<T, Item> (r);
 	}
 
+	virtual ~Item ()
+	{
+	}
+
 	enum type {
 		CAMERA = 0,
 		PCLOUD,
@@ -29,11 +33,6 @@ public:
 	};
 
 	static const std::string typeNames[LEN_];
-private:
-	// required for dynamic_pointer_cast
-	virtual void dummy (void)
-	{
-	};
 };
 
 class Sequence
