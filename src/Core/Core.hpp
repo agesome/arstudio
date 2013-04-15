@@ -9,6 +9,7 @@
 #include <QSplitter>
 #include <QMessageBox>
 #include <QToolBar>
+#include <QMdiArea>
 
 #include <opencv2/highgui/highgui.hpp>
 
@@ -23,15 +24,14 @@ class Core : public QMainWindow
 {
 	Q_OBJECT
 private:
-	QWidget * central = new QWidget (this);
-	QMenuBar *mnuBar = new QMenuBar (this);
+	QMenuBar * mnuBar = new QMenuBar (this);
 	QMenu *menu_file = new QMenu ("&File");
 	QMenu *menu_edit = new QMenu ("&Edit");
 	QMenu *menu_help = new QMenu ("&Help");
-	QGridLayout *layout = new QGridLayout (central);
-	QSplitter *mainsplitter = new QSplitter (Qt::Horizontal, central);
-	QSplitter *rightsplitter = new QSplitter (Qt::Vertical, central);
-	QSplitter *winsplitter = new QSplitter (Qt::Horizontal, central);
+
+	QMdiArea *mdiArea = new QMdiArea (this);
+	QSplitter *hSplitter = new QSplitter (Qt::Horizontal, this);
+	QSplitter *vSplitter = new QSplitter (Qt::Vertical, this);
 	QToolBar *toolbar = new QToolBar ("Toolbar", this);
 
 	QString lastSaveLocation = QDir::currentPath () + "/untitled.png";
@@ -41,17 +41,17 @@ private:
 
 	TimeLineModel *tmlnmod = new TimeLineModel (0, 0);
 	TimeLine *tmln = new TimeLine (tmlnmod, this);
-	Window3D *wnd3d = new Window3D (scgr, central);
-	Window2D *wnd2d = new Window2D (scgr, central);
+	Window3D *wnd3d = new Window3D (scgr, this);
+	Window2D *wnd2d = new Window2D (scgr, this);
 	ProcessingDialog * processing = new ProcessingDialog (this);
 	RepositoryView * repo_view = new Workspace::RepositoryView (repo, scgr);
 
 	void initGUI ();
+	void connectSignals ();
+	void initToolbar ();
 	void updateWindows ();
 public:
 	Core();
-signals:
-
 public slots:
 	void quit ();
 	void open ();

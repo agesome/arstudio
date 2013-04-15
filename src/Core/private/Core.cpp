@@ -3,15 +3,8 @@
 Core::Core() : QMainWindow ()
 {
 	initGUI ();
-	connect (tmlnmod, SIGNAL (newFrame (int)), wnd3d, SLOT (update (int)));
-	connect (tmlnmod, SIGNAL (newFrame (int)), wnd2d, SLOT (update (int)));
-	connect (processing, SIGNAL (done_processing (bool, std::string)), this,
-	         SLOT (processingDone (bool, std::string)));
-	connect (processing, SIGNAL (clearRepository ()), this, SLOT (clearRepository ()));
-
-	connect (repo_view, SIGNAL (selectionChanged ()), wnd3d, SLOT (update ()));
-	connect (repo_view, SIGNAL (selectionChanged ()), wnd2d, SLOT (update ()));
-
+	connectSignals ();
+	initToolbar ();
 	Logger::setRepository (repo);
 }
 
@@ -20,8 +13,7 @@ void Core::makeScreenshot (void)
 	QPixmap p = wnd3d->renderPixmap ();
 
 	QString fileName = QFileDialog::getSaveFileName (this, "Save Screenshot",
-	                                                 lastSaveLocation,
-	                                                 "PNG Image (*.png)");
+	                                                 lastSaveLocation, "PNG Image (*.png)");
 
 	if (fileName.isNull ())
 		return;
@@ -40,7 +32,9 @@ void Core::clearRepository (void)
 void Core::processingDone (bool success, std::string e)
 {
 	if (success)
-		updateWindows ();
+		{
+			updateWindows ();
+		}
 	else
 		{
 			QMessageBox msg;
@@ -65,9 +59,8 @@ void Core::quit ()
 
 void Core::initGUI ()
 {
-	this->setGeometry (10, 10, 800, 500);
-	this->setCentralWidget (central);
-	repo_view->setMaximumWidth (180);
+	this->setCentralWidget (vSplitter);
+
 	menu_file->addAction ("Open", this, SLOT (open ()));
 	menu_file->addSeparator ();
 	menu_file->addAction ("Exit", this, SLOT (quit ()));
@@ -80,24 +73,30 @@ void Core::initGUI ()
 	mnuBar->addMenu (menu_help);
 	this->setMenuBar (mnuBar);
 
-	layout->addWidget (mainsplitter, 0, 0, 1, 1);
+	hSplitter->addWidget (repo_view);
+	hSplitter->addWidget (mdiArea);
+	vSplitter->addWidget (hSplitter);
+	vSplitter->addWidget (tmln);
+
+	repo_view->setMaximumWidth (repo_view->sizeHint ().width ());
+	tmln->setMaximumHeight (tmln->sizeHint ().height ());
+
+	mdiArea->addSubWindow (wnd3d);
+	mdiArea->addSubWindow (wnd2d);
+
 	wnd3d->setMinimumSize (300, 300);
 	wnd2d->setMinimumSize (300, 300);
-	// have nothing to show yet
-	wnd2d->hide ();
 
-	mainsplitter->addWidget (repo_view);
-	mainsplitter->addWidget (rightsplitter);
-
-	winsplitter->addWidget (wnd3d);
-	winsplitter->addWidget (wnd2d);
-	rightsplitter->addWidget (winsplitter);
-	rightsplitter->addWidget (tmln);
+	this->resize (this->sizeHint ());
 
 	processing->setWindowFlags (Qt::Window);
+}
 
+void Core::initToolbar ()
+{
 	QAction * screenshot = new QAction (QIcon::fromTheme ("image-x-generic"),
 	                                    "Screenshot", toolbar);
+
 	connect (screenshot, SIGNAL (triggered ()), this, SLOT (makeScreenshot ()));
 	toolbar->addAction (screenshot);
 
@@ -113,8 +112,20 @@ void Core::initGUI ()
 
 	toolbar->setToolButtonStyle (Qt::ToolButtonTextUnderIcon);
 	this->addToolBar (toolbar);
+}
 
+void Core::connectSignals ()
+{
 	qRegisterMetaType<std::string>("std::string");
+
+	connect (tmlnmod, SIGNAL (newFrame (int)), wnd3d, SLOT (update (int)));
+	connect (tmlnmod, SIGNAL (newFrame (int)), wnd2d, SLOT (update (int)));
+	connect (processing, SIGNAL (done_processing (bool, std::string)), this,
+	         SLOT (processingDone (bool, std::string)));
+	connect (processing, SIGNAL (clearRepository ()), this, SLOT (clearRepository ()));
+
+	connect (repo_view, SIGNAL (selectionChanged ()), wnd3d, SLOT (update ()));
+	connect (repo_view, SIGNAL (selectionChanged ()), wnd2d, SLOT (update ()));
 }
 
 void Core::open ()
