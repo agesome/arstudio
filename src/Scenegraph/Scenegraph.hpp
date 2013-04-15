@@ -8,6 +8,9 @@
 
 namespace Workspace
 {
+/**
+        Keeps track of all sequences to be displayed.
+ */
 class Scenegraph
 {
 public:

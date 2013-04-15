@@ -20,6 +20,8 @@
 #include <Window3D.hpp>
 #include <ProcessingDialog.hpp>
 
+using namespace Workspace;
+
 class Core : public QMainWindow
 {
 	Q_OBJECT
@@ -36,8 +38,8 @@ private:
 
 	QString lastSaveLocation = QDir::currentPath () + "/untitled.png";
 
-	Workspace::Repository::ptr repo = Workspace::Repository::make ();
-	Workspace::Scenegraph::ptr scgr = Workspace::Scenegraph::make ();
+	Repository::ptr repo = Repository::make ();
+	Scenegraph::ptr scgr = Scenegraph::make ();
 
 	TimeLineModel *tmlnmod = new TimeLineModel (0, 0);
 	TimeLine *tmln = new TimeLine (tmlnmod, this);
