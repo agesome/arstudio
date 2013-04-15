@@ -116,21 +116,19 @@ void TimeLine::onSliderChanged (int n)
 
 void TimeLine::initGUI ()
 {
-	this->setMinimumHeight (90);
-	this->setMaximumHeight (90);
-	layout->addWidget (horizontalSlider, 0, 0, 0, 6, 0);
+	layout->addWidget (horizontalSlider, 0, 0, 1, 6);
 	horizontalSlider->setOrientation (Qt::Horizontal);
 	horizontalSlider->setTickInterval (1);
 	horizontalSlider->setPageStep (1);
 	horizontalSlider->setTickPosition (QSlider::TicksLeft);
-	layout->addWidget (spinBox, 1, 5, 0);
+	layout->addWidget (toolButton_prev, 1, 0, 0);
+	toolButton_prev->setText ("<");
+	layout->addWidget (toolButton_next, 1, 1, 0);
+	toolButton_next->setText (">");
 	layout->addWidget (playButton, 1, 2, 0);
 	playButton->setText ("Play");
 	layout->addWidget (stopButton, 1, 3, 0);
 	stopButton->setText ("Stop");
 	stopButton->setEnabled (false);
-	layout->addWidget (toolButton_prev, 1, 0, 0);
-	toolButton_prev->setText ("<");
-	layout->addWidget (toolButton_next, 1, 1, 0);
-	toolButton_next->setText (">");
+	layout->addWidget (spinBox, 1, 5, 0);
 }
