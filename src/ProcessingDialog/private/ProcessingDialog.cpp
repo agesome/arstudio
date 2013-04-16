@@ -192,10 +192,21 @@ void ProcessingDialog::process_frames (void)
 	progress_bar->setValue (1);
 
 	lockUI ();
-
-// clear all data from Repository
 	clearRepository ();
+
 	run_thread = true;
+
+	algo_pipeline = AlgoPipeline::make (config);
+	try
+		{
+			algo_pipeline->create_all ();
+		}
+	catch (std::runtime_error error)
+		{
+			done_processing (false, error.what ());
+			return;
+		}
+
 	QFuture <void> thread = QtConcurrent::run (this,
 	                                           &ProcessingDialog::processing_thread, start, end);
 }
@@ -204,17 +215,6 @@ void ProcessingDialog::processing_thread (int start, int end)
 {
 	cv::Mat image, empty;
 	std::string es;
-
-	try
-		{
-			apipe = AlgoPipeline::make (config);
-		}
-	catch (std::runtime_error &e)
-		{
-			es = e.what ();
-			done_processing (false, es);
-			return;
-		}
 
 	if (vcap)
 		vcap->set (CV_CAP_PROP_POS_FRAMES, start);
@@ -225,13 +225,13 @@ void ProcessingDialog::processing_thread (int start, int end)
 					if (vcap)
 						{
 							*vcap >> image;
-							apipe->processFrame (image, empty);
+							algo_pipeline->process_frame (image, empty);
 						}
 					else
 						{
 							kincap->readFrame ();
 							LuxFrame *f = kincap->getFrame ();
-							apipe->processFrame (f->image, f->depth_map);
+							algo_pipeline->process_frame (f->image, f->depth_map);
 						}
 				}
 			catch (std::out_of_range e)

@@ -1,10 +1,7 @@
 #ifndef ALGO_PIPELINE_H
 #define ALGO_PIPELINE_H
 
-#include <exception>
-#include <string>
 #include <list>
-#include <iostream>
 #include <memory>
 
 #include <opencv2/highgui/highgui.hpp>
@@ -26,11 +23,14 @@ public:
 
 	AlgoPipeline (Config::ptr);
 	~AlgoPipeline ();
-	static ptr make (Config::ptr);
 
-	void processFrame (cv::Mat &, cv::Mat &);
+	static ptr make (Config::ptr);
+	void process_frame (const cv::Mat &, const cv::Mat &);
+	void create_all (void);
+
 private:
-	std::list <IAbstractAlgorithm *> algorithms; // < list of all created algorithms
-	void create (IAbstractAlgorithm *);
+	void create_algorithm (IAbstractAlgorithm *);
+
+	std::list <IAbstractAlgorithm *> algo_list; // < list of all created algorithms
 };
 #endif // ALGO_PIPELINE_H

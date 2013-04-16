@@ -2,7 +2,7 @@
 
 using namespace cv;
 
-Mat BrightnessAdjuster::adjust (Mat & image)
+Mat BrightnessAdjuster::adjust (const Mat & image)
 {
 	Mat result = Mat::zeros (image.size (), image.type ());
 
@@ -21,7 +21,7 @@ Mat BrightnessAdjuster::adjust (Mat & image)
 	return result;
 }
 
-Mat ContrastAdjuster::adjust (Mat & image)
+Mat ContrastAdjuster::adjust (const Mat & image)
 {
 	Mat result = Mat::zeros (image.size (), image.type ());
 
@@ -75,7 +75,7 @@ bool ImageAdjusterAlgorithm::create ()
 	return true;
 }
 
-bool ImageAdjusterAlgorithm::run (Mat & image, Mat &)
+bool ImageAdjusterAlgorithm::run (const Mat & image, const Mat &)
 {
 	Mat result = adjuster->adjust (image);
 
@@ -83,4 +83,9 @@ bool ImageAdjusterAlgorithm::run (Mat & image, Mat &)
 
 	l.addImage (result, type);
 	return true;
+}
+
+const std::string ImageAdjusterAlgorithm::id_string (void)
+{
+	return std::string ("Image adjuster");
 }

@@ -61,7 +61,7 @@ private:
 	Config::ptr config = Config::make ();
 	// has to be created before AlgoPipeline!
 	ConfigEditor * editor = new ConfigEditor (config);
-	AlgoPipeline::ptr apipe;
+	AlgoPipeline::ptr algo_pipeline;
 
 	bool run_thread;
 

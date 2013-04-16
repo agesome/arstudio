@@ -19,6 +19,6 @@ if (DEFINED ALGO_INCLUDES)
 endif ()
 
 if (DEFINED ALGO_CODE)
-	set(ALGO_CODE ${ALGO_CODE}"IAbstractAlgorithm * adjuster = new ImageAdjusterAlgorithm(config); create(adjuster);\n"
+	set(ALGO_CODE "${ALGO_CODE}algo_list.push_back (new ImageAdjusterAlgorithm(config));\n"
 		PARENT_SCOPE)
 endif()

@@ -13,29 +13,18 @@ AlgoPipeline::AlgoPipeline (Config::ptr config)
 }
 
 /**
-        Convenience function to initialize algorithms, or throw an exception if
-        there's a problem.
-
-        \param a pointer to an instance of a class adhering to IAbstractAlgorithm
+        Convenience function to initialize all algorithms, we do not want
+        to do that in constructor.
  */
 
-void AlgoPipeline::create (IAbstractAlgorithm * a)
+void
+AlgoPipeline::create_all (void)
 {
-	try
-		{
-			if (a->create ())
-				{
-					algorithms.push_back (a);
-				}
-			else
-				{
-					throw std::runtime_error ("create() failed");
-				}
-		}
-	catch (std::runtime_error & e)
-		{
-			throw e;
-		}
+	for (auto algo : algo_list)
+		if (!algo->create ())
+			{
+				throw std::runtime_error ("failed to create(): " + algo->id_string ());
+			}
 }
 
 /**
@@ -44,8 +33,8 @@ void AlgoPipeline::create (IAbstractAlgorithm * a)
 
 AlgoPipeline::~AlgoPipeline ()
 {
-	for (auto it : algorithms)
-		delete it;
+	for (auto algo : algo_list)
+		delete algo;
 }
 
 /**
@@ -68,9 +57,9 @@ AlgoPipeline::make (Config::ptr config)
  */
 
 void
-AlgoPipeline::processFrame (cv::Mat & image, cv::Mat & dmap)
+AlgoPipeline::process_frame (const cv::Mat & image, const cv::Mat & dmap)
 {
-	for (auto it : algorithms)
-		it->run (image, dmap);
+	for (auto algo : algo_list)
+		algo->run (image, dmap);
 	Logger::getInstance ().advanceFrame ();
 }
