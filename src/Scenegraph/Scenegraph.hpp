@@ -3,6 +3,7 @@
 
 #include <list>
 #include <climits>
+#include <memory>
 
 #include <Sequence.hpp>
 
@@ -14,7 +15,7 @@ namespace Workspace
 class Scenegraph
 {
 public:
-	typedef boost::shared_ptr<Scenegraph> ptr;
+	typedef std::shared_ptr<Scenegraph> ptr;
 	typedef std::list<Sequence::ptr> list;
 
 	static ptr make ();

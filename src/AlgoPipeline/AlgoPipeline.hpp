@@ -1,18 +1,17 @@
 #ifndef ALGO_PIPELINE_H
 #define ALGO_PIPELINE_H
 
-#include <opencv2/highgui/highgui.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
-
-#include <Logger.hpp>
-#include <Config.hpp>
-#include <AlgoInterface.hpp>
-
 #include <exception>
 #include <string>
 #include <list>
 #include <iostream>
+#include <memory>
+
+#include <opencv2/highgui/highgui.hpp>
+
+#include <Logger.hpp>
+#include <Config.hpp>
+#include <AlgoInterface.hpp>
 
 @ALGO_INCLUDES@
 
@@ -23,7 +22,7 @@
 class AlgoPipeline
 {
 public:
-	typedef boost::shared_ptr<AlgoPipeline> ptr; // < a convenience typedef
+	typedef std::shared_ptr<AlgoPipeline> ptr; // < a convenience typedef
 
 	AlgoPipeline (Config::ptr);
 	~AlgoPipeline ();

@@ -10,7 +10,7 @@ using namespace Workspace;
 class Point3d : public Item
 {
 public:
-	typedef boost::shared_ptr<Point3d> ptr;
+	typedef std::shared_ptr<Point3d> ptr;
 
 	static ptr make (void);
 	static ptr make (GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat);

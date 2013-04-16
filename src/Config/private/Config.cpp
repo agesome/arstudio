@@ -37,7 +37,7 @@ Config::importXml (const std::string & file_path)
 Config::ptr
 Config::make (void)
 {
-	return boost::make_shared<Config> ();
+	return std::make_shared<Config> ();
 }
 
 /**

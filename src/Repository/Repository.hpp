@@ -3,6 +3,7 @@
 
 #include <string>
 #include <functional>
+#include <memory>
 
 #include <Sequence.hpp>
 
@@ -23,7 +24,7 @@ public:
 	typedef std::pair <std::string, Sequence::ptr> mapItem;
 	typedef std::map <std::string, sequenceMap> mapTree;
 
-	typedef boost::shared_ptr <Repository> ptr;
+	typedef std::shared_ptr<Repository> ptr;
 
 	std::function <void (std::string)> newBranchCallback; // < called when a new branch is added
 	std::function <void (std::string)> branchRemovedCallback; // < called when a branch is removed

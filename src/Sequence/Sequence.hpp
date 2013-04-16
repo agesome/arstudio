@@ -3,8 +3,7 @@
 
 #include <map>
 #include <string>
-#include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
+#include <memory>
 
 namespace Workspace
 {
@@ -15,7 +14,7 @@ namespace Workspace
 class Item
 {
 public:
-	typedef boost::shared_ptr<Item> ptr;
+	typedef std::shared_ptr<Item> ptr;
 	typedef std::pair<int, ptr> pair;
 
 	/**
@@ -25,9 +24,9 @@ public:
 	        \param r the pointer to be cast
 	 */
 
-	template <class T> static boost::shared_ptr<T> ptr_cast_to (const Item::ptr & r)
+	template <class T> static std::shared_ptr<T> ptr_cast_to (const Item::ptr & r)
 	{
-		return boost::dynamic_pointer_cast<T, Item> (r);
+		return std::dynamic_pointer_cast<T, Item> (r);
 	}
 
 	virtual ~Item ()
@@ -53,7 +52,7 @@ public:
 class Sequence
 {
 public:
-	typedef boost::shared_ptr<Sequence> ptr;
+	typedef std::shared_ptr<Sequence> ptr;
 	typedef std::pair<unsigned int, ptr> pair;
 	typedef std::map <unsigned int, Item::ptr> map;
 

@@ -10,10 +10,10 @@ using namespace Workspace;
 class Bitmap : public Item
 {
 public:
-	typedef boost::shared_ptr<Bitmap> ptr;
+	typedef std::shared_ptr<Bitmap> ptr;
 	static ptr make (void)
 	{
-		return boost::make_shared<Bitmap> ();
+		return std::make_shared<Bitmap> ();
 	};
 
 	cv::Mat bitmap;

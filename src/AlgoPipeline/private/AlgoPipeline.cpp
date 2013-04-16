@@ -57,7 +57,7 @@ AlgoPipeline::~AlgoPipeline ()
 AlgoPipeline::ptr
 AlgoPipeline::make (Config::ptr config)
 {
-	return boost::make_shared<AlgoPipeline> (config);
+	return std::make_shared<AlgoPipeline> (config);
 }
 
 /**

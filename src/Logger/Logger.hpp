@@ -29,8 +29,8 @@ public:
 	void resetFrameCounter (void);
 private:
 	Logger ();
-	Logger (const Logger &);
-	void operator= (const Logger &);
+	Logger (const Logger &) = delete;
+	Logger & operator= (const Logger &) = delete;
 
 	static Workspace::Repository::ptr repo; // < currently used instance of Repository
 	unsigned int current_frame = 1; // < all data being logged is associated with this frame number

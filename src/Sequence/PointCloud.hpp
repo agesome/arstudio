@@ -9,10 +9,10 @@
 class PointCloud : public Item
 {
 public:
-	typedef boost::shared_ptr<PointCloud> ptr;
+	typedef std::shared_ptr<PointCloud> ptr;
 	static ptr make (void)
 	{
-		return boost::make_shared<PointCloud> ();
+		return std::make_shared<PointCloud> ();
 	};
 
 	std::list<Point3d::ptr> cloud;

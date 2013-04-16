@@ -5,7 +5,7 @@ namespace Workspace
 Scenegraph::ptr
 Scenegraph::make ()
 {
-	return boost::make_shared<Scenegraph> ();
+	return std::make_shared<Scenegraph> ();
 }
 
 void

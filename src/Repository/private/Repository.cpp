@@ -81,7 +81,7 @@ Repository::getSequenceMap (std::string branchName = "default")
 Repository::ptr
 Repository::make (void)
 {
-	return boost::make_shared <Repository> ();
+	return std::make_shared <Repository> ();
 }
 
 const Repository::mapTree &

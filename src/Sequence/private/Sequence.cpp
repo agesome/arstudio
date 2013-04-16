@@ -18,7 +18,7 @@ Sequence::Sequence (Item::type t)
 Sequence::ptr
 Sequence::make (Item::type t)
 {
-	return boost::make_shared<Sequence> (t);
+	return std::make_shared<Sequence> (t);
 }
 
 void

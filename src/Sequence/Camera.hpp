@@ -10,10 +10,10 @@ using namespace Workspace;
 class Camera : public Item
 {
 public:
-	typedef boost::shared_ptr<Camera> ptr;
+	typedef std::shared_ptr<Camera> ptr;
 	static ptr make (void)
 	{
-		return boost::make_shared<Camera> ();
+		return std::make_shared<Camera> ();
 	}
 
 	Camera()
