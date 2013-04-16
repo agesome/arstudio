@@ -6,20 +6,20 @@
         \param config the instance of Config to be edited
         \param parent parent widget
  */
-
 ConfigEditor::ConfigEditor (Config::ptr config, QWidget * parent)
 	: QTreeWidget (parent)
 {
 	this->config = config;
-	Config::importCallback_t f = std::bind (&ConfigEditor::configCallback, this, std::placeholders::_1, std::placeholders::_2);
-	config->setImportCallback (f);
+	Config::import_callback_t f = std::bind (&ConfigEditor::config_callback,
+	                                         this, std::placeholders::_1, std::placeholders::_2);
+	config->set_import_callback (f);
 
 	QStringList list;
 	list << "Setting" << "Value";
 	setHeaderLabels (list);
 
 	connect (this, SIGNAL (itemChanged (QTreeWidgetItem *, int)), this,
-	         SLOT (itemChangedHandler (QTreeWidgetItem *, int)));
+	         SLOT (item_changed_handler (QTreeWidgetItem *, int)));
 }
 
 /**
@@ -29,9 +29,8 @@ ConfigEditor::ConfigEditor (Config::ptr config, QWidget * parent)
         \param path path to the setting
         \param value the default value
  */
-
 void
-ConfigEditor::configCallback (const std::string & path, const std::string & value)
+ConfigEditor::config_callback (const std::string & path, const std::string & value)
 {
 	QStringList i;
 
@@ -49,9 +48,8 @@ ConfigEditor::configCallback (const std::string & path, const std::string & valu
 
         \param item the field which was edited
  */
-
 void
-ConfigEditor::itemChangedHandler (QTreeWidgetItem * item, int)
+ConfigEditor::item_changed_handler (QTreeWidgetItem * item, int)
 {
 	config->put (item->text (0).toStdString (), item->text (1).toStdString ());
 }

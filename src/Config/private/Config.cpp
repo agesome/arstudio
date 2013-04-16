@@ -5,33 +5,33 @@
 
         \param file_path path to the XML file
  */
+void
+Config::import_xml (const std::string & file_path)
+{
+	pt::ptree xml_tree;
+
+	read_xml (file_path, xml_tree);
+	walk_tree (xml_tree, "");
+}
 
 void
-Config::importXml (const std::string & file_path)
+Config::walk_tree (const pt::ptree & tree, const std::string & prefix)
 {
-	ptree tree;
-
-	read_xml (file_path, tree);
-
-	std::function<void(const ptree &, std::string)> walk =
-	  [&walk, this](const ptree & t, std::string prefix)
+	for (auto node : tree)
 		{
-			for (auto it : t)
+			if (!node.second.empty ())
 				{
-					if (!it.second.empty ())
-						walk (it.second, prefix + it.first + ".");
-					else
-						{
-							std::string path = prefix + it.first;
-							std::string value = it.second.get_value<std::string> ();
-							main_tree.put ("root." + path, value);
-							if (importCallback)
-								importCallback (path, value);
-						}
+					walk_tree (node.second, prefix + node.first + ".");
 				}
-		};
-
-	walk (tree, "");
+			else
+				{
+					std::string path = prefix + node.first;
+					std::string value = node.second.get_value<std::string> ();
+					main_tree.put ("root." + path, value);
+					if (import_callback)
+						import_callback (path, value);
+				}
+		}
 }
 
 Config::ptr
@@ -45,9 +45,8 @@ Config::make (void)
 
         \param callback the function to be called
  */
-
 void
-Config::setImportCallback (importCallback_t callback)
+Config::set_import_callback (import_callback_t callback)
 {
-	importCallback = callback;
+	import_callback = callback;
 }

@@ -78,7 +78,7 @@ void ProcessingDialog::populateConfig (std::string path)
 		{
 			boost::filesystem::path p = dir->path ();
 			if (boost::filesystem::is_directory (p))
-				config->importXml (p.string () + "/settings.xml");
+				config->import_xml (p.string () + "/settings.xml");
 		}
 }
 
@@ -239,7 +239,7 @@ void ProcessingDialog::processing_thread (int start, int end)
 					done_processing (false, std::string (e.what ()));
 					return;
 				}
-			catch (std::exception e) // oops!
+			catch (std::exception e)                   // oops!
 				{
 					done_processing (false, std::string (e.what ()));
 					return;

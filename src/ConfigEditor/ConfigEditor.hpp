@@ -11,16 +11,15 @@
 /**
         This class implements a widget to display and edit settings from Config
  */
-
 class ConfigEditor : public QTreeWidget
 {
 	Q_OBJECT
 public:
 	explicit ConfigEditor (Config::ptr, QWidget * parent = nullptr);
-	void configCallback (const std::string &, const std::string &);
+	void config_callback (const std::string &, const std::string &);
 private:
-	Config::ptr config; // < pointer to an instance of Config to be edited
+	Config::ptr config;       // < pointer to an instance of Config to be edited
 private slots:
-	void itemChangedHandler (QTreeWidgetItem *, int);
+	void item_changed_handler (QTreeWidgetItem *, int);
 };
 #endif // CONFIG_EDITOR_H
