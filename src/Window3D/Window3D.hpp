@@ -16,6 +16,10 @@
 
 using namespace Workspace;
 
+/**
+        This widget handles display of Items in 3D space.
+ */
+
 class Window3D : public QGLWidget
 {
 	Q_OBJECT

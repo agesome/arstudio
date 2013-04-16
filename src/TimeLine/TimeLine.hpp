@@ -14,6 +14,10 @@
 
 #include <TimeLineModel.hpp>
 
+/**
+        This widget handles data playback.
+ */
+
 class TimeLine : public QWidget
 {
 	Q_OBJECT

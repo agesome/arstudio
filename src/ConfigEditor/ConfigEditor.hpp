@@ -8,14 +8,18 @@
 
 #include <Config.hpp>
 
+/**
+        This class implements a widget to display and edit settings from Config
+ */
+
 class ConfigEditor : public QTreeWidget
 {
 	Q_OBJECT
 public:
 	explicit ConfigEditor (Config::ptr, QWidget * parent = nullptr);
-	void configCallback (std::string, std::string);
+	void configCallback (const std::string &, const std::string &);
 private:
-	Config::ptr config;
+	Config::ptr config; // < pointer to an instance of Config to be edited
 private slots:
 	void itemChangedHandler (QTreeWidgetItem *, int);
 };

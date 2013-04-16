@@ -8,6 +8,10 @@ Core::Core() : QMainWindow ()
 	Logger::setRepository (repo);
 }
 
+/**
+        This slot makes use of QGLWidget::renderPixmap () to make a screenshot of the 3D window.
+ */
+
 void Core::makeScreenshot (void)
 {
 	QPixmap p = wnd3d->renderPixmap ();
@@ -21,6 +25,10 @@ void Core::makeScreenshot (void)
 	p.save (fileName);
 }
 
+/**
+        This slot is called to clear the Repository when a new file is to be processed.
+ */
+
 void Core::clearRepository (void)
 {
 	Logger::getInstance ().resetFrameCounter ();
@@ -28,6 +36,14 @@ void Core::clearRepository (void)
 	repo->Clear ();
 	updateWindows ();
 }
+
+/**
+        This slot is called when processing stops, either because it has completed,
+        or because there was an error.
+
+        \param success indicates whether the processing was successful
+        \param e contains the error message in case of processing failure
+ */
 
 void Core::processingDone (bool success, std::string e)
 {
@@ -42,6 +58,11 @@ void Core::processingDone (bool success, std::string e)
 			msg.exec ();
 		}
 }
+
+/**
+        This method is called to update the scenegraph and make all the windows
+        display the first frame
+ */
 
 void Core::updateWindows ()
 {

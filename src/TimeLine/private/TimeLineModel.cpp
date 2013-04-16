@@ -26,25 +26,20 @@ int TimeLineModel::getCurFrame ()
 	return current_frame;
 }
 
-
 void TimeLineModel::setMin (int mn)
 {
 	min = mn;
 }
-
 
 void TimeLineModel::setMax (int mx)
 {
 	max = mx;
 }
 
-
-
 int TimeLineModel::getMin ()
 {
 	return min;
 }
-
 
 int TimeLineModel::getMax ()
 {

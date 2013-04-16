@@ -3,6 +3,10 @@
 
 #include <QObject>
 
+/**
+        This class implements a model for the TimeLine widget.
+ */
+
 class TimeLineModel : public QObject
 {
 	Q_OBJECT

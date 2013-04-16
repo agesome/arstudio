@@ -11,6 +11,12 @@ Window2D::update (void)
 	this->update (currentFrame);
 }
 
+/**
+        This method displays a Bitmap corresponding to a certain frame, if there is one.
+
+        \param frame the frame for wich to seek a Bitmap
+ */
+
 void
 Window2D::update (int frame)
 {
@@ -41,6 +47,10 @@ Window2D::update (int frame)
 			                                       Qt::KeepAspectRatio));
 		}
 }
+
+/**
+        This method scales currently displayed bitmap to new widget size.
+ */
 
 void
 Window2D::resizeEvent (QResizeEvent *)

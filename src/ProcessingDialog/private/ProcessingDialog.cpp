@@ -63,6 +63,13 @@ void ProcessingDialog::createLayout ()
 	progress_bar->setMaximum (-1);
 }
 
+/**
+        This method imports settings from every directory at path, by convention
+        -- from a file named "settings.xml".
+
+        \param path the directory to scan for sub-directories
+ */
+
 void ProcessingDialog::populateConfig (std::string path)
 {
 	boost::filesystem::directory_iterator dir (path), end;
@@ -88,15 +95,20 @@ void ProcessingDialog::stop_clicked (void)
 
 void ProcessingDialog::select_file ()
 {
-	selectedFile = QFileDialog::getOpenFileName (this,
-	                                             tr ("Open Video"), lastSelectedFile,
-	                                             tr ("Video Files (*.avi *.mkv *.wmv *.mp4 *.kinvideo)"));
+	selectedFile = QFileDialog::getOpenFileName (this, tr ("Open Video"),
+	                                             lastSelectedFile, tr ("Video Files (*.avi *.mkv *.wmv *.mp4 *.kinvideo)"));
 	if (selectedFile.isNull ())
 		return;
 	lastSelectedFile = selectedFile;
 
 	loadFile (selectedFile.toStdString ());
 }
+
+/**
+        This method loads a video file either with OpenCV VideoCapture, or with
+        FileCapture for kinvide.
+        \param path path to the file
+ */
 
 bool ProcessingDialog::loadFile (std::string path)
 {
@@ -149,6 +161,10 @@ bool ProcessingDialog::loadFile (std::string path)
 	frames_count_label->setText ("Frames: " + QString::number (frames_count));
 	return true;
 }
+
+/**
+        This method determines the range of frames to be processed and starts the processing thread.
+ */
 
 void ProcessingDialog::process_frames (void)
 {

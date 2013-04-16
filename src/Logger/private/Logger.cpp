@@ -31,6 +31,12 @@ void Logger::resetFrameCounter (void)
 	current_frame = 1;
 }
 
+/**
+        This method logs an OpenCV Point3d, converting it to the internally used Point3d
+
+        \param point the point to be logged
+ */
+
 void
 Logger::logPoint (cv::Point3d point)
 {
@@ -38,6 +44,15 @@ Logger::logPoint (cv::Point3d point)
 
 	repo->addItem (p, current_frame, Item::POINT3D, "points");
 }
+
+/**
+        This method logs a Camera
+
+        \param p position
+        \param rx rotation on the X axis
+        \param ry rotation on the Y axis
+        \param rz rotation on the Z axis
+ */
 
 void
 Logger::logCamera (cv::Point3d p, double rx, double ry, double rz)
@@ -49,6 +64,12 @@ Logger::logCamera (cv::Point3d p, double rx, double ry, double rz)
 
 	repo->addItem (c, current_frame, Item::CAMERA, "camera");
 }
+
+/**
+        This method logs a cv::Mat containing an image as internal Bitmap
+        \param m the image to be logged
+        \param source name of the sequence to log to
+ */
 
 void
 Logger::addImage (cv::Mat & m, std::string source)

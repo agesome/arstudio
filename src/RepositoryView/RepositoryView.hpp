@@ -11,6 +11,11 @@
 
 namespace Workspace
 {
+/**
+        This widget displays the contents of repository by installing necessary callbacks in it.
+
+        It also informs Scenegraph when user selects or deselects a sequence to be shown.
+ */
 class RepositoryView : public QTreeWidget
 {
 	Q_OBJECT
@@ -25,7 +30,7 @@ signals:
 	void selectionChanged (void);
 
 private slots:
-	void onItemChanged (QTreeWidgetItem * item, int col);
+	void onItemChanged (QTreeWidgetItem *, int);
 };
 }
 #endif // REPOSITORY_VIEW_H

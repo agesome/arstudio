@@ -1,5 +1,12 @@
 #include <ConfigEditor.hpp>
 
+/**
+        The constructor
+
+        \param config the instance of Config to be edited
+        \param parent parent widget
+ */
+
 ConfigEditor::ConfigEditor (Config::ptr config, QWidget * parent)
 	: QTreeWidget (parent)
 {
@@ -15,18 +22,33 @@ ConfigEditor::ConfigEditor (Config::ptr config, QWidget * parent)
 	         SLOT (itemChangedHandler (QTreeWidgetItem *, int)));
 }
 
+/**
+        This method gets set as the import callback for Config, allowing us to see
+        newly added settings
+
+        \param path path to the setting
+        \param value the default value
+ */
+
 void
-ConfigEditor::configCallback (std::string path, std::string name)
+ConfigEditor::configCallback (const std::string & path, const std::string & value)
 {
 	QStringList i;
 
-	i << QString::fromStdString (path) << QString::fromStdString (name);
+	i << QString::fromStdString (path) << QString::fromStdString (value);
 	QTreeWidgetItem *s = new QTreeWidgetItem (i);
 	s->setFlags (s->flags () | Qt::ItemIsEditable);
 	insertTopLevelItem (0, s);
 	resizeColumnToContents (0);
 	resizeColumnToContents (1);
 }
+
+/**
+        This function is called when user edits a setting field. In turn, it calls
+        Config::put to update the setting.
+
+        \param item the field which was edited
+ */
 
 void
 ConfigEditor::itemChangedHandler (QTreeWidgetItem * item, int)

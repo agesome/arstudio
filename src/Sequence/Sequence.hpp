@@ -8,11 +8,22 @@
 
 namespace Workspace
 {
+/**
+        This is the base class for all data items.
+ */
+
 class Item
 {
 public:
 	typedef boost::shared_ptr<Item> ptr;
 	typedef std::pair<int, ptr> pair;
+
+	/**
+	        This method allows casting from a generic Item pointer to a pointer to
+	        a specific Item type.
+
+	        \param r the pointer to be cast
+	 */
 
 	template <class T> static boost::shared_ptr<T> ptr_cast_to (const Item::ptr & r)
 	{
@@ -32,8 +43,12 @@ public:
 		LEN_
 	};
 
-	static const std::string typeNames[LEN_];
+	static const std::string typeNames[LEN_]; // << holds human-readable type names for all item types
 };
+
+/**
+        This class manages a frame-ordered sequence of data items.
+ */
 
 class Sequence
 {
@@ -49,8 +64,8 @@ public:
 	Item::type getType (void);
 
 private:
-	Item::type type;
-	map items;
+	Item::type type; // < type of items stored
+	map items; // < map of items to frames
 };
 }
 #endif // SEQUENCE_H

@@ -26,6 +26,11 @@ Scenegraph::getSequences (void)
 	return sequences;
 }
 
+/**
+        This method returns lowest frame index of all sequences contained
+        in this instance.
+ */
+
 unsigned int
 Scenegraph::getMinFrame (void)
 {
@@ -37,6 +42,11 @@ Scenegraph::getMinFrame (void)
 				r = it.first;
 	return r;
 }
+
+/**
+        This method returns highest frame index of all sequences contained
+        in this instance.
+ */
 
 unsigned int
 Scenegraph::getMaxFrame (void)

@@ -2,6 +2,14 @@
 
 namespace Workspace
 {
+/**
+        This method adds a sequence to the specified branch.
+
+        \param sequence the sequence to be added
+        \param id name under which to store the sequence
+        \param branchName branch to which the sequence will be added, defaults to "default"
+ */
+
 void
 Repository::addSequence (Sequence::ptr sequence, std::string id,
                          std::string branchName)
@@ -12,6 +20,16 @@ Repository::addSequence (Sequence::ptr sequence, std::string id,
 	if (newSequenceCallback)
 		newSequenceCallback (id, branchName);
 }
+
+/**
+        This method adds a single Item to a sequence.
+
+        \param item the item to be added
+        \param nframe the frame to which this item corresponds
+        \param type the type of the item
+        \param id name the sequence to add to
+        \param branchName branch under which the sequence is stored
+ */
 
 void
 Repository::addItem (Item::ptr item, unsigned int nframe, Item::type type,
@@ -34,6 +52,12 @@ Repository::addItem (Item::ptr item, unsigned int nframe, Item::type type,
 			it->second->addItem (nframe, item);
 		}
 }
+
+/**
+        This method returns a sequenceMap for a branch.
+
+        \param branchName the branch to find
+ */
 
 Repository::sequenceMap &
 Repository::getSequenceMap (std::string branchName = "default")
@@ -65,6 +89,10 @@ Repository::getTree (void)
 {
 	return sequences;
 }
+
+/**
+        This method removes all sequences from the repository.
+ */
 
 void Repository::Clear (void)
 {

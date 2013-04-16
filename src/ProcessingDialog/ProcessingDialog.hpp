@@ -27,6 +27,10 @@
 
 #include <filecapture.hpp>
 
+/**
+        This class handles processing of video files, until individual frames are passed to AlgoPipeline
+ */
+
 class ProcessingDialog : public QWidget
 {
 	Q_OBJECT
@@ -49,10 +53,10 @@ private:
 	QString selectedFile;
 	QString lastSelectedFile;
 
-	QSettings settings;
+	QSettings settings; // < save and restore path to last opened file
 
-	cv::VideoCapture *vcap = nullptr;
-	FileCapture *kincap = nullptr;
+	cv::VideoCapture *vcap = nullptr; // < used for regular video files
+	FileCapture *kincap = nullptr; // < used for kinvideo files
 
 	Config::ptr config = Config::make ();
 	// has to be created before AlgoPipeline!

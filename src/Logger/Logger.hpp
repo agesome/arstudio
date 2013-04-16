@@ -11,6 +11,11 @@
 #include <Point3D.hpp>
 #include <Camera.hpp>
 
+/**
+        This singleton class recieves data from algorithms, converts it to a suitable format
+        and stores it in the Repository
+ */
+
 class Logger
 {
 public:
@@ -27,7 +32,7 @@ private:
 	Logger (const Logger &);
 	void operator= (const Logger &);
 
-	static Workspace::Repository::ptr repo;
-	unsigned int current_frame = 1;
+	static Workspace::Repository::ptr repo; // < currently used instance of Repository
+	unsigned int current_frame = 1; // < all data being logged is associated with this frame number
 };
 #endif // LOGGER_H
