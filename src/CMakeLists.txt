@@ -118,7 +118,7 @@ if (NOT ALGORITHMS STREQUAL "")
 	endforeach()
 endif ()
 
-set(CONFIG_DIRECTORY "../algorithms/")
+set(CONFIG_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/algorithms/")
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/ProcessingDialog/private/ProcessingDialog.cpp
 				${CMAKE_BINARY_DIR}/ProcessingDialog.cpp)
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/AlgoPipeline/AlgoPipeline.hpp
