@@ -10,25 +10,25 @@ using namespace Workspace;
 class Camera : public Item
 {
 public:
-	typedef std::shared_ptr<Camera> ptr;
-	static ptr
-	make (void)
-	{
-		return std::make_shared<Camera> ();
-	}
+  typedef std::shared_ptr<Camera> ptr;
+  static ptr
+  make (void)
+  {
+    return std::make_shared<Camera> ();
+  }
 
-	Camera ()
-	{
-	};
+  Camera ()
+  {
+  };
 
 
-	GLfloat tx;
-	GLfloat ty;
-	GLfloat tz;
+  GLfloat tx;
+  GLfloat ty;
+  GLfloat tz;
 
-	GLfloat rx;
-	GLfloat ry;
-	GLfloat rz;
+  GLfloat rx;
+  GLfloat ry;
+  GLfloat rz;
 };
 
 #endif // CAMERA_H

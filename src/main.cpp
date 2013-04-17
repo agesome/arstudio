@@ -6,14 +6,14 @@ using namespace Workspace;
 int
 main (int argc, char * argv[])
 {
-	QApplication app (argc, argv);
+  QApplication app (argc, argv);
 
-	QApplication::setApplicationName ("arstudio");
-	QApplication::setOrganizationName ("LuxoftLab");
+  QApplication::setApplicationName ("arstudio");
+  QApplication::setOrganizationName ("LuxoftLab");
 
-	Core core;
+  Core core;
 
-	core.show ();
+  core.show ();
 
-	return app.exec ();
+  return app.exec ();
 }

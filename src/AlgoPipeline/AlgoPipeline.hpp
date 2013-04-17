@@ -19,20 +19,22 @@
 class AlgoPipeline
 {
 public:
-	typedef std::shared_ptr<AlgoPipeline> ptr; // < a convenience typedef
+  typedef std::shared_ptr<AlgoPipeline> ptr;       // < a convenience
+                                                   // typedef
 
-	AlgoPipeline (Config::ptr);
-	~AlgoPipeline ();
+  AlgoPipeline (Config::ptr);
+  ~AlgoPipeline ();
 
-	static ptr make (Config::ptr);
-	void process_frame (const cv::Mat &, const cv::Mat &);
-	void create_all (void);
+  static ptr make (Config::ptr);
+  void process_frame (const cv::Mat &, const cv::Mat &);
+  void create_all (void);
 
 private:
-	void create_algorithm (IAbstractAlgorithm *);
+  void create_algorithm (IAbstractAlgorithm *);
 
-	std::list <IAbstractAlgorithm *> algo_list; // < list of all created
-	                                            // algorithms
+  std::list <IAbstractAlgorithm *> algo_list;       // < list of all
+                                                    // created
+                                                    // algorithms
 };
 
 #endif // ALGO_PIPELINE_H

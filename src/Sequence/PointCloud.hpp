@@ -9,14 +9,14 @@
 class PointCloud : public Item
 {
 public:
-	typedef std::shared_ptr<PointCloud> ptr;
-	static ptr
-	make (void)
-	{
-		return std::make_shared<PointCloud> ();
-	};
+  typedef std::shared_ptr<PointCloud> ptr;
+  static ptr
+  make (void)
+  {
+    return std::make_shared<PointCloud> ();
+  };
 
-	std::list<Point3d::ptr> cloud;
+  std::list<Point3d::ptr> cloud;
 };
 
 #endif // PCLOUD_H

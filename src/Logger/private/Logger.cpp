@@ -9,27 +9,27 @@ Logger::Logger ()
 Logger &
 Logger::getInstance (void)
 {
-	static Logger instance;
+  static Logger instance;
 
-	return instance;
+  return instance;
 }
 
 void
 Logger::setRepository (Workspace::Repository::ptr r)
 {
-	repo = r;
+  repo = r;
 }
 
 void
 Logger::advanceFrame (void)
 {
-	current_frame++;
+  current_frame++;
 }
 
 void
 Logger::resetFrameCounter (void)
 {
-	current_frame = 1;
+  current_frame = 1;
 }
 
 /**
@@ -42,9 +42,9 @@ Logger::resetFrameCounter (void)
 void
 Logger::logPoint (cv::Point3d point)
 {
-	Point3d::ptr p = Point3d::make (point.x, point.y, point.z, 1, 1, 1);
+  Point3d::ptr p = Point3d::make (point.x, point.y, point.z, 1, 1, 1);
 
-	repo->addItem (p, current_frame, Item::POINT3D, "points");
+  repo->addItem (p, current_frame, Item::POINT3D, "points");
 }
 
 /**
@@ -59,12 +59,12 @@ Logger::logPoint (cv::Point3d point)
 void
 Logger::logCamera (cv::Point3d p, double rx, double ry, double rz)
 {
-	Camera::ptr c = Camera::make ();
+  Camera::ptr c = Camera::make ();
 
-	c->tx = p.x; c->ty = p.y; c->tz = p.z;
-	c->rx = rx; c->ry = ry; c->rz = rz;
+  c->tx = p.x; c->ty = p.y; c->tz = p.z;
+  c->rx = rx; c->ry = ry; c->rz = rz;
 
-	repo->addItem (c, current_frame, Item::CAMERA, "camera");
+  repo->addItem (c, current_frame, Item::CAMERA, "camera");
 }
 
 /**
@@ -76,8 +76,8 @@ Logger::logCamera (cv::Point3d p, double rx, double ry, double rz)
 void
 Logger::addImage (cv::Mat & m, std::string source)
 {
-	Bitmap::ptr map = Bitmap::make ();
+  Bitmap::ptr map = Bitmap::make ();
 
-	map->bitmap = m;
-	repo->addItem (map, current_frame, Item::BITMAP, source);
+  map->bitmap = m;
+  repo->addItem (map, current_frame, Item::BITMAP, source);
 }

@@ -20,25 +20,29 @@
 class Logger
 {
 public:
-	static Logger & getInstance (void);
-	static void setRepository (const Workspace::Repository::ptr);
+  static Logger & getInstance (void);
+  static void setRepository (const Workspace::Repository::ptr);
 
-	void addImage (cv::Mat &, std::string);
-	void logPoint (cv::Point3d point);
-	void logCamera (cv::Point3d, double, double, double);
-	void advanceFrame (void);
-	void resetFrameCounter (void);
+  void addImage (cv::Mat &, std::string);
+  void logPoint (cv::Point3d point);
+  void logCamera (cv::Point3d, double, double, double);
+  void advanceFrame (void);
+  void resetFrameCounter (void);
 private:
-	Logger ();
-	Logger (const Logger &)             = delete;
-	Logger & operator= (const Logger &) = delete;
+  Logger ();
+  Logger (const Logger &)             = delete;
+  Logger & operator= (const Logger &) = delete;
 
-	static Workspace::Repository::ptr repo; // < currently used instance of
-	                                        // Repository
-	unsigned int current_frame = 1;                      // < all data being
-	                                                     // logged is
-	                                                     // associated with
-	                                                     // this frame number
+  static Workspace::Repository::ptr repo;       // < currently used
+                                                // instance of
+                                                // Repository
+  unsigned int current_frame = 1;                            // < all data
+                                                             // being
+                                                             // logged is
+                                                             // associated
+                                                             // with
+                                                             // this frame
+                                                             // number
 };
 
 #endif // LOGGER_H

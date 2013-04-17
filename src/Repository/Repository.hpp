@@ -21,31 +21,31 @@ namespace Workspace
 class Repository
 {
 public:
-	typedef std::map <std::string, Sequence::ptr> sequenceMap;
-	typedef std::pair <std::string, Sequence::ptr> mapItem;
-	typedef std::map <std::string, sequenceMap> mapTree;
+  typedef std::map <std::string, Sequence::ptr> sequenceMap;
+  typedef std::pair <std::string, Sequence::ptr> mapItem;
+  typedef std::map <std::string, sequenceMap> mapTree;
 
-	typedef std::shared_ptr<Repository> ptr;
+  typedef std::shared_ptr<Repository> ptr;
 
-	// < called when a new branch is added
-	std::function <void (std::string)> newBranchCallback;
-	// < called when a branch is removed
-	std::function <void (std::string)> branchRemovedCallback;
-	// < called when a new sequence is added
-	std::function <void (std::string, std::string)> newSequenceCallback;
-	// < called when a sequence is removed
-	std::function <void (std::string, std::string)> sequenceRemovedCallback;
+  // < called when a new branch is added
+  std::function <void (std::string)> newBranchCallback;
+  // < called when a branch is removed
+  std::function <void (std::string)> branchRemovedCallback;
+  // < called when a new sequence is added
+  std::function <void (std::string, std::string)> newSequenceCallback;
+  // < called when a sequence is removed
+  std::function <void (std::string, std::string)> sequenceRemovedCallback;
 
-	void addSequence (Sequence::ptr, std::string, std::string = "default");
-	void addItem (Item::ptr, unsigned int, Item::type, std::string,
-	              std::string = "default");
-	void Clear (void);
-	static ptr make (void);
-	const mapTree & getTree (void);
-	const Sequence::ptr getSequence (std::string, std::string);
-	sequenceMap & getSequenceMap (std::string);
+  void addSequence (Sequence::ptr, std::string, std::string = "default");
+  void addItem (Item::ptr, unsigned int, Item::type, std::string,
+                std::string = "default");
+  void Clear (void);
+  static ptr make (void);
+  const mapTree & getTree (void);
+  const Sequence::ptr getSequence (std::string, std::string);
+  sequenceMap & getSequenceMap (std::string);
 private:
-	mapTree sequences;
+  mapTree sequences;
 };
 }
 #endif // REPOSITORY_H

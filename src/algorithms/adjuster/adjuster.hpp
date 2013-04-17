@@ -16,42 +16,42 @@ using namespace cv;
 class ImageAdjuster
 {
 public:
-	virtual Mat adjust (const Mat & image) = 0;
-	virtual
-	~ImageAdjuster ()
-	{
-	};
+  virtual Mat adjust (const Mat & image) = 0;
+  virtual
+  ~ImageAdjuster ()
+  {
+  };
 };
 
 class BrightnessAdjuster : public ImageAdjuster
 {
 public:
-	double brightness;
+  double brightness;
 
-	Mat adjust (const Mat & image);
+  Mat adjust (const Mat & image);
 };
 
 class ContrastAdjuster : public ImageAdjuster
 {
 public:
-	double contrast;
+  double contrast;
 
-	Mat adjust (const Mat & image);
+  Mat adjust (const Mat & image);
 };
 
 class ImageAdjusterAlgorithm : public IAbstractAlgorithm
 {
 public:
-	ImageAdjusterAlgorithm (Config::ptr config);
-	~ImageAdjusterAlgorithm ();
+  ImageAdjusterAlgorithm (Config::ptr config);
+  ~ImageAdjusterAlgorithm ();
 
-	bool create (void);
-	bool run (const Mat &, const Mat &);
-	const std::string id_string (void);
+  bool create (void);
+  bool run (const Mat &, const Mat &);
+  const std::string id_string (void);
 
-	std::string type;
+  std::string type;
 private:
-	ImageAdjuster * adjuster = nullptr;
+  ImageAdjuster * adjuster = nullptr;
 };
 
 #endif // ADJUSTER_HPP

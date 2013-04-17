@@ -34,41 +34,41 @@ using namespace Workspace;
 
 class Core : public QMainWindow
 {
-	Q_OBJECT
+  Q_OBJECT
 private:
-	void init_gui (void);
-	void connect_signals (void);
-	void init_toolbar (void);
-	void update_windows (void);
+  void init_gui (void);
+  void connect_signals (void);
+  void init_toolbar (void);
+  void update_windows (void);
 
-	QSplitter * h_splitter;
-	QSplitter * v_splitter;
-	QMenuBar  * menubar;
-	QMdiArea  * mdi_area;
-	QToolBar  * toolbar;
+  QSplitter * h_splitter;
+  QSplitter * v_splitter;
+  QMenuBar  * menubar;
+  QMdiArea  * mdi_area;
+  QToolBar  * toolbar;
 
-	QString last_screenshot_path;
+  QString last_screenshot_path;
 
-	Repository::ptr repository_ptr;
-	Scenegraph::ptr scenegraph_ptr;
+  Repository::ptr repository_ptr;
+  Scenegraph::ptr scenegraph_ptr;
 
-	TimeLineModel    * timeline_model;
-	TimeLine         * timeline;
-	Window3D         * window3d;
-	Window2D         * window2d;
-	ProcessingDialog * processing_dialog;
-	RepositoryView   * repository_view;
+  TimeLineModel    * timeline_model;
+  TimeLine         * timeline;
+  Window3D         * window3d;
+  Window2D         * window2d;
+  ProcessingDialog * processing_dialog;
+  RepositoryView   * repository_view;
 public:
-	Core (void);
+  Core (void);
 public slots:
-	void menu_quit (void);
-	void menu_open (void);
-	void menu_about (void);
-	void menu_help (void);
-	void menu_settings (void);
-	void processing_done (bool, const std::string &);
-	void clear_repository (void);
-	void make_screenshot (void);
+  void menu_quit (void);
+  void menu_open (void);
+  void menu_about (void);
+  void menu_help (void);
+  void menu_settings (void);
+  void processing_done (bool, const std::string &);
+  void clear_repository (void);
+  void make_screenshot (void);
 };
 
 #endif // CORE_H

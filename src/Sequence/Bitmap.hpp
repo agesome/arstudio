@@ -10,14 +10,14 @@ using namespace Workspace;
 class Bitmap : public Item
 {
 public:
-	typedef std::shared_ptr<Bitmap> ptr;
-	static ptr
-	make (void)
-	{
-		return std::make_shared<Bitmap> ();
-	};
+  typedef std::shared_ptr<Bitmap> ptr;
+  static ptr
+  make (void)
+  {
+    return std::make_shared<Bitmap> ();
+  };
 
-	cv::Mat bitmap;
+  cv::Mat bitmap;
 };
 
 #endif // BITMAP_HPP

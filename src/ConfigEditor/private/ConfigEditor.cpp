@@ -7,19 +7,21 @@
  *      \param parent parent widget
  */
 ConfigEditor::ConfigEditor (Config::ptr config, QWidget * parent)
-	: QTreeWidget (parent)
+  : QTreeWidget (parent)
 {
-	this->config = config;
-	Config::import_callback_t f = std::bind (&ConfigEditor::config_callback,
-		this, std::placeholders::_1, std::placeholders::_2);
-	config->set_import_callback (f);
+  this->config = config;
+  Config::import_callback_t f = std::bind (&ConfigEditor::config_callback,
+                                           this,
+                                           std::placeholders::_1,
+                                           std::placeholders::_2);
+  config->set_import_callback (f);
 
-	QStringList list;
-	list << "Setting" << "Value";
-	setHeaderLabels (list);
+  QStringList list;
+  list << "Setting" << "Value";
+  setHeaderLabels (list);
 
-	connect (this, SIGNAL (itemChanged (QTreeWidgetItem *, int)), this,
-		SLOT (item_changed_handler (QTreeWidgetItem *, int)));
+  connect (this, SIGNAL (itemChanged (QTreeWidgetItem *, int)), this,
+           SLOT (item_changed_handler (QTreeWidgetItem *, int)));
 }
 
 /**
@@ -34,14 +36,14 @@ void
 ConfigEditor::config_callback (const std::string & path,
                                const std::string & value)
 {
-	QStringList i;
+  QStringList i;
 
-	i << QString::fromStdString (path) << QString::fromStdString (value);
-	QTreeWidgetItem * s = new QTreeWidgetItem (i);
-	s->setFlags (s->flags () | Qt::ItemIsEditable);
-	insertTopLevelItem (0, s);
-	resizeColumnToContents (0);
-	resizeColumnToContents (1);
+  i << QString::fromStdString (path) << QString::fromStdString (value);
+  QTreeWidgetItem * s = new QTreeWidgetItem (i);
+  s->setFlags (s->flags () | Qt::ItemIsEditable);
+  insertTopLevelItem (0, s);
+  resizeColumnToContents (0);
+  resizeColumnToContents (1);
 }
 
 /**
@@ -54,5 +56,5 @@ ConfigEditor::config_callback (const std::string & path,
 void
 ConfigEditor::item_changed_handler (QTreeWidgetItem * item, int)
 {
-	config->put (item->text (0).toStdString (), item->text (1).toStdString ());
+  config->put (item->text (0).toStdString (), item->text (1).toStdString ());
 }

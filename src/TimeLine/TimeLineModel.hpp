@@ -9,21 +9,21 @@
 
 class TimeLineModel : public QObject
 {
-	Q_OBJECT
+  Q_OBJECT
 public:
-	TimeLineModel (int mn, int mx);
+  TimeLineModel (int mn, int mx);
 
-	bool setCurFrame (int nframe);
-	bool incCurFrame ();
-	void setMin (int mn);
-	void setMax (int mx);
-	int getMin ();
-	int getMax ();
-	int getCurFrame ();
+  bool setCurFrame (int nframe);
+  bool incCurFrame ();
+  void setMin (int mn);
+  void setMax (int mx);
+  int getMin ();
+  int getMax ();
+  int getCurFrame ();
 private:
-	int current_frame, min, max;
+  int current_frame, min, max;
 signals:
-	void newFrame (int nfr);
+  void newFrame (int nfr);
 };
 
 #endif // TIMELINEMODEL_HPP

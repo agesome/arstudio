@@ -10,7 +10,7 @@
 
 AlgoPipeline::AlgoPipeline (Config::ptr config)
 {
-	@ALGO_CODE@
+  @ALGO_CODE@
 }
 
 /**
@@ -21,14 +21,10 @@ AlgoPipeline::AlgoPipeline (Config::ptr config)
 void
 AlgoPipeline::create_all (void)
 {
-	for (auto algo : algo_list)
-		{
-			if (!algo->create ())
-				{
-					throw std::runtime_error ("failed to create(): " +
-						algo->id_string ());
-				}
-		}
+  for (auto algo : algo_list)
+    if (!algo->create ())
+      throw std::runtime_error ("failed to create(): " +
+                                algo->id_string ());
 }
 
 /**
@@ -37,10 +33,8 @@ AlgoPipeline::create_all (void)
 
 AlgoPipeline::~AlgoPipeline ()
 {
-	for (auto algo : algo_list)
-		{
-			delete algo;
-		}
+  for (auto algo : algo_list)
+    delete algo;
 }
 
 /**
@@ -53,7 +47,7 @@ AlgoPipeline::~AlgoPipeline ()
 AlgoPipeline::ptr
 AlgoPipeline::make (Config::ptr config)
 {
-	return std::make_shared<AlgoPipeline> (config);
+  return std::make_shared<AlgoPipeline> (config);
 }
 
 /**
@@ -66,9 +60,7 @@ AlgoPipeline::make (Config::ptr config)
 void
 AlgoPipeline::process_frame (const cv::Mat & image, const cv::Mat & dmap)
 {
-	for (auto algo : algo_list)
-		{
-			algo->run (image, dmap);
-		}
-	Logger::getInstance ().advanceFrame ();
+  for (auto algo : algo_list)
+    algo->run (image, dmap);
+  Logger::getInstance ().advanceFrame ();
 }

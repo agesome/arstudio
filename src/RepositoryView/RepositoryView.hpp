@@ -20,21 +20,21 @@ namespace Workspace
  */
 class RepositoryView : public QTreeWidget
 {
-	Q_OBJECT
+  Q_OBJECT
 public:
-	RepositoryView (Repository::ptr,
-		Scenegraph::ptr,
-		QWidget * MainWindow = nullptr);
+  RepositoryView (Repository::ptr,
+                  Scenegraph::ptr,
+                  QWidget * MainWindow = nullptr);
 
 private:
-	Scenegraph::ptr scgr;
-	Repository::ptr repo;
+  Scenegraph::ptr scgr;
+  Repository::ptr repo;
 
 signals:
-	void selectionChanged (void);
+  void selectionChanged (void);
 
 private slots:
-	void onItemChanged (QTreeWidgetItem *, int);
+  void onItemChanged (QTreeWidgetItem *, int);
 };
 }
 #endif // REPOSITORY_VIEW_H

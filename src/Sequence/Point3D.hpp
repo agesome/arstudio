@@ -10,21 +10,21 @@ using namespace Workspace;
 class Point3d : public Item
 {
 public:
-	typedef std::shared_ptr<Point3d> ptr;
+  typedef std::shared_ptr<Point3d> ptr;
 
-	static ptr make (void);
-	static ptr make (GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat);
+  static ptr make (void);
+  static ptr make (GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat);
 
-	Point3d ();
-	Point3d (GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat);
+  Point3d ();
+  Point3d (GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat);
 
-	GLfloat x;
-	GLfloat y;
-	GLfloat z;
+  GLfloat x;
+  GLfloat y;
+  GLfloat z;
 
-	GLfloat r;
-	GLfloat g;
-	GLfloat b;
+  GLfloat r;
+  GLfloat g;
+  GLfloat b;
 };
 
 #endif // POINT3D_H

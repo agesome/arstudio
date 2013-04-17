@@ -19,19 +19,19 @@ using namespace Workspace;
 
 class Window2D : public QLabel
 {
-	Q_OBJECT
+  Q_OBJECT
 public:
-	Window2D (Scenegraph::ptr, QWidget * parent = nullptr);
+  Window2D (Scenegraph::ptr, QWidget * parent = nullptr);
 private:
-	QPixmap         currentPixmap; // < currently displayed QPixmap
-	Scenegraph::ptr scenegraph; // < an instance of Scenegraph
-	int             currentFrame = 1; // < currently used frame
+  QPixmap         currentPixmap;       // < currently displayed QPixmap
+  Scenegraph::ptr scenegraph;       // < an instance of Scenegraph
+  int             currentFrame = 1;       // < currently used frame
 
-	void resizeEvent (QResizeEvent *);
+  void resizeEvent (QResizeEvent *);
 
 public slots:
-	void update (int);
-	void update (void);
+  void update (int);
+  void update (void);
 };
 
 #endif // WINDOW2D_H

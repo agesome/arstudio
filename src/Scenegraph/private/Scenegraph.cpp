@@ -5,25 +5,25 @@ namespace Workspace
 Scenegraph::ptr
 Scenegraph::make ()
 {
-	return std::make_shared<Scenegraph> ();
+  return std::make_shared<Scenegraph> ();
 }
 
 void
 Scenegraph::addSequence (Sequence::ptr seq)
 {
-	sequences.push_back (seq);
+  sequences.push_back (seq);
 }
 
 void
 Scenegraph::removeSequence (Sequence::ptr seq)
 {
-	sequences.remove (seq);
+  sequences.remove (seq);
 }
 
 const Scenegraph::list &
 Scenegraph::getSequences (void)
 {
-	return sequences;
+  return sequences;
 }
 
 /**
@@ -34,19 +34,14 @@ Scenegraph::getSequences (void)
 unsigned int
 Scenegraph::getMinFrame (void)
 {
-	unsigned int r = UINT_MAX;
+  unsigned int r = UINT_MAX;
 
-	for (auto seq : sequences)
-		{
-			for (auto it : seq->getItems ())
-				{
-					if (it.first < r)
-						{
-							r = it.first;
-						}
-				}
-		}
-	return r;
+  for (auto seq : sequences)
+    for (auto it : seq->getItems ())
+      if (it.first < r)
+        r = it.first;
+
+  return r;
 }
 
 /**
@@ -57,18 +52,13 @@ Scenegraph::getMinFrame (void)
 unsigned int
 Scenegraph::getMaxFrame (void)
 {
-	unsigned int r = 0;
+  unsigned int r = 0;
 
-	for (auto seq : sequences)
-		{
-			for (auto it : seq->getItems ())
-				{
-					if (it.first > r)
-						{
-							r = it.first;
-						}
-				}
-		}
-	return r;
+  for (auto seq : sequences)
+    for (auto it : seq->getItems ())
+      if (it.first > r)
+        r = it.first;
+
+  return r;
 }
 }
