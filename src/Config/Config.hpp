@@ -10,9 +10,8 @@
 namespace pt = boost::property_tree;
 
 /**
- *      This class handles import from XML files and storage of
- * algorithm-specific
- *      settings in a tree structure.
+ * This class handles import from XML files and storage of
+ *algorithm-specific settings in a tree structure.
  */
 
 class Config
@@ -26,9 +25,9 @@ public:
   void set_import_callback (import_callback_t);
   static ptr make (void);
   /**
-   *      Return the value of a property, cast to type T.
+   * Return the value of a property, cast to type T.
    *
-   *      \param prop dot-sepatared path to the setting, like
+   * \param prop dot-sepatared path to the setting, like
    * "path.to.setting"
    */
   template <typename T>
@@ -38,7 +37,7 @@ public:
     return main_tree.get<T> ("root." + prop);
   }
   /**
-   *      Change or place a setting the tree.
+   *      Change or place a setting in the tree.
    *
    *      \param prop path to the setting
    *      \param value desired value
@@ -50,10 +49,8 @@ public:
   }
 private:
   void walk_tree (const pt::ptree &, const std::string &);
-  import_callback_t import_callback;             // < Called for each value
-                                                 // imported
-  pt::ptree main_tree;               // < the main setting tree, contains
-                                     // settings for all algorithms
+  import_callback_t import_callback; ///< called for each value imported
+  pt::ptree         main_tree; ///< contains settings for all algorithms
 };
 
 #endif // CONFIG_H
