@@ -44,7 +44,7 @@ Window3D::initializeGL ()
 void
 Window3D::resizeGL (int nWidth, int nHeight)
 {
-  glMatrixMode (GL_PROJECTION);           // команды отн. к проекту
+  glMatrixMode (GL_PROJECTION); // команды отн. к проекту
   glLoadIdentity ();
 
   GLfloat ratio = (GLfloat) nHeight / (GLfloat) nWidth;
@@ -54,10 +54,7 @@ Window3D::resizeGL (int nWidth, int nHeight)
   else
     glOrtho (-1.0, 1.0, -1.0 * ratio, 1.0 * ratio, -10.0, 1.0);
 
-  glViewport (0, 0, (GLint) nWidth, (GLint) nHeight);           //
-                                                                //
-                                                                // установка
-                                                                // окон
+  glViewport (0, 0, (GLint) nWidth, (GLint) nHeight); // установка окон
 }
 
 void
@@ -65,7 +62,7 @@ Window3D::paintGL ()
 {
   glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  glMatrixMode (GL_MODELVIEW);           // команды отн. к модели
+  glMatrixMode (GL_MODELVIEW); // команды отн. к модели
   glLoadIdentity ();
 
   glScalef (nSca, nSca, nSca);
@@ -74,7 +71,7 @@ Window3D::paintGL ()
   glRotatef (yRot, 0.0f, 1.0f, 0.0f);
   glRotatef (zRot, 0.0f, 0.0f, 1.0f);
 
-  drawSceneElements ();           // выбирает, что рисовать
+  drawSceneElements (); // выбирает, что рисовать
 }
 
 void
@@ -169,7 +166,10 @@ Window3D::drawSceneElements ()
       // skip bitmaps
       if (seq->getType () == Item::BITMAP)
         continue;
-      const Sequence::map items = seq->getItems ();
+
+      const Sequence::map & items = seq->getItems ();
+      Camera::ptr           prev;
+
       try
         {
           item = items.at (currNframe);
@@ -178,11 +178,10 @@ Window3D::drawSceneElements ()
         {
           continue;
         }
+
       switch (seq->getType ())
         {
         case Item::CAMERA:
-        {
-          Camera::ptr prev;
           for (auto it : items)
             {
               c = Item::ptr_cast_to<Camera> (it.second);
@@ -204,7 +203,6 @@ Window3D::drawSceneElements ()
           c = Item::ptr_cast_to<Camera> (item);
           drawCam (c->tx, c->ty, c->tz, cam_size, c->rx, c->ry, c->rz);
           break;
-        }
 
         case Item::POINT3D:
           drawPoint3D (Item::ptr_cast_to<Point3d> (item), point_size);
@@ -272,9 +270,7 @@ void
 Window3D::drawCam (double x, double y, double z, double a, double rx,
                    double ry, double rz)
 {
-  glPushMatrix ();                               // сохранить текущюю
-                                                 // систему
-                                                 // координат
+  glPushMatrix (); // сохранить текущюю систему координат
 
   // повернуть и переместить систему координат
   glTranslatef (x, y, z);
@@ -313,6 +309,5 @@ Window3D::drawCam (double x, double y, double z, double a, double rx,
   glVertex3d (a, a, +a);                    // Верх лево
   glEnd ();
 
-  glPopMatrix ();                                // Восстановление исходную
-                                                 // систему координат
+  glPopMatrix (); // Восстановление исходную систему координат
 }
