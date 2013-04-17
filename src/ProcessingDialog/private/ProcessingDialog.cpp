@@ -12,18 +12,20 @@ ProcessingDialog::ProcessingDialog(QWidget *parent) :
 	         SLOT (select_frames_changed (bool)));
 	connect (stop_button, SIGNAL (clicked ()), this, SLOT (stop_clicked ()));
 
-	connect (this, SIGNAL (done_processing (bool, std::string)), this,
-	         SLOT (doneProcessingSlot (bool, std::string)));
+	connect (this, SIGNAL (processing_done (bool, const std::string &)), this,
+	         SLOT (processing_cleanup (void)));
 
 // defined in CMakeLists.txt
 	populateConfig ("@CONFIG_DIRECTORY@");
 
 	lastSelectedFile = settings.value ("ProcessingDialog/lastSelectedFile", "~").toString ();
 	if (lastSelectedFile != "~")
-		loadFile (lastSelectedFile.toStdString ());
+		{
+			loadFile (lastSelectedFile.toStdString ());
+		}
 }
 
-void ProcessingDialog::doneProcessingSlot (bool, std::string)
+void ProcessingDialog::processing_cleanup (void)
 {
 	unlockUI ();
 	this->hide ();
@@ -78,7 +80,9 @@ void ProcessingDialog::populateConfig (std::string path)
 		{
 			boost::filesystem::path p = dir->path ();
 			if (boost::filesystem::is_directory (p))
-				config->import_xml (p.string () + "/settings.xml");
+				{
+					config->import_xml (p.string () + "/settings.xml");
+				}
 		}
 }
 
@@ -98,7 +102,9 @@ void ProcessingDialog::select_file ()
 	selectedFile = QFileDialog::getOpenFileName (this, tr ("Open Video"),
 	                                             lastSelectedFile, tr ("Video Files (*.avi *.mkv *.wmv *.mp4 *.kinvideo)"));
 	if (selectedFile.isNull ())
-		return;
+		{
+			return;
+		}
 	lastSelectedFile = selectedFile;
 
 	loadFile (selectedFile.toStdString ());
@@ -115,7 +121,9 @@ bool ProcessingDialog::loadFile (std::string path)
 	QFileInfo fileInfo (QString::fromStdString (path));
 
 	if (fileInfo.isFile () == false)
-		return false;
+		{
+			return false;
+		}
 	unsigned int frames_count;
 
 	cv::VideoCapture * c;
@@ -169,16 +177,22 @@ bool ProcessingDialog::loadFile (std::string path)
 void ProcessingDialog::process_frames (void)
 {
 	if (!vcap && !kincap)
-		return;
+		{
+			return;
+		}
 
 	int start, end;
 	if (radio_whole_file->isChecked ())
 		{
 			start = 0;
 			if (vcap)
-				end = vcap->get (CV_CAP_PROP_FRAME_COUNT);
+				{
+					end = vcap->get (CV_CAP_PROP_FRAME_COUNT);
+				}
 			else
-				end = kincap->getFrameCount ();
+				{
+					end = kincap->getFrameCount ();
+				}
 		}
 	else
 		{
@@ -187,7 +201,9 @@ void ProcessingDialog::process_frames (void)
 		}
 
 	if (start >= end)
-		return;
+		{
+			return;
+		}
 	progress_bar->setRange (0, end - start);
 	progress_bar->setValue (1);
 
@@ -201,9 +217,9 @@ void ProcessingDialog::process_frames (void)
 		{
 			algo_pipeline->create_all ();
 		}
-	catch (std::runtime_error error)
+	catch (const std::runtime_error & error)
 		{
-			done_processing (false, error.what ());
+			processing_done (false, error.what ());
 			return;
 		}
 
@@ -214,10 +230,11 @@ void ProcessingDialog::process_frames (void)
 void ProcessingDialog::processing_thread (int start, int end)
 {
 	cv::Mat image, empty;
-	std::string es;
 
 	if (vcap)
-		vcap->set (CV_CAP_PROP_POS_FRAMES, start);
+		{
+			vcap->set (CV_CAP_PROP_POS_FRAMES, start);
+		}
 	for (int i = start; i < end && run_thread; i++)
 		{
 			try
@@ -234,19 +251,14 @@ void ProcessingDialog::processing_thread (int start, int end)
 							algo_pipeline->process_frame (f->image, f->depth_map);
 						}
 				}
-			catch (std::out_of_range e)
+			catch (const std::out_of_range & error)
 				{
-					done_processing (false, std::string (e.what ()));
-					return;
-				}
-			catch (std::exception e)                   // oops!
-				{
-					done_processing (false, std::string (e.what ()));
+					processing_done (false, error.what ());
 					return;
 				}
 			progress_signal ();
 		}
-	done_processing (true, es);
+	processing_done (true, std::string ());
 }
 
 void ProcessingDialog::update_progress (void)

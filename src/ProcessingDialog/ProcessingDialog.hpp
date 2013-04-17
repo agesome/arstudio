@@ -16,6 +16,7 @@
 #include <QSettings>
 
 #include <exception>
+#include <stdexcept>
 
 #include <opencv2/highgui/highgui.hpp>
 #include <boost/filesystem.hpp>
@@ -53,10 +54,10 @@ private:
 	QString selectedFile;
 	QString lastSelectedFile;
 
-	QSettings settings; // < save and restore path to last opened file
+	QSettings settings;             // < save and restore path to last opened file
 
-	cv::VideoCapture *vcap = nullptr; // < used for regular video files
-	FileCapture *kincap = nullptr; // < used for kinvideo files
+	cv::VideoCapture *vcap = nullptr;             // < used for regular video files
+	FileCapture *kincap = nullptr;             // < used for kinvideo files
 
 	Config::ptr config = Config::make ();
 	// has to be created before AlgoPipeline!
@@ -72,7 +73,7 @@ private:
 	void createLayout ();
 	bool loadFile (std::string);
 signals:
-	void done_processing (bool, std::string);
+	void processing_done (bool, const std::string &);
 	void progress_signal ();
 	void clearRepository (void);
 
@@ -82,6 +83,7 @@ public slots:
 	void update_progress ();
 	void select_frames_changed (bool);
 	void stop_clicked ();
-	void doneProcessingSlot (bool, std::string);
+private slots:
+	void processing_cleanup (void);
 };
 #endif // PROCESSING_DIALOG_H

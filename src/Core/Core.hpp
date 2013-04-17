@@ -1,6 +1,9 @@
 #ifndef CORE_H
 #define CORE_H
 
+#include <exception>
+#include <stdexcept>
+
 #include <QWidget>
 #include <QMainWindow>
 #include <QGridLayout>
@@ -32,42 +35,38 @@ class Core : public QMainWindow
 {
 	Q_OBJECT
 private:
-	QMenuBar * mnuBar = new QMenuBar (this);
-	QMenu *menu_file = new QMenu ("&File");
-	QMenu *menu_edit = new QMenu ("&Edit");
-	QMenu *menu_help = new QMenu ("&Help");
+	void init_gui (void);
+	void connect_signals (void);
+	void init_toolbar (void);
+	void update_windows (void);
 
-	QMdiArea *mdiArea = new QMdiArea (this);
-	QSplitter *hSplitter = new QSplitter (Qt::Horizontal, this);
-	QSplitter *vSplitter = new QSplitter (Qt::Vertical, this);
-	QToolBar *toolbar = new QToolBar ("Toolbar", this);
+	QSplitter * h_splitter;
+	QSplitter * v_splitter;
+	QMenuBar  * menubar;
+	QMdiArea  * mdi_area;
+	QToolBar  * toolbar;
 
-	QString lastSaveLocation = QDir::currentPath () + "/untitled.png";
+	QString last_screenshot_path;
 
-	Repository::ptr repo = Repository::make ();
-	Scenegraph::ptr scgr = Scenegraph::make ();
+	Repository::ptr repository_ptr;
+	Scenegraph::ptr scenegraph_ptr;
 
-	TimeLineModel *tmlnmod = new TimeLineModel (0, 0);
-	TimeLine *tmln = new TimeLine (tmlnmod, this);
-	Window3D *wnd3d = new Window3D (scgr, this);
-	Window2D *wnd2d = new Window2D (scgr, this);
-	ProcessingDialog * processing = new ProcessingDialog (this);
-	RepositoryView * repo_view = new Workspace::RepositoryView (repo, scgr);
-
-	void initGUI ();
-	void connectSignals ();
-	void initToolbar ();
-	void updateWindows ();
+	TimeLineModel    * timeline_model;
+	TimeLine         * timeline;
+	Window3D         * window3d;
+	Window2D         * window2d;
+	ProcessingDialog * processing_dialog;
+	RepositoryView   * repository_view;
 public:
-	Core();
+	Core (void);
 public slots:
-	void quit ();
-	void open ();
-	void about ();
-	void help ();
-	void settings ();
-	void processingDone (bool, std::string);
-	void clearRepository (void);
-	void makeScreenshot (void);
+	void menu_quit (void);
+	void menu_open (void);
+	void menu_about (void);
+	void menu_help (void);
+	void menu_settings (void);
+	void processing_done (bool, const std::string &);
+	void clear_repository (void);
+	void make_screenshot (void);
 };
 #endif // CORE_H

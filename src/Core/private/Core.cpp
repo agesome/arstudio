@@ -2,39 +2,43 @@
 
 Core::Core() : QMainWindow ()
 {
-	initGUI ();
-	connectSignals ();
-	initToolbar ();
-	Logger::setRepository (repo);
+	init_gui ();
+	connect_signals ();
+	init_toolbar ();
+	Logger::setRepository (repository_ptr);
 }
 
 /**
         This slot makes use of QGLWidget::renderPixmap () to make a screenshot of the 3D window.
  */
 
-void Core::makeScreenshot (void)
+void
+Core::make_screenshot (void)
 {
-	QPixmap p = wnd3d->renderPixmap ();
+	QPixmap p = window3d->renderPixmap ();
 
-	QString fileName = QFileDialog::getSaveFileName (this, "Save Screenshot",
-	                                                 lastSaveLocation, "PNG Image (*.png)");
+	QString filename = QFileDialog::getSaveFileName (this, "Save Screenshot",
+	                                                 last_screenshot_path, "PNG Image (*.png)");
 
-	if (fileName.isNull ())
-		return;
-	lastSaveLocation = fileName;
-	p.save (fileName);
+	if (filename.isNull ())
+		{
+			return;
+		}
+	last_screenshot_path = filename;
+	p.save (filename);
 }
 
 /**
         This slot is called to clear the Repository when a new file is to be processed.
  */
 
-void Core::clearRepository (void)
+void
+Core::clear_repository (void)
 {
 	Logger::getInstance ().resetFrameCounter ();
 
-	repo->Clear ();
-	updateWindows ();
+	repository_ptr->Clear ();
+	update_windows ();
 }
 
 /**
@@ -45,16 +49,19 @@ void Core::clearRepository (void)
         \param e contains the error message in case of processing failure
  */
 
-void Core::processingDone (bool success, std::string e)
+void
+Core::processing_done (bool success, const std::string & error_msg)
 {
 	if (success)
 		{
-			updateWindows ();
+			update_windows ();
 		}
 	else
 		{
 			QMessageBox msg;
-			msg.setText (QString ("Processing failed: ") + QString::fromStdString (e));
+			QString message = QString ("Processing failed: ")
+			                  + QString::fromStdString (error_msg);
+			msg.setText (message);
 			msg.exec ();
 		}
 }
@@ -64,107 +71,143 @@ void Core::processingDone (bool success, std::string e)
         display the first frame
  */
 
-void Core::updateWindows ()
+void
+Core::update_windows ()
 {
-	tmlnmod->setMin (1);
-	tmlnmod->setMax (scgr->getMaxFrame ());
-	tmln->updateWidget ();
-	wnd3d->update (1);
-	wnd2d->update (1);
+	timeline_model->setMin (1);
+	timeline_model->setMax (scenegraph_ptr->getMaxFrame ());
+	timeline->updateWidget ();
+	window3d->update (1);
+	window2d->update (1);
 }
 
-void Core::quit ()
+void
+Core::init_gui ()
 {
-	qApp->exit ();
-}
+	QMenu * menu_file;
+	QMenu * menu_edit;
+	QMenu * menu_help;
 
-void Core::initGUI ()
-{
-	this->setCentralWidget (vSplitter);
+	h_splitter = new QSplitter (Qt::Horizontal, this);
+	v_splitter = new QSplitter (Qt::Vertical, this);
+	menubar = new QMenuBar (this);
+	menu_file = new QMenu ("&File");
+	menu_edit = new QMenu ("&Edit");
+	menu_help = new QMenu ("&Help");
+	mdi_area = new QMdiArea (this);
+	toolbar = new QToolBar ("Toolbar", this);
 
-	menu_file->addAction ("Open", this, SLOT (open ()));
+	last_screenshot_path = QDir::currentPath () + "/untitled.png";
+
+	repository_ptr = Repository::make ();
+	scenegraph_ptr = Scenegraph::make ();
+
+	timeline_model = new TimeLineModel (0, 0);
+	timeline = new TimeLine (timeline_model, this);
+	window3d = new Window3D (scenegraph_ptr, this);
+	window2d = new Window2D (scenegraph_ptr, this);
+	processing_dialog = new ProcessingDialog (this);
+	repository_view = new RepositoryView (repository_ptr, scenegraph_ptr);
+
+	this->setCentralWidget (v_splitter);
+
+	menu_file->addAction ("Open", this, SLOT (menu_open ()));
 	menu_file->addSeparator ();
-	menu_file->addAction ("Exit", this, SLOT (quit ()));
-	menu_edit->addAction ("Settings", this, SLOT (settings ()));
-	menu_help->addAction ("Help", this, SLOT (about ()), Qt::Key_F1);
+	menu_file->addAction ("Exit", this, SLOT (menu_quit ()));
+	menu_edit->addAction ("Settings", this, SLOT (menu_settings ()));
+	menu_help->addAction ("Help", this, SLOT (menu_help ()), Qt::Key_F1);
 	menu_help->addSeparator ();
-	menu_help->addAction ("About", this, SLOT (about ()));
-	mnuBar->addMenu (menu_file);
-	mnuBar->addMenu (menu_edit);
-	mnuBar->addMenu (menu_help);
-	this->setMenuBar (mnuBar);
+	menu_help->addAction ("About", this, SLOT (menu_about ()));
+	menubar->addMenu (menu_file);
+	menubar->addMenu (menu_edit);
+	menubar->addMenu (menu_help);
+	this->setMenuBar (menubar);
 
-	hSplitter->addWidget (repo_view);
-	hSplitter->addWidget (mdiArea);
-	vSplitter->addWidget (hSplitter);
-	vSplitter->addWidget (tmln);
+	h_splitter->addWidget (repository_view);
+	h_splitter->addWidget (mdi_area);
+	v_splitter->addWidget (h_splitter);
+	v_splitter->addWidget (timeline);
 
-	repo_view->setMaximumWidth (repo_view->sizeHint ().width ());
-	tmln->setMaximumHeight (tmln->sizeHint ().height ());
+	repository_view->setMaximumWidth (repository_view->sizeHint ().width ());
+	timeline->setMaximumHeight (timeline->sizeHint ().height ());
 
-	mdiArea->addSubWindow (wnd3d);
-	mdiArea->addSubWindow (wnd2d);
+	mdi_area->addSubWindow (window3d);
+	mdi_area->addSubWindow (window2d);
 
-	wnd3d->setMinimumSize (300, 300);
-	wnd2d->setMinimumSize (300, 300);
+	window3d->setMinimumSize (300, 300);
+	window2d->setMinimumSize (300, 300);
 
 	this->resize (this->sizeHint ());
 
-	processing->setWindowFlags (Qt::Window);
+	processing_dialog->setWindowFlags (Qt::Tool);
 }
 
-void Core::initToolbar ()
+void Core::init_toolbar ()
 {
 	QAction * screenshot = new QAction (QIcon::fromTheme ("image-x-generic"),
 	                                    "Screenshot", toolbar);
 
-	connect (screenshot, SIGNAL (triggered ()), this, SLOT (makeScreenshot ()));
+	connect (screenshot, SIGNAL (triggered ()), this, SLOT (make_screenshot ()));
 	toolbar->addAction (screenshot);
 
 	QAction * clear = new QAction (QIcon::fromTheme ("edit-clear"),
 	                               "Clear Repository", toolbar);
-	connect (clear, SIGNAL (triggered ()), this, SLOT (clearRepository ()));
+	connect (clear, SIGNAL (triggered ()), this, SLOT (clear_repository ()));
 	toolbar->addAction (clear);
 
 	QAction * process = new QAction (QIcon::fromTheme ("system-run"),
 	                                 "Process", toolbar);
-	connect (process, SIGNAL (triggered ()), processing, SLOT (show ()));
+	connect (process, SIGNAL (triggered ()), processing_dialog, SLOT (show ()));
 	toolbar->addAction (process);
 
 	toolbar->setToolButtonStyle (Qt::ToolButtonTextUnderIcon);
 	this->addToolBar (toolbar);
 }
 
-void Core::connectSignals ()
+void Core::connect_signals ()
 {
 	qRegisterMetaType<std::string>("std::string");
 
-	connect (tmlnmod, SIGNAL (newFrame (int)), wnd3d, SLOT (update (int)));
-	connect (tmlnmod, SIGNAL (newFrame (int)), wnd2d, SLOT (update (int)));
-	connect (processing, SIGNAL (done_processing (bool, std::string)), this,
-	         SLOT (processingDone (bool, std::string)));
-	connect (processing, SIGNAL (clearRepository ()), this, SLOT (clearRepository ()));
-
-	connect (repo_view, SIGNAL (selectionChanged ()), wnd3d, SLOT (update ()));
-	connect (repo_view, SIGNAL (selectionChanged ()), wnd2d, SLOT (update ()));
+	connect (timeline_model, SIGNAL (newFrame (int)), window3d,
+	         SLOT (update (int)));
+	connect (timeline_model, SIGNAL (newFrame (int)), window2d,
+	         SLOT (update (int)));
+	connect (processing_dialog, SIGNAL (processing_done (bool, const std::string &)),
+	         this, SLOT (processing_done (bool, const std::string &)));
+	connect (processing_dialog, SIGNAL (clearRepository ()), this,
+	         SLOT (clear_repository ()));
+	connect (repository_view, SIGNAL (selectionChanged ()), window3d,
+	         SLOT (update ()));
+	connect (repository_view, SIGNAL (selectionChanged ()), window2d,
+	         SLOT (update ()));
 }
 
-void Core::open ()
+void
+Core::menu_open (void)
 {
 	qDebug () << "Open file";
 }
 
-void Core::about ()
+void
+Core::menu_about (void)
 {
 	qDebug () << "About";
 }
 
-void Core::settings ()
+void
+Core::menu_settings (void)
 {
 	qDebug () << "Settings";
 }
 
-void Core::help ()
+void
+Core::menu_help (void)
 {
 	qDebug () << "Help";
+}
+
+void
+Core::menu_quit (void)
+{
+	qApp->exit ();
 }
