@@ -29,39 +29,44 @@
 #include <filecapture.hpp>
 
 /**
-        This class handles processing of video files, until individual frames are passed to AlgoPipeline
+ *      This class handles processing of video files, until individual
+ * frames are passed to AlgoPipeline
  */
 
 class ProcessingDialog : public QWidget
 {
 	Q_OBJECT
 public:
-	explicit ProcessingDialog (QWidget *parent = nullptr);
+	explicit
+	ProcessingDialog (QWidget * parent = nullptr);
 	~ProcessingDialog ();
 private:
 
-	QLabel *file_name_label = new QLabel (this);
-	QLabel *frames_count_label = new QLabel (this);
-	QPushButton *select_file_button = new QPushButton (this);
-	QPushButton *process_button = new QPushButton (this);
-	QPushButton *stop_button = new QPushButton (this);
-	QSpinBox *start_frame_spin = new QSpinBox (this);
-	QSpinBox *end_frame_spin = new QSpinBox (this);
-	QProgressBar *progress_bar = new QProgressBar (this);
-	QGridLayout *layout = new QGridLayout (this);
-	QRadioButton *radio_whole_file = new QRadioButton ("Process whole file", this);
-	QRadioButton *radio_select_frames = new QRadioButton ("Select frames", this);
-	QString selectedFile;
-	QString lastSelectedFile;
+	QLabel       * file_name_label    = new QLabel (this);
+	QLabel       * frames_count_label = new QLabel (this);
+	QPushButton  * select_file_button = new QPushButton (this);
+	QPushButton  * process_button     = new QPushButton (this);
+	QPushButton  * stop_button        = new QPushButton (this);
+	QSpinBox     * start_frame_spin   = new QSpinBox (this);
+	QSpinBox     * end_frame_spin     = new QSpinBox (this);
+	QProgressBar * progress_bar       = new QProgressBar (this);
+	QGridLayout  * layout             = new QGridLayout (this);
+	QRadioButton * radio_whole_file   = new QRadioButton ("Process whole file",
+		this);
+	QRadioButton * radio_select_frames = new QRadioButton ("Select frames", this);
+	QString        selectedFile;
+	QString        lastSelectedFile;
 
-	QSettings settings;             // < save and restore path to last opened file
+	QSettings settings;             // < save and restore path to last opened
+	                                // file
 
-	cv::VideoCapture *vcap = nullptr;             // < used for regular video files
-	FileCapture *kincap = nullptr;             // < used for kinvideo files
+	cv::VideoCapture * vcap = nullptr;            // < used for regular video
+	                                              // files
+	FileCapture * kincap = nullptr;            // < used for kinvideo files
 
 	Config::ptr config = Config::make ();
 	// has to be created before AlgoPipeline!
-	ConfigEditor * editor = new ConfigEditor (config);
+	ConfigEditor    * editor = new ConfigEditor (config);
 	AlgoPipeline::ptr algo_pipeline;
 
 	bool run_thread;
@@ -86,4 +91,5 @@ public slots:
 private slots:
 	void processing_cleanup (void);
 };
+
 #endif // PROCESSING_DIALOG_H

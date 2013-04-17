@@ -1,19 +1,21 @@
 #include <Window3D.hpp>
 
-void Window3D::update (int nframe)
+void
+Window3D::update (int nframe)
 {
 	currNframe = nframe;
 	this->updateGL ();
 }
 
-void Window3D::update (void)
+void
+Window3D::update (void)
 {
 	this->updateGL ();
 }
 
-Window3D::Window3D(Scenegraph::ptr s, QWidget* parent) : QGLWidget (parent)
+Window3D::Window3D (Scenegraph::ptr s, QWidget* parent) : QGLWidget (parent)
 {
-	sg = s;
+	sg         = s;
 	currNframe = 1;
 
 	this->setFocusPolicy (Qt::ClickFocus);
@@ -21,9 +23,10 @@ Window3D::Window3D(Scenegraph::ptr s, QWidget* parent) : QGLWidget (parent)
 }
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-void Window3D::initializeGL ()
+void
+Window3D::initializeGL ()
 {
-// инициализация GL
+	// инициализация GL
 	qglClearColor (Qt::black);
 	glFrontFace (GL_CW);
 	// для работы с буффером глубины 3 стр
@@ -38,7 +41,8 @@ void Window3D::initializeGL ()
 	glEnableClientState (GL_COLOR_ARRAY);
 }
 
-void Window3D::resizeGL (int nWidth, int nHeight)
+void
+Window3D::resizeGL (int nWidth, int nHeight)
 {
 	glMatrixMode (GL_PROJECTION);     // команды отн. к проекту
 	glLoadIdentity ();
@@ -46,14 +50,19 @@ void Window3D::resizeGL (int nWidth, int nHeight)
 	GLfloat ratio = (GLfloat) nHeight / (GLfloat) nWidth;
 
 	if (nWidth >= nHeight)
-		glOrtho (-1.0 / ratio, 1.0 / ratio, -1.0, 1.0, -10.0, 1.0);
+		{
+			glOrtho (-1.0 / ratio, 1.0 / ratio, -1.0, 1.0, -10.0, 1.0);
+		}
 	else
-		glOrtho (-1.0, 1.0, -1.0 * ratio, 1.0 * ratio, -10.0, 1.0);
+		{
+			glOrtho (-1.0, 1.0, -1.0 * ratio, 1.0 * ratio, -10.0, 1.0);
+		}
 
-	glViewport (0, 0, (GLint) nWidth, (GLint) nHeight);   // установка окон
+	glViewport (0, 0, (GLint) nWidth, (GLint) nHeight);     // установка окон
 }
 
-void Window3D::paintGL ()
+void
+Window3D::paintGL ()
 {
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -69,12 +78,14 @@ void Window3D::paintGL ()
 	drawSceneElements ();     // выбирает, что рисовать
 }
 
-void Window3D::mousePressEvent (QMouseEvent* pe)
+void
+Window3D::mousePressEvent (QMouseEvent* pe)
 {
 	ptrMousePosition = pe->pos ();
 }
 
-void Window3D::mouseMoveEvent (QMouseEvent* pe)
+void
+Window3D::mouseMoveEvent (QMouseEvent* pe)
 {
 	xRot += 180 / nSca * (GLfloat) (pe->y () - ptrMousePosition.y ()) / height ();
 	zRot += 180 / nSca * (GLfloat) (pe->x () - ptrMousePosition.x ()) / width ();
@@ -84,17 +95,23 @@ void Window3D::mouseMoveEvent (QMouseEvent* pe)
 	updateGL ();
 }
 
-void Window3D::wheelEvent (QWheelEvent* pe)
+void
+Window3D::wheelEvent (QWheelEvent* pe)
 {
 	if (pe->delta () > 0)
-		nSca = nSca * 1.1;
+		{
+			nSca = nSca * 1.1;
+		}
 	else if (pe->delta () < 0)
-		nSca = nSca / 1.1;
+		{
+			nSca = nSca / 1.1;
+		}
 
 	updateGL ();
 }
 
-void Window3D::keyPressEvent (QKeyEvent* pe)
+void
+Window3D::keyPressEvent (QKeyEvent* pe)
 {
 	switch (pe->key ())
 		{
@@ -131,7 +148,8 @@ void Window3D::keyPressEvent (QKeyEvent* pe)
 	updateGL ();
 }
 
-void Window3D::defaultScene ()
+void
+Window3D::defaultScene ()
 {
 	xRot = 180;
 	yRot = 0;
@@ -140,21 +158,24 @@ void Window3D::defaultScene ()
 	nSca = 1;
 }
 
-void Window3D::drawSceneElements ()
+void
+Window3D::drawSceneElements ()
 {
 	drawAxis ();
 
-	float cam_size = 0.05;
+	float cam_size   = 0.05;
 	float point_size = 20;
 
-	Item::ptr item;
+	Item::ptr   item;
 	Camera::ptr c;
 
 	for (const auto seq : sg->getSequences ())
 		{
 			// skip bitmaps
 			if (seq->getType () == Item::BITMAP)
-				continue;
+				{
+					continue;
+				}
 			const Sequence::map items = seq->getItems ();
 			try
 				{
@@ -205,7 +226,8 @@ void Window3D::drawSceneElements ()
 		}
 }
 
-void Window3D::drawAxis ()
+void
+Window3D::drawAxis ()
 {
 	glLineWidth (2.0f);
 
@@ -232,7 +254,8 @@ void Window3D::drawAxis ()
 }
 
 // рисуем точки из полученного Sequence
-void Window3D::drawPoint3D (Point3d::ptr p, GLfloat size)
+void
+Window3D::drawPoint3D (Point3d::ptr p, GLfloat size)
 {
 	glPointSize (size);
 	glTranslatef (0, 0, 0);
@@ -244,17 +267,22 @@ void Window3D::drawPoint3D (Point3d::ptr p, GLfloat size)
 	glEnd ();
 }
 
-void Window3D::drawPointCloud (PointCloud::ptr pc)
+void
+Window3D::drawPointCloud (PointCloud::ptr pc)
 {
 	for (auto p : pc->cloud)
-		drawPoint3D (p, 1);
+		{
+			drawPoint3D (p, 1);
+		}
 }
 
 // рисуем Cam из полученного Sequence
-void Window3D::drawCam (double x, double y, double z, double a, double rx,
-                        double ry, double rz)
+void
+Window3D::drawCam (double x, double y, double z, double a, double rx,
+                   double ry, double rz)
 {
-	glPushMatrix ();                         // сохранить текущюю систему координат
+	glPushMatrix ();                         // сохранить текущюю систему
+	                                         // координат
 
 	// повернуть и переместить систему координат
 	glTranslatef (x, y, z);
@@ -293,5 +321,6 @@ void Window3D::drawCam (double x, double y, double z, double a, double rx,
 	glVertex3d (a, a, +a);              // Верх лево
 	glEnd ();
 
-	glPopMatrix ();                          // Восстановление исходную систему координат
+	glPopMatrix ();                          // Восстановление исходную
+	                                         // систему координат
 }

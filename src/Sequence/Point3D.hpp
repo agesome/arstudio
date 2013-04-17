@@ -15,8 +15,8 @@ public:
 	static ptr make (void);
 	static ptr make (GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat);
 
-	Point3d();
-	Point3d(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat);
+	Point3d ();
+	Point3d (GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat);
 
 	GLfloat x;
 	GLfloat y;
@@ -26,4 +26,5 @@ public:
 	GLfloat g;
 	GLfloat b;
 };
+
 #endif // POINT3D_H

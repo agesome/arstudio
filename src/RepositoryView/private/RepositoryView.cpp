@@ -2,7 +2,9 @@
 
 namespace Workspace
 {
-RepositoryView::RepositoryView (Repository::ptr r, Scenegraph::ptr sp, QWidget * MainWindow) : QTreeWidget (MainWindow)
+RepositoryView::RepositoryView (Repository::ptr r,
+	Scenegraph::ptr sp,
+	QWidget * MainWindow) : QTreeWidget (MainWindow)
 {
 	scgr = sp;
 	repo = r;
@@ -19,39 +21,42 @@ RepositoryView::RepositoryView (Repository::ptr r, Scenegraph::ptr sp, QWidget *
 	repo->branchRemovedCallback =
 	  [this](std::string s)
 		{
-			QTreeWidgetItem * br = this->findItems (s.c_str (), Qt::MatchExactly).first ();
+			QTreeWidgetItem * br =
+			  this->findItems (s.c_str (), Qt::MatchExactly).first ();
 			delete br;
 		};
 	repo->newSequenceCallback =
 	  [this](std::string l, std::string br)
 		{
-			QTreeWidgetItem * paren = this->findItems (br.c_str (), Qt::MatchExactly).first ();
+			QTreeWidgetItem * paren =
+			  this->findItems (br.c_str (), Qt::MatchExactly).first ();
 			QTreeWidgetItem * i = new QTreeWidgetItem (paren);
 			i->setText (0, l.c_str ());
-			i->setFlags (Qt::ItemIsUserCheckable | Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+			i->setFlags (
+				Qt::ItemIsUserCheckable | Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 			i->setCheckState (0, Qt::Checked);
 
-			Repository::sequenceMap & sm = repo->getSequenceMap (br);
-			Repository::mapItem mi = *(sm.find (l));
-			Sequence::ptr seq = mi.second;
+			Repository::sequenceMap & sm  = repo->getSequenceMap (br);
+			Repository::mapItem       mi  = *(sm.find (l));
+			Sequence::ptr             seq = mi.second;
 			scgr->addSequence (seq);
 		};
 	repo->sequenceRemovedCallback =
 	  [this](std::string l, std::string br)
 		{
 			QTreeWidgetItem * i = this->findItems (br.c_str (), Qt::MatchExactly
-			                                       | Qt::MatchRecursive).first ();
+				| Qt::MatchRecursive).first ();
 
 			delete i;
 
-			Repository::sequenceMap & sm = repo->getSequenceMap (l);
-			Repository::mapItem mi = *(sm.find (br));
-			Sequence::ptr seq = mi.second;
+			Repository::sequenceMap & sm  = repo->getSequenceMap (l);
+			Repository::mapItem       mi  = *(sm.find (br));
+			Sequence::ptr             seq = mi.second;
 			scgr->removeSequence (seq);
 		};
 
 	connect (this, SIGNAL (itemClicked (QTreeWidgetItem *, int)), this,
-	         SLOT (onItemChanged (QTreeWidgetItem *, int)));
+		SLOT (onItemChanged (QTreeWidgetItem *, int)));
 }
 
 void
@@ -60,13 +65,15 @@ RepositoryView::onItemChanged (QTreeWidgetItem * item, int)
 	QTreeWidgetItem * par = item->parent ();
 
 	if (par == NULL)
-		return;
+		{
+			return;
+		}
 	std::string branch = par->text (0).toStdString ();
-	std::string leaf = item->text (0).toStdString ();
+	std::string leaf   = item->text (0).toStdString ();
 
-	Repository::sequenceMap & sm = repo->getSequenceMap (branch);
-	Repository::mapItem mi = *(sm.find (leaf));
-	Sequence::ptr seq = mi.second;
+	Repository::sequenceMap & sm  = repo->getSequenceMap (branch);
+	Repository::mapItem       mi  = *(sm.find (leaf));
+	Sequence::ptr             seq = mi.second;
 
 	if (item->checkState (0) == Qt::Checked)
 		{

@@ -26,15 +26,17 @@ Logger::advanceFrame (void)
 	current_frame++;
 }
 
-void Logger::resetFrameCounter (void)
+void
+Logger::resetFrameCounter (void)
 {
 	current_frame = 1;
 }
 
 /**
-        This method logs an OpenCV Point3d, converting it to the internally used Point3d
-
-        \param point the point to be logged
+ *      This method logs an OpenCV Point3d, converting it to the internally
+ * used Point3d
+ *
+ *      \param point the point to be logged
  */
 
 void
@@ -46,12 +48,12 @@ Logger::logPoint (cv::Point3d point)
 }
 
 /**
-        This method logs a Camera
-
-        \param p position
-        \param rx rotation on the X axis
-        \param ry rotation on the Y axis
-        \param rz rotation on the Z axis
+ *      This method logs a Camera
+ *
+ *      \param p position
+ *      \param rx rotation on the X axis
+ *      \param ry rotation on the Y axis
+ *      \param rz rotation on the Z axis
  */
 
 void
@@ -66,9 +68,9 @@ Logger::logCamera (cv::Point3d p, double rx, double ry, double rz)
 }
 
 /**
-        This method logs a cv::Mat containing an image as internal Bitmap
-        \param m the image to be logged
-        \param source name of the sequence to log to
+ *      This method logs a cv::Mat containing an image as internal Bitmap
+ *      \param m the image to be logged
+ *      \param source name of the sequence to log to
  */
 
 void

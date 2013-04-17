@@ -12,15 +12,19 @@
 namespace Workspace
 {
 /**
-        This widget displays the contents of repository by installing necessary callbacks in it.
-
-        It also informs Scenegraph when user selects or deselects a sequence to be shown.
+ *      This widget displays the contents of repository by installing
+ * necessary callbacks in it.
+ *
+ *      It also informs Scenegraph when user selects or deselects a
+ * sequence to be shown.
  */
 class RepositoryView : public QTreeWidget
 {
 	Q_OBJECT
 public:
-	RepositoryView (Repository::ptr, Scenegraph::ptr, QWidget * MainWindow = nullptr);
+	RepositoryView (Repository::ptr,
+		Scenegraph::ptr,
+		QWidget * MainWindow = nullptr);
 
 private:
 	Scenegraph::ptr scgr;

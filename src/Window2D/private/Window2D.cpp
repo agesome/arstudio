@@ -12,9 +12,10 @@ Window2D::update (void)
 }
 
 /**
-        This method displays a Bitmap corresponding to a certain frame, if there is one.
-
-        \param frame the frame for wich to seek a Bitmap
+ *      This method displays a Bitmap corresponding to a certain frame, if
+ * there is one.
+ *
+ *      \param frame the frame for wich to seek a Bitmap
  */
 
 void
@@ -26,9 +27,11 @@ Window2D::update (int frame)
 	for (auto seq : scenegraph->getSequences ())
 		{
 			if (seq->getType () != Item::BITMAP)
-				continue;
+				{
+					continue;
+				}
 			Sequence::map items = seq->getItems ();
-			Item::ptr image;
+			Item::ptr     image;
 			// seems cleaner than using find()
 			try
 				{
@@ -42,21 +45,23 @@ Window2D::update (int frame)
 			Bitmap::ptr bm = Item::ptr_cast_to<Bitmap> (image);
 			cvtColor (bm->bitmap, rgb, CV_BGR2RGB);
 			currentPixmap = QPixmap::fromImage (QImage (rgb.data, rgb.cols, rgb.rows,
-			                                            rgb.step, QImage::Format_RGB888));
+					rgb.step, QImage::Format_RGB888));
 			this->setPixmap (currentPixmap.scaled (this->width (), this->height (),
-			                                       Qt::KeepAspectRatio));
+					Qt::KeepAspectRatio));
 		}
 }
 
 /**
-        This method scales currently displayed bitmap to new widget size.
+ *      This method scales currently displayed bitmap to new widget size.
  */
 
 void
 Window2D::resizeEvent (QResizeEvent *)
 {
 	if (currentPixmap.isNull ())
-		return;
+		{
+			return;
+		}
 	this->setPixmap (currentPixmap.scaled (this->width (), this->height (),
-	                                       Qt::KeepAspectRatio));
+			Qt::KeepAspectRatio));
 }

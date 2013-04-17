@@ -3,11 +3,12 @@
 namespace Workspace
 {
 /**
-        This method adds a sequence to the specified branch.
-
-        \param sequence the sequence to be added
-        \param id name under which to store the sequence
-        \param branchName branch to which the sequence will be added, defaults to "default"
+ *      This method adds a sequence to the specified branch.
+ *
+ *      \param sequence the sequence to be added
+ *      \param id name under which to store the sequence
+ *      \param branchName branch to which the sequence will be added,
+ * defaults to "default"
  */
 
 void
@@ -18,17 +19,19 @@ Repository::addSequence (Sequence::ptr sequence, std::string id,
 
 	mtr.insert (mapItem (id, sequence));
 	if (newSequenceCallback)
-		newSequenceCallback (id, branchName);
+		{
+			newSequenceCallback (id, branchName);
+		}
 }
 
 /**
-        This method adds a single Item to a sequence.
-
-        \param item the item to be added
-        \param nframe the frame to which this item corresponds
-        \param type the type of the item
-        \param id name the sequence to add to
-        \param branchName branch under which the sequence is stored
+ *      This method adds a single Item to a sequence.
+ *
+ *      \param item the item to be added
+ *      \param nframe the frame to which this item corresponds
+ *      \param type the type of the item
+ *      \param id name the sequence to add to
+ *      \param branchName branch under which the sequence is stored
  */
 
 void
@@ -44,7 +47,9 @@ Repository::addItem (Item::ptr item, unsigned int nframe, Item::type type,
 			Sequence::ptr p = Sequence::make (type);
 			sm.insert (mapItem (id, p));
 			if (newSequenceCallback)
-				newSequenceCallback (id, branchName);
+				{
+					newSequenceCallback (id, branchName);
+				}
 			p->addItem (nframe, item);
 		}
 	else
@@ -54,9 +59,9 @@ Repository::addItem (Item::ptr item, unsigned int nframe, Item::type type,
 }
 
 /**
-        This method returns a sequenceMap for a branch.
-
-        \param branchName the branch to find
+ *      This method returns a sequenceMap for a branch.
+ *
+ *      \param branchName the branch to find
  */
 
 Repository::sequenceMap &
@@ -66,10 +71,13 @@ Repository::getSequenceMap (std::string branchName = "default")
 
 	if (it == sequences.end ())
 		{
-			auto treeItem = std::pair<std::string, sequenceMap> (branchName, sequenceMap ());
+			auto treeItem = std::pair<std::string, sequenceMap> (branchName,
+				sequenceMap ());
 			it = sequences.insert (treeItem).first;
 			if (newBranchCallback)
-				newBranchCallback (branchName);
+				{
+					newBranchCallback (branchName);
+				}
 			return it->second;
 		}
 	else
@@ -91,10 +99,11 @@ Repository::getTree (void)
 }
 
 /**
-        This method removes all sequences from the repository.
+ *      This method removes all sequences from the repository.
  */
 
-void Repository::Clear (void)
+void
+Repository::Clear (void)
 {
 	std::string branchName;
 

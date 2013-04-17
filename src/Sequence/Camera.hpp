@@ -11,12 +11,13 @@ class Camera : public Item
 {
 public:
 	typedef std::shared_ptr<Camera> ptr;
-	static ptr make (void)
+	static ptr
+	make (void)
 	{
 		return std::make_shared<Camera> ();
 	}
 
-	Camera()
+	Camera ()
 	{
 	};
 
@@ -29,4 +30,5 @@ public:
 	GLfloat ry;
 	GLfloat rz;
 };
+
 #endif // CAMERA_H

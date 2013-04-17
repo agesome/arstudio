@@ -1,9 +1,9 @@
 #include <Config.hpp>
 
 /**
-        Import setting from an XML file
-
-        \param file_path path to the XML file
+ *      Import setting from an XML file
+ *
+ *      \param file_path path to the XML file
  */
 void
 Config::import_xml (const std::string & file_path)
@@ -25,11 +25,13 @@ Config::walk_tree (const pt::ptree & tree, const std::string & prefix)
 				}
 			else
 				{
-					std::string path = prefix + node.first;
+					std::string path  = prefix + node.first;
 					std::string value = node.second.get_value<std::string> ();
 					main_tree.put ("root." + path, value);
 					if (import_callback)
-						import_callback (path, value);
+						{
+							import_callback (path, value);
+						}
 				}
 		}
 }
@@ -41,9 +43,9 @@ Config::make (void)
 }
 
 /**
-        Set the import callback function
-
-        \param callback the function to be called
+ *      Set the import callback function
+ *
+ *      \param callback the function to be called
  */
 void
 Config::set_import_callback (import_callback_t callback)

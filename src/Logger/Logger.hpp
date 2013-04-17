@@ -12,8 +12,9 @@
 #include <Camera.hpp>
 
 /**
-        This singleton class recieves data from algorithms, converts it to a suitable format
-        and stores it in the Repository
+ *      This singleton class recieves data from algorithms, converts it to
+ * a suitable format
+ *      and stores it in the Repository
  */
 
 class Logger
@@ -29,10 +30,15 @@ public:
 	void resetFrameCounter (void);
 private:
 	Logger ();
-	Logger (const Logger &) = delete;
+	Logger (const Logger &)             = delete;
 	Logger & operator= (const Logger &) = delete;
 
-	static Workspace::Repository::ptr repo; // < currently used instance of Repository
-	unsigned int current_frame = 1; // < all data being logged is associated with this frame number
+	static Workspace::Repository::ptr repo; // < currently used instance of
+	                                        // Repository
+	unsigned int current_frame = 1;                      // < all data being
+	                                                     // logged is
+	                                                     // associated with
+	                                                     // this frame number
 };
+
 #endif // LOGGER_H

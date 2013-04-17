@@ -8,7 +8,7 @@
 namespace Workspace
 {
 /**
-        This is the base class for all data items.
+ *      This is the base class for all data items.
  */
 
 class Item
@@ -18,10 +18,11 @@ public:
 	typedef std::pair<int, ptr> pair;
 
 	/**
-	        This method allows casting from a generic Item pointer to a pointer to
-	        a specific Item type.
-
-	        \param r the pointer to be cast
+	 *      This method allows casting from a generic Item pointer to a
+	 * pointer to
+	 *      a specific Item type.
+	 *
+	 *      \param r the pointer to be cast
 	 */
 
 	template <class T> static std::shared_ptr<T> ptr_cast_to (const Item::ptr & r)
@@ -29,7 +30,8 @@ public:
 		return std::dynamic_pointer_cast<T, Item> (r);
 	}
 
-	virtual ~Item ()
+	virtual
+	~Item ()
 	{
 	}
 
@@ -42,11 +44,12 @@ public:
 		LEN_
 	};
 
-	static const std::string typeNames[LEN_]; // << holds human-readable type names for all item types
+	static const std::string typeNames[LEN_]; // << holds human-readable type
+	                                          // names for all item types
 };
 
 /**
-        This class manages a frame-ordered sequence of data items.
+ *      This class manages a frame-ordered sequence of data items.
  */
 
 class Sequence
@@ -64,7 +67,7 @@ public:
 
 private:
 	Item::type type; // < type of items stored
-	map items; // < map of items to frames
+	map        items; // < map of items to frames
 };
 }
 #endif // SEQUENCE_H

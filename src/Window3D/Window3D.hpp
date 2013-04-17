@@ -17,7 +17,7 @@
 using namespace Workspace;
 
 /**
-        This widget handles display of Items in 3D space.
+ *      This widget handles display of Items in 3D space.
  */
 
 class Window3D : public QGLWidget
@@ -38,7 +38,13 @@ private:
 	void defaultScene ();
 	void drawSceneElements ();
 	void drawAxis ();
-	void drawCam (double x, double y, double z, double a, double rx, double ry, double rz);
+	void drawCam (double x,
+	              double y,
+	              double z,
+	              double a,
+	              double rx,
+	              double ry,
+	              double rz);
 	void drawPoint3D (Point3d::ptr, GLfloat);
 	void drawPointCloud (PointCloud::ptr);
 
@@ -55,6 +61,7 @@ public slots:
 	void update (int);
 	void update (void);
 public:
-	Window3D(Scenegraph::ptr, QWidget *parent = 0);
+	Window3D (Scenegraph::ptr, QWidget * parent = 0);
 };
+
 #endif

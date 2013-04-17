@@ -1,47 +1,56 @@
 #include <TimeLineModel.hpp>
 
-TimeLineModel::TimeLineModel(int mn, int mx)
+TimeLineModel::TimeLineModel (int mn, int mx)
 {
 	setMin (mn);
 	setMax (mx);
 	current_frame = 1;
 }
 
-bool TimeLineModel::setCurFrame (int nframe)
+bool
+TimeLineModel::setCurFrame (int nframe)
 {
 	if (nframe > max)
-		return false;
+		{
+			return false;
+		}
 	current_frame = nframe;
 	emit newFrame (current_frame);
 	return true;
 }
 
-bool TimeLineModel::incCurFrame ()
+bool
+TimeLineModel::incCurFrame ()
 {
 	return setCurFrame (current_frame + 1);
 }
 
-int TimeLineModel::getCurFrame ()
+int
+TimeLineModel::getCurFrame ()
 {
 	return current_frame;
 }
 
-void TimeLineModel::setMin (int mn)
+void
+TimeLineModel::setMin (int mn)
 {
 	min = mn;
 }
 
-void TimeLineModel::setMax (int mx)
+void
+TimeLineModel::setMax (int mx)
 {
 	max = mx;
 }
 
-int TimeLineModel::getMin ()
+int
+TimeLineModel::getMin ()
 {
 	return min;
 }
 
-int TimeLineModel::getMax ()
+int
+TimeLineModel::getMax ()
 {
 	return max;
 }

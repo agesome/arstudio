@@ -1,6 +1,6 @@
 #include <Core.hpp>
 
-Core::Core() : QMainWindow ()
+Core::Core () : QMainWindow ()
 {
 	init_gui ();
 	connect_signals ();
@@ -9,7 +9,8 @@ Core::Core() : QMainWindow ()
 }
 
 /**
-        This slot makes use of QGLWidget::renderPixmap () to make a screenshot of the 3D window.
+ *      This slot makes use of QGLWidget::renderPixmap () to make a
+ * screenshot of the 3D window.
  */
 
 void
@@ -18,7 +19,7 @@ Core::make_screenshot (void)
 	QPixmap p = window3d->renderPixmap ();
 
 	QString filename = QFileDialog::getSaveFileName (this, "Save Screenshot",
-	                                                 last_screenshot_path, "PNG Image (*.png)");
+		last_screenshot_path, "PNG Image (*.png)");
 
 	if (filename.isNull ())
 		{
@@ -29,7 +30,8 @@ Core::make_screenshot (void)
 }
 
 /**
-        This slot is called to clear the Repository when a new file is to be processed.
+ *      This slot is called to clear the Repository when a new file is to
+ * be processed.
  */
 
 void
@@ -42,11 +44,12 @@ Core::clear_repository (void)
 }
 
 /**
-        This slot is called when processing stops, either because it has completed,
-        or because there was an error.
-
-        \param success indicates whether the processing was successful
-        \param e contains the error message in case of processing failure
+ *      This slot is called when processing stops, either because it has
+ * completed,
+ *      or because there was an error.
+ *
+ *      \param success indicates whether the processing was successful
+ *      \param e contains the error message in case of processing failure
  */
 
 void
@@ -59,16 +62,17 @@ Core::processing_done (bool success, const std::string & error_msg)
 	else
 		{
 			QMessageBox msg;
-			QString message = QString ("Processing failed: ")
-			                  + QString::fromStdString (error_msg);
+			QString     message = QString ("Processing failed: ")
+			                      + QString::fromStdString (error_msg);
 			msg.setText (message);
 			msg.exec ();
 		}
 }
 
 /**
-        This method is called to update the scenegraph and make all the windows
-        display the first frame
+ *      This method is called to update the scenegraph and make all the
+ * windows
+ *      display the first frame
  */
 
 void
@@ -90,24 +94,24 @@ Core::init_gui ()
 
 	h_splitter = new QSplitter (Qt::Horizontal, this);
 	v_splitter = new QSplitter (Qt::Vertical, this);
-	menubar = new QMenuBar (this);
-	menu_file = new QMenu ("&File");
-	menu_edit = new QMenu ("&Edit");
-	menu_help = new QMenu ("&Help");
-	mdi_area = new QMdiArea (this);
-	toolbar = new QToolBar ("Toolbar", this);
+	menubar    = new QMenuBar (this);
+	menu_file  = new QMenu ("&File");
+	menu_edit  = new QMenu ("&Edit");
+	menu_help  = new QMenu ("&Help");
+	mdi_area   = new QMdiArea (this);
+	toolbar    = new QToolBar ("Toolbar", this);
 
 	last_screenshot_path = QDir::currentPath () + "/untitled.png";
 
 	repository_ptr = Repository::make ();
 	scenegraph_ptr = Scenegraph::make ();
 
-	timeline_model = new TimeLineModel (0, 0);
-	timeline = new TimeLine (timeline_model, this);
-	window3d = new Window3D (scenegraph_ptr, this);
-	window2d = new Window2D (scenegraph_ptr, this);
+	timeline_model    = new TimeLineModel (0, 0);
+	timeline          = new TimeLine (timeline_model, this);
+	window3d          = new Window3D (scenegraph_ptr, this);
+	window2d          = new Window2D (scenegraph_ptr, this);
 	processing_dialog = new ProcessingDialog (this);
-	repository_view = new RepositoryView (repository_ptr, scenegraph_ptr);
+	repository_view   = new RepositoryView (repository_ptr, scenegraph_ptr);
 
 	this->setCentralWidget (v_splitter);
 
@@ -142,21 +146,22 @@ Core::init_gui ()
 	processing_dialog->setWindowFlags (Qt::Tool);
 }
 
-void Core::init_toolbar ()
+void
+Core::init_toolbar ()
 {
 	QAction * screenshot = new QAction (QIcon::fromTheme ("image-x-generic"),
-	                                    "Screenshot", toolbar);
+		"Screenshot", toolbar);
 
 	connect (screenshot, SIGNAL (triggered ()), this, SLOT (make_screenshot ()));
 	toolbar->addAction (screenshot);
 
 	QAction * clear = new QAction (QIcon::fromTheme ("edit-clear"),
-	                               "Clear Repository", toolbar);
+		"Clear Repository", toolbar);
 	connect (clear, SIGNAL (triggered ()), this, SLOT (clear_repository ()));
 	toolbar->addAction (clear);
 
 	QAction * process = new QAction (QIcon::fromTheme ("system-run"),
-	                                 "Process", toolbar);
+		"Process", toolbar);
 	connect (process, SIGNAL (triggered ()), processing_dialog, SLOT (show ()));
 	toolbar->addAction (process);
 
@@ -164,22 +169,24 @@ void Core::init_toolbar ()
 	this->addToolBar (toolbar);
 }
 
-void Core::connect_signals ()
+void
+Core::connect_signals ()
 {
-	qRegisterMetaType<std::string>("std::string");
+	qRegisterMetaType<std::string> ("std::string");
 
 	connect (timeline_model, SIGNAL (newFrame (int)), window3d,
-	         SLOT (update (int)));
+		SLOT (update (int)));
 	connect (timeline_model, SIGNAL (newFrame (int)), window2d,
-	         SLOT (update (int)));
-	connect (processing_dialog, SIGNAL (processing_done (bool, const std::string &)),
-	         this, SLOT (processing_done (bool, const std::string &)));
+		SLOT (update (int)));
+	connect (processing_dialog,
+		SIGNAL (processing_done (bool, const std::string &)),
+		this, SLOT (processing_done (bool, const std::string &)));
 	connect (processing_dialog, SIGNAL (clearRepository ()), this,
-	         SLOT (clear_repository ()));
+		SLOT (clear_repository ()));
 	connect (repository_view, SIGNAL (selectionChanged ()), window3d,
-	         SLOT (update ()));
+		SLOT (update ()));
 	connect (repository_view, SIGNAL (selectionChanged ()), window2d,
-	         SLOT (update ()));
+		SLOT (update ()));
 }
 
 void

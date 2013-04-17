@@ -13,7 +13,7 @@
 @ALGO_INCLUDES@
 
 /**
-        This class handles image processing algorithms.
+ *      This class handles image processing algorithms.
  */
 
 class AlgoPipeline
@@ -31,6 +31,8 @@ public:
 private:
 	void create_algorithm (IAbstractAlgorithm *);
 
-	std::list <IAbstractAlgorithm *> algo_list; // < list of all created algorithms
+	std::list <IAbstractAlgorithm *> algo_list; // < list of all created
+	                                            // algorithms
 };
+
 #endif // ALGO_PIPELINE_H

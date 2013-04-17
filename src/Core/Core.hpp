@@ -26,9 +26,10 @@
 using namespace Workspace;
 
 /**
-        This is the core class, it implements the main application window
-
-        Most private members are not documented because they are only used to build the UI.
+ *      This is the core class, it implements the main application window
+ *
+ *      Most private members are not documented because they are only used
+ * to build the UI.
  */
 
 class Core : public QMainWindow
@@ -69,4 +70,5 @@ public slots:
 	void clear_repository (void);
 	void make_screenshot (void);
 };
+
 #endif // CORE_H

@@ -17,7 +17,8 @@ class ImageAdjuster
 {
 public:
 	virtual Mat adjust (const Mat & image) = 0;
-	virtual ~ImageAdjuster()
+	virtual
+	~ImageAdjuster ()
 	{
 	};
 };
@@ -52,4 +53,5 @@ public:
 private:
 	ImageAdjuster * adjuster = nullptr;
 };
+
 #endif // ADJUSTER_HPP

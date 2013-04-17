@@ -1,42 +1,46 @@
 #include <ProcessingDialog.hpp>
 
-ProcessingDialog::ProcessingDialog(QWidget *parent) :
+ProcessingDialog::ProcessingDialog (QWidget * parent) :
 	QWidget (parent)
 {
 	createLayout ();
 
-	connect (select_file_button, SIGNAL (clicked ()), this, SLOT (select_file ()));
+	connect (select_file_button, SIGNAL (clicked ()), this,
+		SLOT (select_file ()));
 	connect (process_button, SIGNAL (clicked ()), this, SLOT (process_frames ()));
 	connect (this, SIGNAL (progress_signal ()), this, SLOT (update_progress ()));
 	connect (radio_select_frames, SIGNAL (toggled (bool)), this,
-	         SLOT (select_frames_changed (bool)));
+		SLOT (select_frames_changed (bool)));
 	connect (stop_button, SIGNAL (clicked ()), this, SLOT (stop_clicked ()));
 
 	connect (this, SIGNAL (processing_done (bool, const std::string &)), this,
-	         SLOT (processing_cleanup (void)));
+		SLOT (processing_cleanup (void)));
 
-// defined in CMakeLists.txt
+	// defined in CMakeLists.txt
 	populateConfig ("@CONFIG_DIRECTORY@");
 
-	lastSelectedFile = settings.value ("ProcessingDialog/lastSelectedFile", "~").toString ();
+	lastSelectedFile =
+	  settings.value ("ProcessingDialog/lastSelectedFile", "~").toString ();
 	if (lastSelectedFile != "~")
 		{
 			loadFile (lastSelectedFile.toStdString ());
 		}
 }
 
-void ProcessingDialog::processing_cleanup (void)
+void
+ProcessingDialog::processing_cleanup (void)
 {
 	unlockUI ();
 	this->hide ();
 }
 
-ProcessingDialog::~ProcessingDialog()
+ProcessingDialog::~ProcessingDialog ()
 {
 	settings.setValue ("ProcessingDialog/lastSelectedFile", lastSelectedFile);
 }
 
-void ProcessingDialog::createLayout ()
+void
+ProcessingDialog::createLayout ()
 {
 	file_name_label->setText ("File: ");
 	frames_count_label->setText ("Frames: ");
@@ -66,13 +70,15 @@ void ProcessingDialog::createLayout ()
 }
 
 /**
-        This method imports settings from every directory at path, by convention
-        -- from a file named "settings.xml".
-
-        \param path the directory to scan for sub-directories
+ *      This method imports settings from every directory at path, by
+ * convention
+ *      -- from a file named "settings.xml".
+ *
+ *      \param path the directory to scan for sub-directories
  */
 
-void ProcessingDialog::populateConfig (std::string path)
+void
+ProcessingDialog::populateConfig (std::string path)
 {
 	boost::filesystem::directory_iterator dir (path), end;
 
@@ -86,21 +92,24 @@ void ProcessingDialog::populateConfig (std::string path)
 		}
 }
 
-void ProcessingDialog::select_frames_changed (bool state)
+void
+ProcessingDialog::select_frames_changed (bool state)
 {
 	start_frame_spin->setEnabled (state);
 	end_frame_spin->setEnabled (state);
 }
 
-void ProcessingDialog::stop_clicked (void)
+void
+ProcessingDialog::stop_clicked (void)
 {
 	run_thread = false;
 }
 
-void ProcessingDialog::select_file ()
+void
+ProcessingDialog::select_file ()
 {
 	selectedFile = QFileDialog::getOpenFileName (this, tr ("Open Video"),
-	                                             lastSelectedFile, tr ("Video Files (*.avi *.mkv *.wmv *.mp4 *.kinvideo)"));
+		lastSelectedFile, tr ("Video Files (*.avi *.mkv *.wmv *.mp4 *.kinvideo)"));
 	if (selectedFile.isNull ())
 		{
 			return;
@@ -111,12 +120,14 @@ void ProcessingDialog::select_file ()
 }
 
 /**
-        This method loads a video file either with OpenCV VideoCapture, or with
-        FileCapture for kinvide.
-        \param path path to the file
+ *      This method loads a video file either with OpenCV VideoCapture, or
+ * with
+ *      FileCapture for kinvide.
+ *      \param path path to the file
  */
 
-bool ProcessingDialog::loadFile (std::string path)
+bool
+ProcessingDialog::loadFile (std::string path)
 {
 	QFileInfo fileInfo (QString::fromStdString (path));
 
@@ -146,7 +157,7 @@ bool ProcessingDialog::loadFile (std::string path)
 
 	if (fileInfo.suffix () == "kinvideo")
 		{
-			kincap = new FileCapture (path);
+			kincap       = new FileCapture (path);
 			frames_count = kincap->getFrameCount ();
 		}
 	else
@@ -155,7 +166,7 @@ bool ProcessingDialog::loadFile (std::string path)
 			if (!c->isOpened ())
 				{
 					frames_count = -1;
-					vcap = NULL;
+					vcap         = NULL;
 				}
 			else
 				{
@@ -171,10 +182,12 @@ bool ProcessingDialog::loadFile (std::string path)
 }
 
 /**
-        This method determines the range of frames to be processed and starts the processing thread.
+ *      This method determines the range of frames to be processed and
+ * starts the processing thread.
  */
 
-void ProcessingDialog::process_frames (void)
+void
+ProcessingDialog::process_frames (void)
 {
 	if (!vcap && !kincap)
 		{
@@ -197,7 +210,7 @@ void ProcessingDialog::process_frames (void)
 	else
 		{
 			start = start_frame_spin->value ();
-			end = end_frame_spin->value ();
+			end   = end_frame_spin->value ();
 		}
 
 	if (start >= end)
@@ -224,10 +237,11 @@ void ProcessingDialog::process_frames (void)
 		}
 
 	QFuture <void> thread = QtConcurrent::run (this,
-	                                           &ProcessingDialog::processing_thread, start, end);
+		&ProcessingDialog::processing_thread, start, end);
 }
 
-void ProcessingDialog::processing_thread (int start, int end)
+void
+ProcessingDialog::processing_thread (int start, int end)
 {
 	cv::Mat image, empty;
 
@@ -247,7 +261,7 @@ void ProcessingDialog::processing_thread (int start, int end)
 					else
 						{
 							kincap->readFrame ();
-							LuxFrame *f = kincap->getFrame ();
+							LuxFrame * f = kincap->getFrame ();
 							algo_pipeline->process_frame (f->image, f->depth_map);
 						}
 				}
@@ -261,12 +275,14 @@ void ProcessingDialog::processing_thread (int start, int end)
 	processing_done (true, std::string ());
 }
 
-void ProcessingDialog::update_progress (void)
+void
+ProcessingDialog::update_progress (void)
 {
 	progress_bar->setValue (progress_bar->value () + 1);
 }
 
-void ProcessingDialog::lockUI ()
+void
+ProcessingDialog::lockUI ()
 {
 	radio_whole_file->setEnabled (false);
 	radio_select_frames->setEnabled (false);
@@ -277,7 +293,8 @@ void ProcessingDialog::lockUI ()
 	stop_button->setEnabled (true);
 }
 
-void ProcessingDialog::unlockUI ()
+void
+ProcessingDialog::unlockUI ()
 {
 	process_button->setEnabled (true);
 	select_file_button->setEnabled (true);
