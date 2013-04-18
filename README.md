@@ -47,3 +47,13 @@ Building documentation
 	$ cd docs
 	$ doxygen
 	$ xdg-open html/index.html
+
+Coding style
+=====
+
+This project follows the GNU identation style. Uncrustify config for pre-commit
+hook in git-hooks is made to format all code in this style.
+
+As for actual coding, we try to follow[Google C++ style guide]
+(http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml) to some point,
+but not strictly.

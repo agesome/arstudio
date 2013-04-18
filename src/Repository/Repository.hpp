@@ -21,31 +21,35 @@ namespace Workspace
 class Repository
 {
 public:
-  typedef std::map <std::string, Sequence::ptr> sequenceMap;
-  typedef std::pair <std::string, Sequence::ptr> mapItem;
-  typedef std::map <std::string, sequenceMap> mapTree;
-
   typedef std::shared_ptr<Repository> ptr;
 
-  // < called when a new branch is added
-  std::function <void (std::string)> newBranchCallback;
-  // < called when a branch is removed
-  std::function <void (std::string)> branchRemovedCallback;
-  // < called when a new sequence is added
-  std::function <void (std::string, std::string)> newSequenceCallback;
-  // < called when a sequence is removed
-  std::function <void (std::string, std::string)> sequenceRemovedCallback;
+  typedef std::function <void (const std::string &)> branch_cb;
+  typedef std::function <void (const std::string &,
+                               const std::string &)> sequence_cb;
 
-  void addSequence (Sequence::ptr, std::string, std::string = "default");
-  void addItem (Item::ptr, unsigned int, Item::type, std::string,
-                std::string = "default");
-  void Clear (void);
+  void add_sequence (Sequence::ptr, const std::string &, const std::string &);
+  void add_sequence (Sequence::ptr, const std::string &);
+  const Sequence::ptr find_sequence (const std::string &name,
+                                     const std::string &branch_name);
+  const Sequence::ptr find_sequence (const std::string &);
+  void add_item (Item::ptr, unsigned int, Item::type, const std::string &,
+                 const std::string &);
+  void add_item (Item::ptr, unsigned int, Item::type, const std::string &);
+  void clear (void);
   static ptr make (void);
-  const mapTree & getTree (void);
-  const Sequence::ptr getSequence (std::string, std::string);
-  sequenceMap & getSequenceMap (std::string);
+
+  branch_cb   new_branch_cb; //< called when a new branch is added
+  branch_cb   removed_branch_cb; //< called when a branch is removed
+  sequence_cb new_sequence_cb; //< called when a new sequence is added
+  sequence_cb removed_sequence_cb; //< called when a sequence is removed
 private:
-  mapTree sequences;
+  typedef std::map <std::string, Sequence::ptr> sequence_map;
+  typedef std::pair <std::string, Sequence::ptr> map_item;
+  typedef std::map <std::string, sequence_map> map_tree;
+
+  sequence_map & get_sequence_map (const std::string &);
+
+  map_tree sequences_;
 };
 }
 #endif // REPOSITORY_H

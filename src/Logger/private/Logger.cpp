@@ -43,7 +43,7 @@ Logger::log_point (cv::Point3d point, const std::string & name)
 {
   Point3d::ptr p = Point3d::make (point.x, point.y, point.z, 1, 1, 1);
 
-  repo->addItem (p, current_frame, Item::POINT3D, name);
+  repo->add_item (p, current_frame, Item::POINT3D, name);
 }
 
 void
@@ -74,7 +74,7 @@ Logger::log_camera (cv::Point3d p, double rx, double ry, double rz,
   c->ry = ry;
   c->rz = rz;
 
-  repo->addItem (c, current_frame, Item::CAMERA, name);
+  repo->add_item (c, current_frame, Item::CAMERA, name);
 }
 
 void
@@ -95,7 +95,7 @@ Logger::log_image (const cv::Mat & m, const std::string & name)
   Bitmap::ptr map = Bitmap::make ();
 
   map->bitmap = m;
-  repo->addItem (map, current_frame, Item::BITMAP, name);
+  repo->add_item (map, current_frame, Item::BITMAP, name);
 }
 
 void

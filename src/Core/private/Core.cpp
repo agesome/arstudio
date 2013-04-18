@@ -39,7 +39,7 @@ Core::clear_repository (void)
 {
   Logger::instance ().reset_frame_counter ();
 
-  repository_ptr->Clear ();
+  repository_ptr->clear ();
   update_windows ();
 }
 
