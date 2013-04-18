@@ -62,5 +62,5 @@ AlgoPipeline::process_frame (const cv::Mat & image, const cv::Mat & dmap)
 {
   for (auto algo : algo_list)
     algo->run (image, dmap);
-  Logger::getInstance ().advanceFrame ();
+  Logger::instance ().advance_frame ();
 }

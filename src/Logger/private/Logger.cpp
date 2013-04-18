@@ -1,33 +1,32 @@
 #include <Logger.hpp>
 
 Workspace::Repository::ptr Logger::repo;
+Logger                     Logger::instance_;
 
 Logger::Logger ()
 {
 }
 
 Logger &
-Logger::getInstance (void)
+Logger::instance (void)
 {
-  static Logger instance;
-
-  return instance;
+  return instance_;
 }
 
 void
-Logger::setRepository (Workspace::Repository::ptr r)
+Logger::set_repository (Workspace::Repository::ptr r)
 {
   repo = r;
 }
 
 void
-Logger::advanceFrame (void)
+Logger::advance_frame (void)
 {
   current_frame++;
 }
 
 void
-Logger::resetFrameCounter (void)
+Logger::reset_frame_counter (void)
 {
   current_frame = 1;
 }
@@ -40,11 +39,17 @@ Logger::resetFrameCounter (void)
  */
 
 void
-Logger::logPoint (cv::Point3d point)
+Logger::log_point (cv::Point3d point, const std::string & name)
 {
   Point3d::ptr p = Point3d::make (point.x, point.y, point.z, 1, 1, 1);
 
-  repo->addItem (p, current_frame, Item::POINT3D, "points");
+  repo->addItem (p, current_frame, Item::POINT3D, name);
+}
+
+void
+Logger::log_point (cv::Point3d point)
+{
+  this->log_point (point, "points");
 }
 
 /**
@@ -57,14 +62,25 @@ Logger::logPoint (cv::Point3d point)
  */
 
 void
-Logger::logCamera (cv::Point3d p, double rx, double ry, double rz)
+Logger::log_camera (cv::Point3d p, double rx, double ry, double rz,
+                    const std::string & name)
 {
   Camera::ptr c = Camera::make ();
 
-  c->tx = p.x; c->ty = p.y; c->tz = p.z;
-  c->rx = rx; c->ry = ry; c->rz = rz;
+  c->tx = p.x;
+  c->ty = p.y;
+  c->tz = p.z;
+  c->rx = rx;
+  c->ry = ry;
+  c->rz = rz;
 
-  repo->addItem (c, current_frame, Item::CAMERA, "camera");
+  repo->addItem (c, current_frame, Item::CAMERA, name);
+}
+
+void
+Logger::log_camera (cv::Point3d p, double rx, double ry, double rz)
+{
+  this->log_camera (p, rx, ry, rz, "camera");
 }
 
 /**
@@ -74,10 +90,16 @@ Logger::logCamera (cv::Point3d p, double rx, double ry, double rz)
  */
 
 void
-Logger::addImage (cv::Mat & m, std::string source)
+Logger::log_image (const cv::Mat & m, const std::string & name)
 {
   Bitmap::ptr map = Bitmap::make ();
 
   map->bitmap = m;
-  repo->addItem (map, current_frame, Item::BITMAP, source);
+  repo->addItem (map, current_frame, Item::BITMAP, name);
+}
+
+void
+Logger::log_image (const cv::Mat & m)
+{
+  this->log_image (m, "image");
 }

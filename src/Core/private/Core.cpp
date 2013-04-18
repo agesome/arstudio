@@ -5,7 +5,7 @@ Core::Core () : QMainWindow ()
   init_gui ();
   connect_signals ();
   init_toolbar ();
-  Logger::setRepository (repository_ptr);
+  Logger::set_repository (repository_ptr);
 }
 
 /**
@@ -37,7 +37,7 @@ Core::make_screenshot (void)
 void
 Core::clear_repository (void)
 {
-  Logger::getInstance ().resetFrameCounter ();
+  Logger::instance ().reset_frame_counter ();
 
   repository_ptr->Clear ();
   update_windows ();

@@ -79,9 +79,9 @@ ImageAdjusterAlgorithm::run (const Mat & image, const Mat &)
 {
   Mat result = adjuster->adjust (image);
 
-  Logger & l = Logger::getInstance ();
+  Logger & l = Logger::instance ();
 
-  l.addImage (result, type);
+  l.log_image (result, type);
   return true;
 }
 
