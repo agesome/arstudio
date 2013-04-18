@@ -88,9 +88,9 @@ Repository::add_item (Item::ptr item, unsigned int frame, Item::type type,
 }
 
 /**
- *      This method returns a sequenceMap for a branch.
+ *      This method returns a sequence_map for a branch.
  *
- *      \param branchName the branch to find
+ *      \param branch_name the branch to find
  */
 
 Repository::sequence_map &

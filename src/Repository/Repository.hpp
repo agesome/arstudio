@@ -16,6 +16,9 @@ namespace Workspace
  *
  *      All methods are designed to create a branch/sequence if it is not
  *      present in the tree.
+ *
+ *      TODO: make the default branch name configurable, can be nice for
+ *logging
  */
 
 class Repository
