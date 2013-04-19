@@ -2,40 +2,32 @@
 
 namespace Workspace
 {
-const std::string Item::typeNames[] =
+Sequence::Sequence (Item::type type)
 {
-  std::string ("Camera"),
-  std::string ("Point cloud"),
-  std::string ("Point3D"),
-  std::string ("Bitmap")
-};
-
-Sequence::Sequence (Item::type t)
-{
-  type = t;
+  this->type_ = type;
 }
 
 Sequence::ptr
-Sequence::make (Item::type t)
+Sequence::make (Item::type type)
 {
-  return std::make_shared<Sequence> (t);
+  return std::make_shared<Sequence> (type);
 }
 
 void
-Sequence::addItem (int nframe, Item::ptr p)
+Sequence::add_item (unsigned int frame, Item::ptr item_ptr)
 {
-  items.insert (Item::pair (nframe, p));
+  items_.insert (std::make_pair (frame, item_ptr));
 }
 
-const Sequence::map &
-Sequence::getItems (void)
+const Sequence::frame_map &
+Sequence::items (void)
 {
-  return items;
+  return items_;
 }
 
 Item::type
-Sequence::getType (void)
+Sequence::type (void)
 {
-  return type;
+  return type_;
 }
 }

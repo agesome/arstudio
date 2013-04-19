@@ -9,21 +9,21 @@ Scenegraph::make ()
 }
 
 void
-Scenegraph::addSequence (Sequence::ptr seq)
+Scenegraph::add_sequence (Sequence::ptr seq)
 {
-  sequences.push_back (seq);
+  sequences_.push_back (seq);
 }
 
 void
-Scenegraph::removeSequence (Sequence::ptr seq)
+Scenegraph::remove_sequence (Sequence::ptr seq)
 {
-  sequences.remove (seq);
+  sequences_.remove (seq);
 }
 
-const Scenegraph::list &
-Scenegraph::getSequences (void)
+const Scenegraph::sequence_list &
+Scenegraph::sequences (void)
 {
-  return sequences;
+  return sequences_;
 }
 
 /**
@@ -32,16 +32,16 @@ Scenegraph::getSequences (void)
  */
 
 unsigned int
-Scenegraph::getMinFrame (void)
+Scenegraph::min_frame (void)
 {
-  unsigned int r = UINT_MAX;
+  unsigned int frame = UINT_MAX;
 
-  for (auto seq : sequences)
-    for (auto it : seq->getItems ())
-      if (it.first < r)
-        r = it.first;
+  for (auto seq : sequences_)
+    for (auto it : seq->items ())
+      if (it.first < frame)
+        frame = it.first;
 
-  return r;
+  return frame;
 }
 
 /**
@@ -50,15 +50,15 @@ Scenegraph::getMinFrame (void)
  */
 
 unsigned int
-Scenegraph::getMaxFrame (void)
+Scenegraph::max_frame (void)
 {
-  unsigned int r = 0;
+  unsigned int frame = 0;
 
-  for (auto seq : sequences)
-    for (auto it : seq->getItems ())
-      if (it.first > r)
-        r = it.first;
+  for (auto seq : sequences_)
+    for (auto it : seq->items ())
+      if (it.first > frame)
+        frame = it.first;
 
-  return r;
+  return frame;
 }
 }

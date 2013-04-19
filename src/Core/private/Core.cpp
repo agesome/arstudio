@@ -77,7 +77,7 @@ void
 Core::update_windows ()
 {
   timeline_model->setMin (1);
-  timeline_model->setMax (scenegraph_ptr->getMaxFrame ());
+  timeline_model->setMax (scenegraph_ptr->max_frame ());
   timeline->updateWidget ();
   window3d->update (1);
   window2d->update (1);
@@ -181,9 +181,9 @@ Core::connect_signals ()
            this, SLOT (processing_done (bool, const std::string &)));
   connect (processing_dialog, SIGNAL (clearRepository ()), this,
            SLOT (clear_repository ()));
-  connect (repository_view, SIGNAL (selectionChanged ()), window3d,
+  connect (repository_view, SIGNAL (selection_changed ()), window3d,
            SLOT (update ()));
-  connect (repository_view, SIGNAL (selectionChanged ()), window2d,
+  connect (repository_view, SIGNAL (selection_changed ()), window2d,
            SLOT (update ()));
 }
 

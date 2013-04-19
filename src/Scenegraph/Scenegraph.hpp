@@ -1,4 +1,4 @@
-#ifndef SCENEGRAPH_H
+﻿#ifndef SCENEGRAPH_H
 #define SCENEGRAPH_H
 
 #include <list>
@@ -16,16 +16,16 @@ class Scenegraph
 {
 public:
   typedef std::shared_ptr<Scenegraph> ptr;
-  typedef std::list<Sequence::ptr> list;
+  typedef std::list<Sequence::ptr> sequence_list;
 
   static ptr make ();
-  void addSequence (Sequence::ptr);
-  void removeSequence (Sequence::ptr);
-  const list & getSequences (void);
-  unsigned int getMinFrame (void);
-  unsigned int getMaxFrame (void);
+  void add_sequence (Sequence::ptr);
+  void remove_sequence (Sequence::ptr);
+  const sequence_list & sequences (void);
+  unsigned int min_frame (void);
+  unsigned int max_frame (void);
 private:
-  list sequences;
+  sequence_list sequences_;
 };
 }
 #endif // SCENEGRAPH_H

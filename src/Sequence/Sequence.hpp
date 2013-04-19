@@ -4,30 +4,31 @@
 #include <map>
 #include <string>
 #include <memory>
+#include <utility>
 
 namespace Workspace
 {
 /**
- *      This is the base class for all data items.
+ * This is the base class for all data items.
  */
 
 class Item
 {
 public:
   typedef std::shared_ptr<Item> ptr;
-  typedef std::pair<int, ptr> pair;
 
   /**
-   *      This method allows casting from a generic Item pointer to a
-   * pointer to
-   *      a specific Item type.
+   * This method allows casting from a generic Item pointer to a
+   * pointer to a specific Item subclass.
    *
-   *      \param r the pointer to be cast
+   * \param item_ptr the pointer to be cast
    */
 
-  template <class T> static std::shared_ptr<T> ptr_cast_to (const Item::ptr & r)
+  template <class T>
+  static inline std::shared_ptr<T>
+  ptr_cast_to (const Item::ptr & item_ptr)
   {
-    return std::dynamic_pointer_cast<T, Item> (r);
+    return std::dynamic_pointer_cast<T, Item> (item_ptr);
   }
 
   virtual
@@ -43,33 +44,27 @@ public:
 
     LEN_
   };
-
-  static const std::string typeNames[LEN_];       // << holds
-                                                  // human-readable type
-                                                  // names for all item
-                                                  // types
 };
 
 /**
- *      This class manages a frame-ordered sequence of data items.
+ * This class manages a frame-ordered sequence of data items.
  */
 
 class Sequence
 {
 public:
   typedef std::shared_ptr<Sequence> ptr;
-  typedef std::pair<unsigned int, ptr> pair;
-  typedef std::map <unsigned int, Item::ptr> map;
+  typedef std::map <unsigned int, Item::ptr> frame_map;
 
   Sequence (Item::type);
   static ptr make (Item::type);
-  void addItem (int, Item::ptr);
-  const map & getItems (void);
-  Item::type getType (void);
+  void add_item (unsigned int, Item::ptr);
+  const frame_map & items (void);
+  Item::type type (void);
 
 private:
-  Item::type type;       // < type of items stored
-  map        items;       // < map of items to frames
+  Item::type type_; //< type of items stored
+  frame_map  items_; //< map of items to frames
 };
 }
 #endif // SEQUENCE_H

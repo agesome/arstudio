@@ -77,7 +77,7 @@ Repository::add_item (Item::ptr item, unsigned int frame, Item::type type,
       seq = Sequence::make (type);
       add_sequence (seq, sequence_name, branch_name);
     }
-  seq->addItem (frame, item);
+  seq->add_item (frame, item);
 }
 
 void

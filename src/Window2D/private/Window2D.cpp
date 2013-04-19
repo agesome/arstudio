@@ -24,12 +24,12 @@ Window2D::update (int frame)
   cv::Mat rgb;
 
   currentFrame = frame;
-  for (auto seq : scenegraph->getSequences ())
+  for (auto seq : scenegraph->sequences ())
     {
-      if (seq->getType () != Item::BITMAP)
+      if (seq->type () != Item::BITMAP)
         continue;
-      Sequence::map items = seq->getItems ();
-      Item::ptr     image;
+      Sequence::frame_map items = seq->items ();
+      Item::ptr           image;
       // seems cleaner than using find()
       try
         {

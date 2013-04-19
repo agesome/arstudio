@@ -160,15 +160,17 @@ Window3D::drawSceneElements ()
 
   Item::ptr   item;
   Camera::ptr c;
+  Item::type  item_type;
 
-  for (const auto seq : sg->getSequences ())
+  for (const auto seq : sg->sequences ())
     {
+      item_type = seq->type ();
       // skip bitmaps
-      if (seq->getType () == Item::BITMAP)
+      if (item_type == Item::BITMAP)
         continue;
 
-      const Sequence::map & items = seq->getItems ();
-      Camera::ptr           prev;
+      const Sequence::frame_map & items = seq->items ();
+      Camera::ptr                 prev;
 
       try
         {
@@ -179,7 +181,7 @@ Window3D::drawSceneElements ()
           continue;
         }
 
-      switch (seq->getType ())
+      switch (item_type)
         {
         case Item::CAMERA:
           for (auto it : items)

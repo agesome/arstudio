@@ -27,14 +27,16 @@ public:
                   QWidget * MainWindow = nullptr);
 
 private:
-  Scenegraph::ptr scgr;
-  Repository::ptr repo;
+  void set_callbacks (void);
+
+  Scenegraph::ptr scenegraph_ptr;
+  Repository::ptr repository_ptr;
 
 signals:
-  void selectionChanged (void);
+  void selection_changed (void);
 
 private slots:
-  void onItemChanged (QTreeWidgetItem *, int);
+  void on_item_changed (QTreeWidgetItem *, int);
 };
 }
 #endif // REPOSITORY_VIEW_H
