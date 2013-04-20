@@ -11,19 +11,20 @@ class TimeLineModel : public QObject
 {
   Q_OBJECT
 public:
-  TimeLineModel (int mn, int mx);
+  TimeLineModel (int, int);
 
-  bool setCurFrame (int nframe);
-  bool incCurFrame ();
-  void setMin (int mn);
-  void setMax (int mx);
-  int getMin ();
-  int getMax ();
-  int getCurFrame ();
+  bool set_frame (int);
+  bool next_frame (void);
+  void set_range (int, int);
+  int min_frame (void);
+  int max_frame (void);
+  int current_frame (void);
 private:
-  int current_frame, min, max;
+  int current_frame_;
+  int min_frame_;
+  int max_frame_;
 signals:
-  void newFrame (int nfr);
+  void new_frame (int);
 };
 
 #endif // TIMELINEMODEL_HPP

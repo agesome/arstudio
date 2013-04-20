@@ -76,9 +76,9 @@ Core::processing_done (bool success, const std::string & error_msg)
 void
 Core::update_windows ()
 {
-  timeline_model->setMin (1);
-  timeline_model->setMax (scenegraph_ptr->max_frame ());
-  timeline->updateWidget ();
+  timeline_model->set_range (scenegraph_ptr->min_frame (),
+                             scenegraph_ptr->max_frame ());
+  timeline->update ();
   window3d->update (1);
   window2d->update (1);
 }
@@ -172,9 +172,9 @@ Core::connect_signals ()
 {
   qRegisterMetaType<std::string> ("std::string");
 
-  connect (timeline_model, SIGNAL (newFrame (int)), window3d,
+  connect (timeline_model, SIGNAL (new_frame (int)), window3d,
            SLOT (update (int)));
-  connect (timeline_model, SIGNAL (newFrame (int)), window2d,
+  connect (timeline_model, SIGNAL (new_frame (int)), window2d,
            SLOT (update (int)));
   connect (processing_dialog,
            SIGNAL (processing_done (bool, const std::string &)),
