@@ -149,7 +149,7 @@ TimeLine::init_gui (void)
   if (icon.isNull ())
     next_button->setText (">");
   else
-    next_button->setIcon (QIcon::fromTheme ("go-next"));
+    next_button->setIcon (icon);
   next_button->setFixedWidth (next_button->sizeHint ().width ());
 
   layout->addWidget (play_button, 1, 2, 0);
