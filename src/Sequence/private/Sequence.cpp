@@ -1,7 +1,6 @@
 #include <Sequence.hpp>
 
-namespace Workspace
-{
+namespace arstudio {
 Sequence::Sequence (Item::type type)
 {
   this->type_ = type;

@@ -9,8 +9,7 @@
 #include <Scenegraph.hpp>
 #include <Bitmap.hpp>
 
-using namespace Workspace;
-
+namespace arstudio {
 /**
  *      This widget displays items of type Bitmap.
  */
@@ -30,5 +29,6 @@ public slots:
   void update (int);
   void update (void);
 };
+}
 
 #endif // WINDOW2D_H

@@ -42,7 +42,7 @@ public:
 class ImageAdjusterAlgorithm : public IAbstractAlgorithm
 {
 public:
-  ImageAdjusterAlgorithm (Config::ptr config);
+  ImageAdjusterAlgorithm (as::Config::ptr config);
   ~ImageAdjusterAlgorithm ();
 
   bool create (void);

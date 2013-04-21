@@ -11,6 +11,8 @@
  *      An interface for all processing algorithms.
  */
 
+namespace as = arstudio;
+
 class IAbstractAlgorithm
 {
 public:
@@ -20,7 +22,7 @@ public:
    *
    *      \param config pointer to an instance of Config
    */
-  IAbstractAlgorithm (Config::ptr config)
+  IAbstractAlgorithm (as::Config::ptr config)
   {
     this->config = config;
   };
@@ -48,7 +50,7 @@ public:
   virtual const std::string id_string (void) = 0;
 
 protected:
-  Config::ptr config;
+  as::Config::ptr config;
 };
 
 #endif // ALGO_INTERFACE_HPP

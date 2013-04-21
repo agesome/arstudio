@@ -1,5 +1,6 @@
 #include <AlgoPipeline.hpp>
 
+namespace arstudio {
 /**
  *      The constructor. During build, CMake inserts code specific to each
  * algorithm
@@ -63,4 +64,5 @@ AlgoPipeline::process_frame (const cv::Mat & image, const cv::Mat & dmap)
   for (auto algo : algo_list)
     algo->run (image, dmap);
   Logger::instance ().advance_frame ();
+}
 }

@@ -1,5 +1,6 @@
 #include <Config.hpp>
 
+namespace arstudio {
 /**
  *      Import setting from an XML file
  *
@@ -47,4 +48,5 @@ void
 Config::set_import_callback (import_callback_t callback)
 {
   import_callback = callback;
+}
 }

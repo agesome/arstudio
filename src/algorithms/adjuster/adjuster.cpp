@@ -38,7 +38,7 @@ ContrastAdjuster::adjust (const Mat & image)
   return result;
 }
 
-ImageAdjusterAlgorithm::ImageAdjusterAlgorithm (Config::ptr config)
+ImageAdjusterAlgorithm::ImageAdjusterAlgorithm (as::Config::ptr config)
   : IAbstractAlgorithm (config)
 {
 }
@@ -79,7 +79,7 @@ ImageAdjusterAlgorithm::run (const Mat & image, const Mat &)
 {
   Mat result = adjuster->adjust (image);
 
-  Logger & l = Logger::instance ();
+  as::Logger & l = as::Logger::instance ();
 
   l.log_image (result, type);
   return true;

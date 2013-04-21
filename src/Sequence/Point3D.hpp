@@ -5,8 +5,7 @@
 
 #include <Sequence.hpp>
 
-using namespace Workspace;
-
+namespace arstudio {
 class Point3d : public Item
 {
 public:
@@ -26,5 +25,6 @@ public:
   GLfloat g;
   GLfloat b;
 };
+}
 
 #endif // POINT3D_H

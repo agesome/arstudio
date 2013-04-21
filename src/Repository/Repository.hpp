@@ -7,8 +7,7 @@
 
 #include <Sequence.hpp>
 
-namespace Workspace
-{
+namespace arstudio {
 /**
  *      This class handles storage of data sequences in a tree-like
  * structure,
@@ -18,7 +17,7 @@ namespace Workspace
  *      present in the tree.
  *
  *      TODO: make the default branch name configurable, can be nice for
- *logging
+ * logging
  */
 
 class Repository
@@ -55,4 +54,5 @@ private:
   map_tree sequences_;
 };
 }
+
 #endif // REPOSITORY_H

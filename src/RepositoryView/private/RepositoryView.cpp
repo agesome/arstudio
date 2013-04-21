@@ -1,7 +1,6 @@
 #include <RepositoryView.hpp>
 
-namespace Workspace
-{
+namespace arstudio {
 RepositoryView::RepositoryView (Repository::ptr r,
                                 Scenegraph::ptr sp,
                                 QWidget * MainWindow) : QTreeWidget (MainWindow)

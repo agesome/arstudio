@@ -7,11 +7,12 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 
+namespace arstudio {
 namespace pt = boost::property_tree;
 
 /**
  * This class handles import from XML files and storage of
- *algorithm-specific settings in a tree structure.
+ * algorithm-specific settings in a tree structure.
  */
 
 class Config
@@ -52,5 +53,6 @@ private:
   import_callback_t import_callback; ///< called for each value imported
   pt::ptree         main_tree; ///< contains settings for all algorithms
 };
+}
 
 #endif // CONFIG_H

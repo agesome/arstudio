@@ -1,17 +1,15 @@
 #include <QApplication>
 #include <Core.hpp>
 
-using namespace Workspace;
-
 int
 main (int argc, char * argv[])
 {
   QApplication app (argc, argv);
 
   QApplication::setApplicationName ("arstudio");
-  QApplication::setOrganizationName ("LuxoftLab");
+  QApplication::setOrganizationName ("CVTeam");
 
-  Core core;
+  arstudio::Core core;
 
   core.show ();
 

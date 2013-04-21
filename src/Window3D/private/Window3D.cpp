@@ -1,5 +1,6 @@
 #include <Window3D.hpp>
 
+namespace arstudio {
 Window3D::Window3D (Scenegraph::ptr s, QWidget * parent) : QGLWidget (parent)
 {
   this->scenegraph_ptr = s;
@@ -316,4 +317,4 @@ Window3D::draw_camera_path (const Sequence::frame_map & fm)
       prev = camera;
     }
 }
-
+}

@@ -5,8 +5,7 @@
 
 #include <Sequence.hpp>
 
-using namespace Workspace;
-
+namespace arstudio {
 class Camera : public Item
 {
 public:
@@ -30,5 +29,6 @@ public:
   GLfloat ry;
   GLfloat rz;
 };
+}
 
 #endif // CAMERA_H

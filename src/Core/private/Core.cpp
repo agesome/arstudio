@@ -1,5 +1,6 @@
 #include <Core.hpp>
 
+namespace arstudio {
 Core::Core () : QMainWindow ()
 {
   init_gui ();
@@ -216,4 +217,5 @@ void
 Core::menu_quit (void)
 {
   qApp->exit ();
+}
 }

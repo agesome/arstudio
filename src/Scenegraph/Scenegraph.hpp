@@ -7,8 +7,7 @@
 
 #include <Sequence.hpp>
 
-namespace Workspace
-{
+namespace arstudio {
 /**
  *      Keeps track of all sequences to be displayed.
  */
@@ -28,4 +27,5 @@ private:
   sequence_list sequences_;
 };
 }
+
 #endif // SCENEGRAPH_H

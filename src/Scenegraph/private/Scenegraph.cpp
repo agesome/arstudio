@@ -1,7 +1,6 @@
 #include <Scenegraph.hpp>
 
-namespace Workspace
-{
+namespace arstudio {
 Scenegraph::ptr
 Scenegraph::make ()
 {

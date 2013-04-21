@@ -11,12 +11,13 @@
 #include <Point3D.hpp>
 #include <Camera.hpp>
 
+namespace arstudio {
 /**
  * This singleton class recieves data from algorithms, converts it to
  * a suitable format and stores it in the Repository.
  *
  * All log_ methods have an overload which specifies a sane default name
- *for
+ * for
  * the items logged.
  */
 
@@ -24,7 +25,7 @@ class Logger
 {
 public:
   static Logger & instance (void);
-  static void set_repository (const Workspace::Repository::ptr);
+  static void set_repository (const Repository::ptr);
 
   void log_image (const cv::Mat &, const std::string &);
   void log_image (const cv::Mat &);
@@ -39,10 +40,11 @@ private:
   Logger (const Logger &)             = delete;
   Logger & operator= (const Logger &) = delete;
 
-  static Logger                     instance_;
-  static Workspace::Repository::ptr repo; //< currently used instance
-  unsigned int                      current_frame = 1; //< log sequences
-                                                       // for this frame
+  static Logger          instance_;
+  static Repository::ptr repo; //< currently used instance
+  unsigned int           current_frame = 1; //< log sequences for this
+                                            // frame
 };
+}
 
 #endif // LOGGER_H

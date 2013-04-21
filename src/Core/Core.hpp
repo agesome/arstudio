@@ -27,8 +27,7 @@
 #include <Window3D.hpp>
 #include <ProcessingDialog.hpp>
 
-using namespace Workspace;
-
+namespace arstudio {
 /**
  *      This is the core class, it implements the main application window
  *
@@ -74,5 +73,6 @@ public slots:
   void clear_repository (void);
   void make_screenshot (void);
 };
+}
 
 #endif // CORE_H

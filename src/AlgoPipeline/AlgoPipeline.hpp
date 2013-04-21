@@ -12,6 +12,7 @@
 
 @ALGO_INCLUDES@
 
+namespace arstudio {
 /**
  *      This class handles image processing algorithms.
  */
@@ -36,5 +37,6 @@ private:
                                                     // created
                                                     // algorithms
 };
+}
 
 #endif // ALGO_PIPELINE_H

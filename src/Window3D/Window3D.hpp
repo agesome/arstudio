@@ -13,8 +13,7 @@
 #include <Scenegraph.hpp>
 #include <PointCloud.hpp>
 
-using namespace Workspace;
-
+namespace arstudio {
 /**
  *      This widget handles display of Items in 3D space.
  */
@@ -59,5 +58,5 @@ public slots:
 public:
   Window3D (Scenegraph::ptr, QWidget * parent = nullptr);
 };
-
+}
 #endif

@@ -1,5 +1,6 @@
 #include <TimeLineModel.hpp>
 
+namespace arstudio {
 TimeLineModel::TimeLineModel (int min, int max)
 {
   this->min_frame_     = min;
@@ -46,4 +47,5 @@ int
 TimeLineModel::max_frame (void)
 {
   return max_frame_;
+}
 }

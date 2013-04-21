@@ -1,5 +1,6 @@
 #include <ProcessingDialog.hpp>
 
+namespace arstudio {
 ProcessingDialog::ProcessingDialog (QWidget * parent) :
   QWidget (parent)
 {
@@ -303,4 +304,5 @@ ProcessingDialog::ui_unlock (void)
   radio_select_frames->setEnabled (true);
   start_frame_spin->setEnabled (true);
   end_frame_spin->setEnabled (true);
+}
 }

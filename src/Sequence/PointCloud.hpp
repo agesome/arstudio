@@ -6,6 +6,7 @@
 #include <Point3D.hpp>
 #include <Sequence.hpp>
 
+namespace arstudio {
 class PointCloud : public Item
 {
 public:
@@ -18,5 +19,6 @@ public:
 
   std::list<Point3d::ptr> cloud;
 };
+}
 
 #endif // PCLOUD_H

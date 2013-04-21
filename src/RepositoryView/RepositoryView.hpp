@@ -9,8 +9,7 @@
 #include <Repository.hpp>
 #include <Scenegraph.hpp>
 
-namespace Workspace
-{
+namespace arstudio {
 /**
  *      This widget displays the contents of repository by installing
  * necessary callbacks in it.

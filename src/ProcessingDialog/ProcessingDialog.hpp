@@ -28,6 +28,7 @@
 
 #include <filecapture.hpp>
 
+namespace arstudio {
 /**
  *      This class handles processing of video files, until individual
  * frames are passed to AlgoPipeline
@@ -63,9 +64,9 @@ private:
   QString        last_selected_file;
   QSettings      settings; //< save and restore path to last opened file
 
-  cv::VideoCapture * video_capture    = nullptr; //< used for regular video
+  cv::VideoCapture * video_capture = nullptr;    //< used for regular video
                                                  // files
-  FileCapture      * kinvideo_capture = nullptr; //< used for kinvideo
+  FileCapture * kinvideo_capture = nullptr;      //< used for kinvideo
                                                  // files
 
   Config::ptr       config_ptr;
@@ -85,5 +86,6 @@ private slots:
   void stop_clicked (void);
   void processing_cleanup (void);
 };
+}
 
 #endif // PROCESSING_DIALOG_H

@@ -5,8 +5,7 @@
 
 #include <Sequence.hpp>
 
-using namespace Workspace;
-
+namespace arstudio {
 class Bitmap : public Item
 {
 public:
@@ -19,5 +18,6 @@ public:
 
   cv::Mat bitmap;
 };
+}
 
 #endif // BITMAP_HPP

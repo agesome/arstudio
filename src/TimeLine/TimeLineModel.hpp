@@ -3,6 +3,7 @@
 
 #include <QObject>
 
+namespace arstudio {
 /**
  *      This class implements a model for the TimeLine widget.
  */
@@ -26,5 +27,5 @@ private:
 signals:
   void new_frame (int);
 };
-
+}
 #endif // TIMELINEMODEL_HPP

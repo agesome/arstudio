@@ -1,7 +1,6 @@
 #include <Repository.hpp>
 
-namespace Workspace
-{
+namespace arstudio {
 /**
  *      This method adds a sequence to the specified branch.
  *

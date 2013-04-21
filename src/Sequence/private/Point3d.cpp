@@ -1,5 +1,6 @@
 #include <Point3D.hpp>
 
+namespace arstudio {
 Point3d::Point3d ()
 {
 }
@@ -34,4 +35,5 @@ Point3d::ptr
 Point3d::make ()
 {
   return std::make_shared<Point3d> ();
+}
 }

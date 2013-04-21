@@ -1,5 +1,6 @@
 #include <TimeLine.hpp>
 
+namespace arstudio {
 TimeLine::TimeLine (TimeLineModel * timeline_model, QWidget * main_window) :
   QWidget (main_window)
 {
@@ -160,4 +161,5 @@ TimeLine::init_gui (void)
 
   layout->addWidget (spinbox, 1, 5, 0);
   spinbox->setFixedWidth (spinbox->sizeHint ().width ());
+}
 }

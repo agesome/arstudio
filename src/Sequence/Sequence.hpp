@@ -6,8 +6,7 @@
 #include <memory>
 #include <utility>
 
-namespace Workspace
-{
+namespace arstudio {
 /**
  * This is the base class for all data items.
  */
@@ -67,4 +66,5 @@ private:
   frame_map  items_; //< map of items to frames
 };
 }
+
 #endif // SEQUENCE_H

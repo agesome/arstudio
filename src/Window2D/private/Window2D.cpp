@@ -1,5 +1,6 @@
 #include <Window2D.hpp>
 
+namespace arstudio {
 Window2D::Window2D (Scenegraph::ptr sg, QWidget * parent) : QLabel (parent)
 {
   this->scenegraph_ptr = sg;
@@ -61,4 +62,5 @@ Window2D::resizeEvent (QResizeEvent *)
   if (curernt_pixmap.isNull ())
     return;
   setPixmap (curernt_pixmap.scaled (width (), height (), Qt::KeepAspectRatio));
+}
 }

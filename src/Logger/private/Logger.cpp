@@ -1,7 +1,8 @@
 #include <Logger.hpp>
 
-Workspace::Repository::ptr Logger::repo;
-Logger                     Logger::instance_;
+namespace arstudio {
+Repository::ptr Logger::repo;
+Logger          Logger::instance_;
 
 Logger::Logger ()
 {
@@ -14,7 +15,7 @@ Logger::instance (void)
 }
 
 void
-Logger::set_repository (Workspace::Repository::ptr r)
+Logger::set_repository (Repository::ptr r)
 {
   repo = r;
 }
@@ -102,4 +103,5 @@ void
 Logger::log_image (const cv::Mat & m)
 {
   this->log_image (m, "image");
+}
 }

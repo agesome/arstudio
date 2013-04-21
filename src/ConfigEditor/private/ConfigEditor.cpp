@@ -1,5 +1,6 @@
 #include <ConfigEditor.hpp>
 
+namespace arstudio {
 /**
  *      The constructor
  *
@@ -57,4 +58,5 @@ void
 ConfigEditor::item_changed_handler (QTreeWidgetItem * item, int)
 {
   config->put (item->text (0).toStdString (), item->text (1).toStdString ());
+}
 }

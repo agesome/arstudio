@@ -9,6 +9,7 @@
 
 #include <TimeLineModel.hpp>
 
+namespace arstudio {
 /**
  *      This widget handles data playback.
  */
@@ -42,5 +43,6 @@ private slots:
   void timer_fired (void);
   void slider_changed (int n);
 };
+}
 
 #endif // TIMELINE_H
