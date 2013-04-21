@@ -81,7 +81,14 @@ ImageAdjusterAlgorithm::run (const Mat & image, const Mat &)
 
   as::Logger & l = as::Logger::instance ();
 
+  cv::Point3d p0, p1;
+
+  p0.x = p0.y = p0.z = 1;
+  p1.x = p1.y = p1.z = 0;
+
   l.log_image (result, type);
+  l.log_camera (p0, 0, 0, 0, "p0");
+  l.log_camera (p1, 0, 0, 0, "p1");
   return true;
 }
 

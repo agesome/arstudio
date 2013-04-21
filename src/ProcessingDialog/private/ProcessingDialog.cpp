@@ -170,8 +170,8 @@ ProcessingDialog::load_file (const QString & path)
     }
   else
     {
-      cv::VideoCapture video_capture;
-      video_capture = new cv::VideoCapture (path.toStdString ());
+      cv::VideoCapture * video_capture =
+        new cv::VideoCapture (path.toStdString ());
 
       if (!video_capture->isOpened ())
         {

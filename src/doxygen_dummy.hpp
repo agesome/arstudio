@@ -1,4 +1,4 @@
-namespace Workspace
+namespace arstudio
 {
 namespace std
 {
