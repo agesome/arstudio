@@ -41,57 +41,48 @@ public:
   ProcessingDialog (QWidget * parent = nullptr);
   ~ProcessingDialog ();
 private:
+  void processing_thread (int, int);
+  void populate_config (const std::string &);
+  void ui_lock (void);
+  void ui_unlock (void);
+  void create_layout (void);
+  void connect_signals (void);
+  bool load_file (const QString &);
 
-  QLabel       * file_name_label    = new QLabel (this);
-  QLabel       * frames_count_label = new QLabel (this);
-  QPushButton  * select_file_button = new QPushButton (this);
-  QPushButton  * process_button     = new QPushButton (this);
-  QPushButton  * stop_button        = new QPushButton (this);
-  QSpinBox     * start_frame_spin   = new QSpinBox (this);
-  QSpinBox     * end_frame_spin     = new QSpinBox (this);
-  QProgressBar * progress_bar       = new QProgressBar (this);
-  QGridLayout  * layout             = new QGridLayout (this);
-  QRadioButton * radio_whole_file   = new QRadioButton ("Process whole file",
-                                                        this);
-  QRadioButton * radio_select_frames = new QRadioButton ("Select frames", this);
-  QString        selectedFile;
-  QString        lastSelectedFile;
+  QLabel       * file_name_label;
+  QLabel       * frames_count_label;
+  QPushButton  * select_file_button;
+  QPushButton  * process_button;
+  QPushButton  * stop_button;
+  QSpinBox     * start_frame_spin;
+  QSpinBox     * end_frame_spin;
+  QProgressBar * progress_bar;
+  QRadioButton * radio_whole_file;
+  QRadioButton * radio_select_frames;
+  QString        selected_file;
+  QString        last_selected_file;
+  QSettings      settings; //< save and restore path to last opened file
 
-  QSettings settings;                   // < save and restore path to last
-                                        // opened
-                                        // file
+  cv::VideoCapture * video_capture    = nullptr; //< used for regular video
+                                                 // files
+  FileCapture      * kinvideo_capture = nullptr; //< used for kinvideo
+                                                 // files
 
-  cv::VideoCapture * vcap = nullptr;                  // < used for regular
-                                                      // video
-                                                      // files
-  FileCapture * kincap = nullptr;                  // < used for kinvideo
-                                                   // files
-
-  Config::ptr config = Config::make ();
-  // has to be created before AlgoPipeline!
-  ConfigEditor    * editor = new ConfigEditor (config);
+  Config::ptr       config_ptr;
   AlgoPipeline::ptr algo_pipeline;
 
-  bool run_thread;
-
-  void processing_thread (int, int);
-  void populateConfig (std::string);
-  void lockUI ();
-  void unlockUI ();
-  void createLayout ();
-  bool loadFile (std::string);
+  bool run_processing_thread;
 signals:
   void processing_done (bool, const std::string &);
-  void progress_signal ();
-  void clearRepository (void);
+  void progress_signal (void);
+  void clear_repository (void);
 
-public slots:
-  void select_file ();
-  void process_frames ();
-  void update_progress ();
-  void select_frames_changed (bool);
-  void stop_clicked ();
 private slots:
+  void select_file (void);
+  void process_frames (void);
+  void update_progress (void);
+  void select_frames_changed (bool);
+  void stop_clicked (void);
   void processing_cleanup (void);
 };
 

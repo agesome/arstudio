@@ -142,6 +142,7 @@ Core::init_gui ()
   this->resize (this->sizeHint ());
 
   processing_dialog->setWindowFlags (Qt::Tool);
+  processing_dialog->setFixedSize (processing_dialog->sizeHint ());
 }
 
 void
@@ -179,7 +180,7 @@ Core::connect_signals ()
   connect (processing_dialog,
            SIGNAL (processing_done (bool, const std::string &)),
            this, SLOT (processing_done (bool, const std::string &)));
-  connect (processing_dialog, SIGNAL (clearRepository ()), this,
+  connect (processing_dialog, SIGNAL (clear_repository ()), this,
            SLOT (clear_repository ()));
   connect (repository_view, SIGNAL (selection_changed ()), window3d,
            SLOT (update ()));

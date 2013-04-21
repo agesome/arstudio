@@ -3,8 +3,72 @@
 ProcessingDialog::ProcessingDialog (QWidget * parent) :
   QWidget (parent)
 {
-  createLayout ();
+  this->config_ptr = Config::make ();
+  create_layout ();
+  connect_signals ();
 
+  // defined in CMakeLists.txt
+  populate_config ("@CONFIG_DIRECTORY@");
+
+  last_selected_file =
+    settings.value ("ProcessingDialog/lastSelectedFile", "~").toString ();
+  if (last_selected_file != "~")
+    load_file (last_selected_file);
+}
+
+void
+ProcessingDialog::processing_cleanup (void)
+{
+  ui_unlock ();
+  this->hide ();
+}
+
+ProcessingDialog::~ProcessingDialog ()
+{
+  settings.setValue ("ProcessingDialog/lastSelectedFile", last_selected_file);
+}
+
+void
+ProcessingDialog::create_layout (void)
+{
+  QGridLayout  * layout        = new QGridLayout (this);
+  ConfigEditor * config_editor = new ConfigEditor (config_ptr);
+
+  file_name_label     = new QLabel ("File: ", this);
+  frames_count_label  = new QLabel ("Frames: ", this);
+  select_file_button  = new QPushButton ("Select file", this);
+  process_button      = new QPushButton ("Process", this);
+  stop_button         = new QPushButton ("Stop", this);
+  start_frame_spin    = new QSpinBox (this);
+  end_frame_spin      = new QSpinBox (this);
+  progress_bar        = new QProgressBar (this);
+  radio_whole_file    = new QRadioButton ("Process whole file", this);
+  radio_select_frames = new QRadioButton ("Select frames", this);
+
+  layout->addWidget (file_name_label, 0, 0, 1, 3);
+  layout->addWidget (frames_count_label, 1, 0, 1, 3);
+  layout->addWidget (radio_whole_file, 2, 0);
+  layout->addWidget (radio_select_frames, 3, 0);
+  layout->addWidget (start_frame_spin, 3, 1, 1, 1);
+  layout->addWidget (end_frame_spin, 3, 2, 1, 1);
+  layout->addWidget (progress_bar, 4, 0, 1, 3);
+  layout->addWidget (select_file_button, 5, 0, 1, 1);
+  layout->addWidget (process_button, 5, 1, 1, 1);
+  layout->addWidget (stop_button, 5, 2, 1, 1);
+  layout->addWidget (config_editor, 0, 3, 6, 8);
+
+  ui_lock ();
+  select_file_button->setEnabled (true);
+  stop_button->setEnabled (false);
+
+  progress_bar->setFormat ("%v / %m");
+  progress_bar->setValue (0);
+  progress_bar->setMaximum (-1);
+}
+
+void
+ProcessingDialog::connect_signals (void)
+{
   connect (select_file_button, SIGNAL (clicked ()), this,
            SLOT (select_file ()));
   connect (process_button, SIGNAL (clicked ()), this, SLOT (process_frames ()));
@@ -15,56 +79,6 @@ ProcessingDialog::ProcessingDialog (QWidget * parent) :
 
   connect (this, SIGNAL (processing_done (bool, const std::string &)), this,
            SLOT (processing_cleanup (void)));
-
-  // defined in CMakeLists.txt
-  populateConfig ("@CONFIG_DIRECTORY@");
-
-  lastSelectedFile =
-    settings.value ("ProcessingDialog/lastSelectedFile", "~").toString ();
-  if (lastSelectedFile != "~")
-    loadFile (lastSelectedFile.toStdString ());
-}
-
-void
-ProcessingDialog::processing_cleanup (void)
-{
-  unlockUI ();
-  this->hide ();
-}
-
-ProcessingDialog::~ProcessingDialog ()
-{
-  settings.setValue ("ProcessingDialog/lastSelectedFile", lastSelectedFile);
-}
-
-void
-ProcessingDialog::createLayout ()
-{
-  file_name_label->setText ("File: ");
-  frames_count_label->setText ("Frames: ");
-  select_file_button->setText ("Select file");
-  process_button->setText ("Process");
-  stop_button->setText ("Stop");
-
-  layout->addWidget (file_name_label, 0, 0, 1, 3, 0);
-  layout->addWidget (frames_count_label, 1, 0, 1, 3, 0);
-  layout->addWidget (radio_whole_file, 2, 0);
-  layout->addWidget (radio_select_frames, 3, 0);
-  layout->addWidget (start_frame_spin, 3, 1, 1, 1, 0);
-  layout->addWidget (end_frame_spin, 3, 2, 1, 1, 0);
-  layout->addWidget (progress_bar, 4, 0, 1, 3, 0);
-  layout->addWidget (select_file_button, 5, 0, 1, 1, 0);
-  layout->addWidget (process_button, 5, 1, 1, 1, 0);
-  layout->addWidget (stop_button, 5, 2, 1, 1, 0);
-  layout->addWidget (editor, 0, 3, 6, 8);
-
-  lockUI ();
-  select_file_button->setEnabled (true);
-  stop_button->setEnabled (false);
-
-  progress_bar->setFormat ("%v / %m");
-  progress_bar->setValue (0);
-  progress_bar->setMaximum (-1);
 }
 
 /**
@@ -76,7 +90,7 @@ ProcessingDialog::createLayout ()
  */
 
 void
-ProcessingDialog::populateConfig (std::string path)
+ProcessingDialog::populate_config (const std::string & path)
 {
   boost::filesystem::directory_iterator dir (path), end;
 
@@ -84,7 +98,7 @@ ProcessingDialog::populateConfig (std::string path)
     {
       boost::filesystem::path p = dir->path ();
       if (boost::filesystem::is_directory (p))
-        config->import_xml (p.string () + "/settings.xml");
+        config_ptr->import_xml (p.string () + "/settings.xml");
     }
 }
 
@@ -98,21 +112,21 @@ ProcessingDialog::select_frames_changed (bool state)
 void
 ProcessingDialog::stop_clicked (void)
 {
-  run_thread = false;
+  run_processing_thread = false;
 }
 
 void
-ProcessingDialog::select_file ()
+ProcessingDialog::select_file (void)
 {
-  selectedFile = QFileDialog::getOpenFileName (this, tr ("Open Video"),
-                                               lastSelectedFile,
-                                               tr (
-                                                 "Video Files (*.avi *.mkv *.wmv *.mp4 *.kinvideo)"));
-  if (selectedFile.isNull ())
+  selected_file =
+    QFileDialog::getOpenFileName (this,
+                                  "Open Video",
+                                  last_selected_file,
+                                  "Video Files (*.avi *.mkv *.wmv *.mp4 *.kinvideo)");
+  if (selected_file.isNull ())
     return;
-  lastSelectedFile = selectedFile;
-
-  loadFile (selectedFile.toStdString ());
+  last_selected_file = selected_file;
+  load_file (selected_file);
 }
 
 /**
@@ -123,51 +137,52 @@ ProcessingDialog::select_file ()
  */
 
 bool
-ProcessingDialog::loadFile (std::string path)
+ProcessingDialog::load_file (const QString & path)
 {
-  QFileInfo fileInfo (QString::fromStdString (path));
+  QFileInfo file_info (path);
 
-  if (fileInfo.isFile () == false)
+  if (file_info.isFile () == false)
     return false;
   unsigned int frames_count;
 
-  cv::VideoCapture * c;
-  file_name_label->setText ("File: " + fileInfo.baseName ());
-  file_name_label->setToolTip (selectedFile);
+  file_name_label->setText ("File: " + file_info.baseName ());
+  file_name_label->setToolTip (selected_file);
   radio_whole_file->setEnabled (true);
   radio_whole_file->setChecked (true);
   process_button->setEnabled (true);
 
-  if (kincap)
+  if (kinvideo_capture)
     {
-      delete kincap;
-      kincap = nullptr;
+      delete kinvideo_capture;
+      kinvideo_capture = nullptr;
     }
-  else if (vcap)
+  else if (video_capture)
     {
-      delete vcap;
-      vcap = nullptr;
+      delete video_capture;
+      video_capture = nullptr;
     }
 
-  if (fileInfo.suffix () == "kinvideo")
+  if (file_info.suffix () == "kinvideo")
     {
-      kincap       = new FileCapture (path);
-      frames_count = kincap->getFrameCount ();
+      kinvideo_capture = new FileCapture (path.toStdString ());
+      frames_count     = kinvideo_capture->getFrameCount ();
     }
   else
     {
-      c = new cv::VideoCapture (path);
-      if (!c->isOpened ())
+      cv::VideoCapture video_capture;
+      video_capture = new cv::VideoCapture (path.toStdString ());
+
+      if (!video_capture->isOpened ())
         {
-          frames_count = -1;
-          vcap         = NULL;
+          frames_count  = -1;
+          video_capture = NULL;
         }
       else
         {
-          frames_count = c->get (CV_CAP_PROP_FRAME_COUNT);
+          frames_count = video_capture->get (CV_CAP_PROP_FRAME_COUNT);
           start_frame_spin->setRange (0, frames_count - 1);
           end_frame_spin->setRange (1, frames_count);
-          vcap = c;
+          this->video_capture = video_capture;
           radio_select_frames->setEnabled (true);
         }
     }
@@ -183,17 +198,17 @@ ProcessingDialog::loadFile (std::string path)
 void
 ProcessingDialog::process_frames (void)
 {
-  if (!vcap && !kincap)
+  if (!video_capture && !kinvideo_capture)
     return;
 
   int start, end;
   if (radio_whole_file->isChecked ())
     {
       start = 0;
-      if (vcap)
-        end = vcap->get (CV_CAP_PROP_FRAME_COUNT);
+      if (video_capture)
+        end = video_capture->get (CV_CAP_PROP_FRAME_COUNT);
       else
-        end = kincap->getFrameCount ();
+        end = kinvideo_capture->getFrameCount ();
     }
   else
     {
@@ -206,12 +221,12 @@ ProcessingDialog::process_frames (void)
   progress_bar->setRange (0, end - start);
   progress_bar->setValue (1);
 
-  lockUI ();
-  clearRepository ();
+  ui_lock ();
+  clear_repository ();
 
-  run_thread = true;
+  run_processing_thread = true;
 
-  algo_pipeline = AlgoPipeline::make (config);
+  algo_pipeline = AlgoPipeline::make (config_ptr);
   try
     {
       algo_pipeline->create_all ();
@@ -222,10 +237,8 @@ ProcessingDialog::process_frames (void)
       return;
     }
 
-  QFuture <void> thread = QtConcurrent::run (this,
-                                             &ProcessingDialog::processing_thread,
-                                             start,
-                                             end);
+  QFuture <void> thread =
+    QtConcurrent::run (this, &ProcessingDialog::processing_thread, start, end);
 }
 
 void
@@ -233,21 +246,22 @@ ProcessingDialog::processing_thread (int start, int end)
 {
   cv::Mat image, empty;
 
-  if (vcap)
-    vcap->set (CV_CAP_PROP_POS_FRAMES, start);
-  for (int i = start; i < end && run_thread; i++)
+  if (video_capture)
+    video_capture->set (CV_CAP_PROP_POS_FRAMES, start);
+
+  for (int i = start; i < end && run_processing_thread; i++)
     {
       try
         {
-          if (vcap)
+          if (video_capture)
             {
-              *vcap >> image;
+              *video_capture >> image;
               algo_pipeline->process_frame (image, empty);
             }
           else
             {
-              kincap->readFrame ();
-              LuxFrame * f = kincap->getFrame ();
+              kinvideo_capture->readFrame ();
+              LuxFrame * f = kinvideo_capture->getFrame ();
               algo_pipeline->process_frame (f->image, f->depth_map);
             }
         }
@@ -268,7 +282,7 @@ ProcessingDialog::update_progress (void)
 }
 
 void
-ProcessingDialog::lockUI ()
+ProcessingDialog::ui_lock (void)
 {
   radio_whole_file->setEnabled (false);
   radio_select_frames->setEnabled (false);
@@ -280,7 +294,7 @@ ProcessingDialog::lockUI ()
 }
 
 void
-ProcessingDialog::unlockUI ()
+ProcessingDialog::ui_unlock (void)
 {
   process_button->setEnabled (true);
   select_file_button->setEnabled (true);
