@@ -17,8 +17,8 @@
 *~
 
 # everything in the build directory
-src/build/*
+*build/*
 
-algo_pipeline.cpp
-algo_pipeline.hpp
-processing_dialog.cpp
+docs/html
+
+CMakeLists.txt.user
