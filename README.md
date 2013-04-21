@@ -6,9 +6,9 @@ Computer vision algorithm debugging tool.
 Repository structure
 =====
 
-- docs/ 			-- documentation;
-- git-hooks/ 	-- useful git hooks to use when working on this project;
-- src/ 				-- the source three;
+- docs/       -- documentation;
+- git-hooks/  -- useful git hooks to use when working on this project;
+- src/        -- the source three;
 - submodules/ -- contains KinectRecorder, a dependency to support .kinvideo files.
 
 Dependencies
@@ -37,9 +37,12 @@ Cloning & Compiling
 	$ cd src
 	$ mkdir build
 	$ cd build
-	$ cmake ..
+	$ cmake [-D ALGORITHMS="algo1;algo2"] ..
 	$ make [-jN]
 	$ ./arstudio
+
+Note: the ALGORITHMS CMake variable allows to selectively build algorithms,
+avoiding automatic inclusion of everything in algorithms/.
 
 Building documentation
 =====
@@ -57,3 +60,4 @@ hook in git-hooks is made to format all code in this style.
 As for actual coding, we try to follow [Google C++ style guide]
 (http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml) to some point,
 but not strictly.
+
