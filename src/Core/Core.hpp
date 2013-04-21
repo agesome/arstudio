@@ -13,6 +13,10 @@
 #include <QMessageBox>
 #include <QToolBar>
 #include <QMdiArea>
+#include <QApplication>
+#include <QMenu>
+#include <QMenuBar>
+#include <QAction>
 
 #include <opencv2/highgui/highgui.hpp>
 

@@ -2,11 +2,10 @@
 #define SCENE3D_H
 
 #include <QGLWidget>
-#include <QtGui>
-
+#include <QMouseEvent>
+#include <QWheelEvent>
+#include <QKeyEvent>
 #include <GL/glu.h>
-
-#include <stdexcept>
 
 #include <Sequence.hpp>
 #include <Point3D.hpp>
@@ -24,44 +23,41 @@ class Window3D : public QGLWidget
 {
   Q_OBJECT
 private:
-  Scenegraph::ptr sg;
-  int currNframe = 1;
+  void default_scene (void);
+  void draw_scene (void);
+  void draw_axis (void);
+  void draw_camera (double, double, double, double, double, double, double);
+  void draw_camera_path (const Sequence::frame_map &);
+  void draw_point (Point3d::ptr, GLfloat);
+  void draw_pointcloud (PointCloud::ptr);
 
-  GLfloat xRot;
-  GLfloat yRot;
-  GLfloat zRot;
-  GLfloat zTra;
-  GLfloat nSca;
+  Scenegraph::ptr scenegraph_ptr;
+  int             current_frame;
 
-  QPoint ptrMousePosition;
+  GLfloat gl_rotation_x;
+  GLfloat gl_rotation_y;
+  GLfloat gl_rotation_z;
+  GLfloat gl_translation_z;
+  GLfloat gl_scale;
 
-  void defaultScene ();
-  void drawSceneElements ();
-  void drawAxis ();
-  void drawCam (double x,
-                double y,
-                double z,
-                double a,
-                double rx,
-                double ry,
-                double rz);
-  void drawPoint3D (Point3d::ptr, GLfloat);
-  void drawPointCloud (PointCloud::ptr);
+  QPoint mouse_position;
 
+  static constexpr float camera_size = 0.05;
+  static constexpr float point_size  = 20;
 protected:
-  void initializeGL ();
-  void resizeGL (int nWidth, int nHeight);
-  void paintGL ();
-  void mousePressEvent (QMouseEvent* pe);
-  void mouseMoveEvent (QMouseEvent* pe);
-  void wheelEvent (QWheelEvent* pe);
-  void keyPressEvent (QKeyEvent* pe);
+  void initializeGL (void);
+  void resizeGL (int, int);
+  void paintGL (void);
+  void mousePressEvent (QMouseEvent *);
+  void mouseMoveEvent (QMouseEvent *);
+  void wheelEvent (QWheelEvent *);
+  void keyPressEvent (QKeyEvent *);
 
 public slots:
   void update (int);
   void update (void);
 public:
-  Window3D (Scenegraph::ptr, QWidget * parent = 0);
+  Window3D (Scenegraph::ptr, QWidget * parent = nullptr);
 };
 
 #endif
