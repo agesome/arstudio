@@ -4,12 +4,10 @@
 #include <QImage>
 #include <QLabel>
 
-#include <stdexcept>
+#include <opencv2/imgproc/imgproc.hpp>
 
 #include <Scenegraph.hpp>
 #include <Bitmap.hpp>
-
-#include <opencv2/imgproc/imgproc.hpp>
 
 using namespace Workspace;
 
@@ -23,12 +21,11 @@ class Window2D : public QLabel
 public:
   Window2D (Scenegraph::ptr, QWidget * parent = nullptr);
 private:
-  QPixmap         currentPixmap;       // < currently displayed QPixmap
-  Scenegraph::ptr scenegraph;       // < an instance of Scenegraph
-  int             currentFrame = 1;       // < currently used frame
-
   void resizeEvent (QResizeEvent *);
 
+  QPixmap         curernt_pixmap; //< currently displayed QPixmap
+  Scenegraph::ptr scenegraph_ptr; //< an instance of Scenegraph
+  int             current_frame; //< currently used frame
 public slots:
   void update (int);
   void update (void);

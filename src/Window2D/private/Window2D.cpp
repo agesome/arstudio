@@ -2,13 +2,14 @@
 
 Window2D::Window2D (Scenegraph::ptr sg, QWidget * parent) : QLabel (parent)
 {
-  this->scenegraph = sg;
+  this->scenegraph_ptr = sg;
+  this->current_frame  = 1;
 }
 
 void
 Window2D::update (void)
 {
-  this->update (currentFrame);
+  this->update (current_frame);
 }
 
 /**
@@ -21,32 +22,32 @@ Window2D::update (void)
 void
 Window2D::update (int frame)
 {
-  cv::Mat rgb;
-
-  currentFrame = frame;
-  for (auto seq : scenegraph->sequences ())
+  current_frame = frame;
+  for (auto seq : scenegraph_ptr->sequences ())
     {
       if (seq->type () != Item::BITMAP)
         continue;
       Sequence::frame_map items = seq->items ();
       Item::ptr           image;
-      // seems cleaner than using find()
-      try
-        {
-          image = items.at (frame);
-        }
-      catch (std::out_of_range ex)
-        {
-          continue;
-        }
 
-      Bitmap::ptr bm = Item::ptr_cast_to<Bitmap> (image);
+      auto it = items.find (frame);
+      if (it == items.end ())
+        continue;
+      image = it->second;
+
+      Bitmap::ptr bm;
+      QImage      img;
+      cv::Mat     rgb;
+
+      bm = Item::ptr_cast_to<Bitmap> (image);
       cvtColor (bm->bitmap, rgb, CV_BGR2RGB);
-      currentPixmap = QPixmap::fromImage (QImage (rgb.data, rgb.cols, rgb.rows,
-                                                  rgb.step,
-                                                  QImage::Format_RGB888));
-      this->setPixmap (currentPixmap.scaled (this->width (), this->height (),
-                                             Qt::KeepAspectRatio));
+      img = QImage (rgb.data, rgb.cols, rgb.rows, rgb.step,
+                    QImage::Format_RGB888);
+      curernt_pixmap = QPixmap::fromImage (img);
+      setPixmap (curernt_pixmap.scaled (width (), height (),
+                                        Qt::KeepAspectRatio));
+      // once we found an image to display, don't look for more images
+      break;
     }
 }
 
@@ -57,8 +58,7 @@ Window2D::update (int frame)
 void
 Window2D::resizeEvent (QResizeEvent *)
 {
-  if (currentPixmap.isNull ())
+  if (curernt_pixmap.isNull ())
     return;
-  this->setPixmap (currentPixmap.scaled (this->width (), this->height (),
-                                         Qt::KeepAspectRatio));
+  setPixmap (curernt_pixmap.scaled (width (), height (), Qt::KeepAspectRatio));
 }
