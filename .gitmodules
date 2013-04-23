@@ -1,3 +1,6 @@
 [submodule "submodules/KinectRecorder"]
 	path = submodules/KinectRecorder
 	url = git@github.com:sanomaster/KinectRecorder.git
+[submodule "src/algorithms/slam"]
+	path = src/algorithms/slam
+	url = git://github.com/zmaximka/slam.git
