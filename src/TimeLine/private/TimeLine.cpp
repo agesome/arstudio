@@ -46,7 +46,8 @@ TimeLine::set_range (int min, int max)
   slider->setMinimum (min);
   slider->setMaximum (max);
 
-  spinbox->setFixedWidth (spinbox->sizeHint ().width ());
+  // FIXME
+  spinbox->setFixedWidth (spinbox->sizeHint ().width () + 20);
 }
 
 void
@@ -160,6 +161,7 @@ TimeLine::init_gui (void)
   stop_button->setEnabled (false);
 
   layout->addWidget (spinbox, 1, 5, 0);
-  spinbox->setFixedWidth (spinbox->sizeHint ().width ());
+  // FIXME: confirmed spinbox width bug, to be fixed in Qt 5.1
+  spinbox->setFixedWidth (spinbox->sizeHint ().width () + 20);
 }
 }

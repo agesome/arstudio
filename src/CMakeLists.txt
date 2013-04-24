@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8.6 FATAL_ERROR)
 
 project(arstudio CXX C)
 
@@ -72,16 +72,25 @@ if(NOT CMAKE_BUILD_TYPE)
   "Choose the type of build: Debug/Release" FORCE)
 endif()
 
+find_package(Boost REQUIRED COMPONENTS system filesystem)
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Concurrent REQUIRED)
+find_package(Qt5OpenGL REQUIRED)
+find_package(OpenGL REQUIRED)
+find_package(OpenCV REQUIRED)
+
+add_definitions(${Qt5Widgets_DEFINITIONS})
+add_definitions(${Qt5OpenGL_DEFINITIONS})
+add_definitions(${Qt5Concurrent_DEFINITIONS})
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5OpenGL_EXECUTABLE_COMPILE_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Concurrent_EXECUTABLE_COMPILE_FLAGS}")
+
 if(CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -std=c++11 -O2 -ggdb3 -Wall -Wextra -pedantic")
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -std=c++11 -O2")
 endif()
-
-find_package(Boost REQUIRED COMPONENTS system filesystem)
-find_package(Qt4 REQUIRED QtCore QtGui QtOpenGL QtXml)
-include(${QT_USE_FILE})
-find_package(OpenGL REQUIRED)
-find_package(OpenCV REQUIRED)
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../submodules/KinectRecorder/src/
     ${CMAKE_CURRENT_BINARY_DIR}/KinectRecorder EXCLUDE_FROM_ALL)
@@ -103,6 +112,9 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/../submodules/KinectRecorder/src/
   ${OPENGL_INCLUDE_DIR}
   ${Boost_INCLUDE_DIRS}
+  ${Qt5Widgets_INCLUDE_DIRS}
+  ${Qt5OpenGL_INCLUDE_DIRS}
+  ${Qt5Concurrent_INCLUDE_DIRS}
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${GLOBAL_INCLUDES}
 )
@@ -153,7 +165,7 @@ configure_file (${CMAKE_CURRENT_SOURCE_DIR}/AlgoPipeline/AlgoPipeline.hpp
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/AlgoPipeline/private/AlgoPipeline.cpp
         ${CMAKE_BINARY_DIR}/AlgoPipeline.cpp)
 
-qt4_wrap_cpp(arstudio_moc ${arstudio_moc_headers})
+qt5_wrap_cpp(arstudio_moc ${arstudio_moc_headers})
 
 message(STATUS "Build type is: ${CMAKE_BUILD_TYPE}")
 
@@ -161,9 +173,10 @@ add_executable(arstudio ${arstudio_sources} ${arstudio_headers} ${arstudio_moc})
 target_link_libraries(
   arstudio
 
-  kinectCapture
   ${GLOBAL_LIBS}
-  ${QT_LIBRARIES}
+  ${Qt5Widgets_LIBRARIES}
+  ${Qt5OpenGL_LIBRARIES}
+  ${Qt5Concurrent_LIBRARIES}
   ${Boost_LIBRARIES}
   ${OPENGL_LIBRARIES}
   ${OpenCV_LIBS}

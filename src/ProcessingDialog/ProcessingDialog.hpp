@@ -10,7 +10,7 @@
 #include <QFileDialog>
 #include <QProgressBar>
 #include <QFuture>
-#include <QtConcurrentRun>
+#include <QtConcurrent>
 #include <QRadioButton>
 #include <QFileInfo>
 #include <QSettings>

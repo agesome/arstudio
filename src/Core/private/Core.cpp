@@ -172,8 +172,6 @@ Core::init_toolbar ()
 void
 Core::connect_signals ()
 {
-  qRegisterMetaType<std::string> ("std::string");
-
   connect (timeline_model, SIGNAL (new_frame (int)), window3d,
            SLOT (update (int)));
   connect (timeline_model, SIGNAL (new_frame (int)), window2d,
