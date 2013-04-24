@@ -7,12 +7,6 @@ Window2D::Window2D (Scenegraph::ptr sg, QWidget * parent) : QLabel (parent)
   this->current_frame  = 1;
 }
 
-void
-Window2D::update (void)
-{
-  this->update (current_frame);
-}
-
 /**
  *      This method displays a Bitmap corresponding to a certain frame, if
  * there is one.
@@ -50,6 +44,12 @@ Window2D::update (int frame)
       // once we found an image to display, don't look for more images
       break;
     }
+}
+
+void
+Window2D::update_current (void)
+{
+  update (current_frame);
 }
 
 /**

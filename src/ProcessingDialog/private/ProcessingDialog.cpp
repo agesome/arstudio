@@ -17,13 +17,6 @@ ProcessingDialog::ProcessingDialog (QWidget * parent) :
     load_file (last_selected_file);
 }
 
-void
-ProcessingDialog::processing_cleanup (void)
-{
-  ui_unlock ();
-  this->hide ();
-}
-
 ProcessingDialog::~ProcessingDialog ()
 {
   settings.setValue ("ProcessingDialog/lastSelectedFile", last_selected_file);
@@ -68,18 +61,37 @@ ProcessingDialog::create_layout (void)
 }
 
 void
+ProcessingDialog::update_progress (void)
+{
+  progress_bar->setValue (progress_bar->value () + 1);
+}
+
+void
 ProcessingDialog::connect_signals (void)
 {
-  connect (select_file_button, SIGNAL (clicked ()), this,
-           SLOT (select_file ()));
-  connect (process_button, SIGNAL (clicked ()), this, SLOT (process_frames ()));
-  connect (this, SIGNAL (progress_signal ()), this, SLOT (update_progress ()));
-  connect (radio_select_frames, SIGNAL (toggled (bool)), this,
-           SLOT (select_frames_changed (bool)));
-  connect (stop_button, SIGNAL (clicked ()), this, SLOT (stop_clicked ()));
+  connect (select_file_button, &QPushButton::clicked, this,
+           &ProcessingDialog::select_file);
 
-  connect (this, SIGNAL (processing_done (bool, const std::string &)), this,
-           SLOT (processing_cleanup (void)));
+  connect (process_button, &QPushButton::clicked, this,
+           &ProcessingDialog::process_frames);
+
+  // FIXME: segfault with lambda
+  connect (this, &ProcessingDialog::progress_signal, this,
+           &ProcessingDialog::update_progress);
+
+  connect (radio_select_frames, &QRadioButton::toggled, [&] (bool v) {
+             start_frame_spin->setEnabled (v);
+             end_frame_spin->setEnabled (v);
+           });
+
+  connect (stop_button, &QPushButton::clicked, [&] (void) {
+             run_processing_thread = false;
+           });
+
+  connect (this, &ProcessingDialog::processing_done, [&] (void) {
+             ui_unlock ();
+             hide ();
+           });
 }
 
 /**
@@ -101,19 +113,6 @@ ProcessingDialog::populate_config (const std::string & path)
       if (boost::filesystem::is_directory (p))
         config_ptr->import_xml (p.string () + "/settings.xml");
     }
-}
-
-void
-ProcessingDialog::select_frames_changed (bool state)
-{
-  start_frame_spin->setEnabled (state);
-  end_frame_spin->setEnabled (state);
-}
-
-void
-ProcessingDialog::stop_clicked (void)
-{
-  run_processing_thread = false;
 }
 
 void
@@ -274,12 +273,6 @@ ProcessingDialog::processing_thread (int start, int end)
       progress_signal ();
     }
   processing_done (true, std::string ());
-}
-
-void
-ProcessingDialog::update_progress (void)
-{
-  progress_bar->setValue (progress_bar->value () + 1);
 }
 
 void

@@ -21,8 +21,8 @@ ConfigEditor::ConfigEditor (Config::ptr config, QWidget * parent)
   list << "Setting" << "Value";
   setHeaderLabels (list);
 
-  connect (this, SIGNAL (itemChanged (QTreeWidgetItem *, int)), this,
-           SLOT (item_changed_handler (QTreeWidgetItem *, int)));
+  connect (this, &QTreeWidget::itemChanged, this,
+           &ConfigEditor::item_changed_handler);
 }
 
 /**

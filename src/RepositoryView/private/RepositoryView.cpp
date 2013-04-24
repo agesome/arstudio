@@ -12,8 +12,8 @@ RepositoryView::RepositoryView (Repository::ptr r,
 
   set_callbacks ();
 
-  connect (this, SIGNAL (itemClicked (QTreeWidgetItem *, int)), this,
-           SLOT (on_item_changed (QTreeWidgetItem *, int)));
+  connect (this, &RepositoryView::itemClicked, this,
+           &RepositoryView::on_item_changed);
 }
 
 void

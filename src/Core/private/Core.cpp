@@ -152,17 +152,20 @@ Core::init_toolbar ()
   QAction * screenshot = new QAction (QIcon::fromTheme ("image-x-generic"),
                                       "Screenshot", toolbar);
 
-  connect (screenshot, SIGNAL (triggered ()), this, SLOT (make_screenshot ()));
+  connect (screenshot, &QAction::triggered, this, &Core::make_screenshot);
   toolbar->addAction (screenshot);
 
   QAction * clear = new QAction (QIcon::fromTheme ("edit-clear"),
                                  "Clear Repository", toolbar);
-  connect (clear, SIGNAL (triggered ()), this, SLOT (clear_repository ()));
+  connect (clear, &QAction::triggered, this, &Core::clear_repository);
   toolbar->addAction (clear);
 
   QAction * process = new QAction (QIcon::fromTheme ("system-run"),
                                    "Process", toolbar);
-  connect (process, SIGNAL (triggered ()), processing_dialog, SLOT (show ()));
+  connect (process,
+           &QAction::triggered,
+           processing_dialog,
+           &ProcessingDialog::show);
   toolbar->addAction (process);
 
   toolbar->setToolButtonStyle (Qt::ToolButtonTextUnderIcon);
@@ -172,19 +175,18 @@ Core::init_toolbar ()
 void
 Core::connect_signals ()
 {
-  connect (timeline_model, SIGNAL (new_frame (int)), window3d,
-           SLOT (update (int)));
-  connect (timeline_model, SIGNAL (new_frame (int)), window2d,
-           SLOT (update (int)));
-  connect (processing_dialog,
-           SIGNAL (processing_done (bool, const std::string &)),
-           this, SLOT (processing_done (bool, const std::string &)));
-  connect (processing_dialog, SIGNAL (clear_repository ()), this,
-           SLOT (clear_repository ()));
-  connect (repository_view, SIGNAL (selection_changed ()), window3d,
-           SLOT (update ()));
-  connect (repository_view, SIGNAL (selection_changed ()), window2d,
-           SLOT (update ()));
+  connect (timeline_model, &TimeLineModel::new_frame, window3d,
+           &Window3D::update);
+  connect (timeline_model, &TimeLineModel::new_frame, window2d,
+           &Window2D::update);
+  connect (repository_view, &RepositoryView::selection_changed, window3d,
+           &Window3D::update_current);
+  connect (repository_view, &RepositoryView::selection_changed, window2d,
+           &Window2D::update_current);
+  connect (processing_dialog, &ProcessingDialog::processing_done,
+           this, &Core::processing_done);
+  connect (processing_dialog, &ProcessingDialog::clear_repository, this,
+           &Core::clear_repository);
 }
 
 void

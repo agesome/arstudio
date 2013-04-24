@@ -27,7 +27,7 @@ private:
   int             current_frame; //< currently used frame
 public slots:
   void update (int);
-  void update (void);
+  void update_current (void);
 };
 }
 

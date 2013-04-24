@@ -82,9 +82,6 @@ private slots:
   void select_file (void);
   void process_frames (void);
   void update_progress (void);
-  void select_frames_changed (bool);
-  void stop_clicked (void);
-  void processing_cleanup (void);
 };
 }
 

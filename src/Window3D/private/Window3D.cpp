@@ -18,9 +18,9 @@ Window3D::update (int nframe)
 }
 
 void
-Window3D::update (void)
+Window3D::update_current (void)
 {
-  updateGL ();
+  update (current_frame);
 }
 
 void

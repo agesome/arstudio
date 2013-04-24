@@ -54,7 +54,7 @@ protected:
 
 public slots:
   void update (int);
-  void update (void);
+  void update_current (void);
 public:
   Window3D (Scenegraph::ptr, QWidget * parent = nullptr);
 };

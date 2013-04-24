@@ -95,19 +95,18 @@ TimeLine::update (void)
 void
 TimeLine::connect_signals (void)
 {
-  connect (prev_button, SIGNAL (clicked ()), this,
-           SLOT (prev_button_pressed ()));
-  connect (next_button, SIGNAL (clicked ()), this,
-           SLOT (next_button_pressed ()));
-  connect (play_button, SIGNAL (clicked ()), this, SLOT (play_pressed ()));
-  connect (stop_button, SIGNAL (clicked ()), this, SLOT (stop_pressed ()));
-  connect (spinbox, SIGNAL (editingFinished ()), this,
-           SLOT (spinbox_edited ()));
-  connect (timeline_model, SIGNAL (new_frame (int)), this,
-           SLOT (model_changed (int)));
-  connect (timer, SIGNAL (timeout ()), this, SLOT (timer_fired ()));
-  connect (slider, SIGNAL (valueChanged (int)), this,
-           SLOT (slider_changed (int)));
+  connect (prev_button, &QPushButton::clicked, this,
+           &TimeLine::prev_button_pressed);
+  connect (next_button, &QPushButton::clicked, this,
+           &TimeLine::next_button_pressed);
+  connect (play_button, &QPushButton::clicked, this, &TimeLine::play_pressed);
+  connect (stop_button, &QPushButton::clicked, this, &TimeLine::stop_pressed);
+  connect (spinbox, &QSpinBox::editingFinished, this,
+           &TimeLine::spinbox_edited);
+  connect (timeline_model, &TimeLineModel::new_frame, this,
+           &TimeLine::model_changed);
+  connect (timer, &QTimer::timeout, this, &TimeLine::timer_fired);
+  connect (slider, &QSlider::valueChanged, this, &TimeLine::slider_changed);
 }
 
 void
