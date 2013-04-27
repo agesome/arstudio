@@ -18,15 +18,13 @@
 #include <exception>
 #include <stdexcept>
 
-#include <opencv2/highgui/highgui.hpp>
 #include <boost/filesystem.hpp>
 
 #include <AlgoPipeline.hpp>
 #include <Logger.hpp>
 #include <Config.hpp>
 #include <ConfigEditor.hpp>
-
-#include <filecapture.hpp>
+#include <VideoHelper.hpp>
 
 namespace arstudio {
 /**
@@ -64,10 +62,7 @@ private:
   QString        last_selected_file;
   QSettings      settings; //< save and restore path to last opened file
 
-  cv::VideoCapture * video_capture = nullptr;    //< used for regular video
-                                                 // files
-  FileCapture * kinvideo_capture = nullptr;      //< used for kinvideo
-                                                 // files
+  VideoHelper * video_helper;
 
   Config::ptr       config_ptr;
   AlgoPipeline::ptr algo_pipeline;

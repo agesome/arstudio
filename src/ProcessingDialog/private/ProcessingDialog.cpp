@@ -4,7 +4,8 @@ namespace arstudio {
 ProcessingDialog::ProcessingDialog (QWidget * parent) :
   QWidget (parent)
 {
-  this->config_ptr = Config::make ();
+  this->config_ptr   = Config::make ();
+  this->video_helper = new VideoHelper ();
   create_layout ();
   connect_signals ();
 
@@ -20,6 +21,7 @@ ProcessingDialog::ProcessingDialog (QWidget * parent) :
 ProcessingDialog::~ProcessingDialog ()
 {
   settings.setValue ("ProcessingDialog/lastSelectedFile", last_selected_file);
+  delete video_helper;
 }
 
 void
@@ -55,7 +57,6 @@ ProcessingDialog::create_layout (void)
   select_file_button->setEnabled (true);
   stop_button->setEnabled (false);
 
-  progress_bar->setFormat ("%v / %m");
   progress_bar->setValue (0);
   progress_bar->setMaximum (-1);
 }
@@ -139,54 +140,21 @@ ProcessingDialog::select_file (void)
 bool
 ProcessingDialog::load_file (const QString & path)
 {
-  QFileInfo file_info (path);
-
-  if (file_info.isFile () == false)
+  if (!video_helper->load_file (path.toStdString ()))
     return false;
-  unsigned int frames_count;
+  QString basename    = QString::fromStdString (video_helper->file_basename ());
+  int     frame_count = video_helper->frame_count ();
 
-  file_name_label->setText ("File: " + file_info.baseName ());
+  file_name_label->setText ("File: " + basename);
   file_name_label->setToolTip (selected_file);
   radio_whole_file->setEnabled (true);
   radio_whole_file->setChecked (true);
   process_button->setEnabled (true);
+  start_frame_spin->setRange (1, frame_count);
+  end_frame_spin->setRange (1, frame_count);
+  radio_select_frames->setEnabled (true);
+  frames_count_label->setText ("Frames: " + QString::number (frame_count));
 
-  if (kinvideo_capture)
-    {
-      delete kinvideo_capture;
-      kinvideo_capture = nullptr;
-    }
-  else if (video_capture)
-    {
-      delete video_capture;
-      video_capture = nullptr;
-    }
-
-  if (file_info.suffix () == "kinvideo")
-    {
-      kinvideo_capture = new FileCapture (path.toStdString ());
-      frames_count     = kinvideo_capture->getFrameCount ();
-    }
-  else
-    {
-      cv::VideoCapture * video_capture =
-        new cv::VideoCapture (path.toStdString ());
-
-      if (!video_capture->isOpened ())
-        {
-          frames_count  = -1;
-          video_capture = NULL;
-        }
-      else
-        {
-          frames_count = video_capture->get (CV_CAP_PROP_FRAME_COUNT);
-          start_frame_spin->setRange (0, frames_count - 1);
-          end_frame_spin->setRange (1, frames_count);
-          this->video_capture = video_capture;
-          radio_select_frames->setEnabled (true);
-        }
-    }
-  frames_count_label->setText ("Frames: " + QString::number (frames_count));
   return true;
 }
 
@@ -198,17 +166,12 @@ ProcessingDialog::load_file (const QString & path)
 void
 ProcessingDialog::process_frames (void)
 {
-  if (!video_capture && !kinvideo_capture)
-    return;
-
   int start, end;
+
   if (radio_whole_file->isChecked ())
     {
-      start = 0;
-      if (video_capture)
-        end = video_capture->get (CV_CAP_PROP_FRAME_COUNT);
-      else
-        end = kinvideo_capture->getFrameCount ();
+      start = 1;
+      end   = video_helper->frame_count ();
     }
   else
     {
@@ -218,7 +181,7 @@ ProcessingDialog::process_frames (void)
 
   if (start >= end)
     return;
-  progress_bar->setRange (0, end - start);
+  progress_bar->setRange (0, end - start + 1);
   progress_bar->setValue (1);
 
   ui_lock ();
@@ -237,41 +200,32 @@ ProcessingDialog::process_frames (void)
       return;
     }
 
-  QFuture <void> thread =
-    QtConcurrent::run (this, &ProcessingDialog::processing_thread, start, end);
+  QtConcurrent::run (this, &ProcessingDialog::processing_thread, start, end);
 }
 
 void
 ProcessingDialog::processing_thread (int start, int end)
 {
-  cv::Mat image, empty;
+  video_helper->go_to_frame (start);
 
-  if (video_capture)
-    video_capture->set (CV_CAP_PROP_POS_FRAMES, start);
+  int i = start;
 
-  for (int i = start; i < end && run_processing_thread; i++)
+  do
     {
+      progress_signal ();
       try
         {
-          if (video_capture)
-            {
-              *video_capture >> image;
-              algo_pipeline->process_frame (image, empty);
-            }
-          else
-            {
-              kinvideo_capture->readFrame ();
-              LuxFrame * f = kinvideo_capture->getFrame ();
-              algo_pipeline->process_frame (f->image, f->depth_map);
-            }
+          algo_pipeline->process_frame (video_helper->image (),
+                                        video_helper->depth_map ());
         }
       catch (const std::out_of_range & error)
         {
           processing_done (false, error.what ());
           return;
         }
-      progress_signal ();
-    }
+      if (!run_processing_thread)
+        break;
+    } while (++i <= end && video_helper->next_frame ());
   processing_done (true, std::string ());
 }
 

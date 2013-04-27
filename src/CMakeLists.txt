@@ -23,6 +23,9 @@ set(arstudio_sources
   TimeLine/private/TimeLineModel.cpp
   Window2D/private/Window2D.cpp
   Window3D/private/Window3D.cpp
+  VideoHelper/private/VideoHelper.cpp
+  VideoHelper/private/VideoSourceOpenCV.cpp
+  VideoHelper/private/VideoSourceKinvideo.cpp
 #	generated with process_file
   ${CMAKE_BINARY_DIR}/ProcessingDialog.cpp
   ${CMAKE_BINARY_DIR}/AlgoPipeline.cpp
@@ -54,6 +57,10 @@ set (arstudio_headers
   Window2D/Window2D.hpp
   Window3D/Window3D.hpp
   ProcessingDialog/ProcessingDialog.hpp
+  VideoHelper/VideoHelper.hpp
+  VideoHelper/IVideoSource.hpp
+  VideoHelper/VideoSourceOpenCV.hpp
+  VideoHelper/VideoSourceKinvideo.hpp
 )
 
 set (arstudio_moc_headers
@@ -109,6 +116,7 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/TimeLine
   ${CMAKE_CURRENT_SOURCE_DIR}/Window2D
   ${CMAKE_CURRENT_SOURCE_DIR}/Window3D
+  ${CMAKE_CURRENT_SOURCE_DIR}/VideoHelper
   ${CMAKE_CURRENT_SOURCE_DIR}/../submodules/KinectRecorder/src/
   ${OPENGL_INCLUDE_DIR}
   ${Boost_INCLUDE_DIRS}
