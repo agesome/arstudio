@@ -32,11 +32,11 @@ private:
 
   Scenegraph::ptr scenegraph_ptr;
   int             current_frame;
+  int             last_successful_frame;
 
   GLfloat gl_rotation_x;
   GLfloat gl_rotation_y;
   GLfloat gl_rotation_z;
-  GLfloat gl_translation_z;
   GLfloat gl_scale;
 
   QPoint mouse_position;

@@ -3,8 +3,9 @@
 namespace arstudio {
 Window3D::Window3D (Scenegraph::ptr s, QWidget * parent) : QGLWidget (parent)
 {
-  this->scenegraph_ptr = s;
-  this->current_frame  = 1;
+  this->scenegraph_ptr        = s;
+  this->current_frame         = 1;
+  this->last_successful_frame = -1;
 
   setFocusPolicy (Qt::ClickFocus);
   default_scene ();
@@ -14,6 +15,8 @@ void
 Window3D::update (int nframe)
 {
   current_frame = nframe;
+  if (current_frame == 1)
+    last_successful_frame = -1;
   updateGL ();
 }
 
@@ -66,8 +69,7 @@ Window3D::paintGL (void)
   glLoadIdentity ();
 
   glScalef (gl_scale, gl_scale, gl_scale);
-  // FIXME: Z translation in place of Y parameter?
-  glTranslatef (0.0f, gl_translation_z, 0.0f);
+
   glRotatef (gl_rotation_x, 1.0f, 0.0f, 0.0f);
   glRotatef (gl_rotation_y, 0.0f, 1.0f, 0.0f);
   glRotatef (gl_rotation_z, 0.0f, 0.0f, 1.0f);
@@ -146,11 +148,10 @@ Window3D::keyPressEvent (QKeyEvent * pe)
 void
 Window3D::default_scene (void)
 {
-  gl_rotation_x    = 180;
-  gl_rotation_y    = 0;
-  gl_rotation_z    = 180;
-  gl_translation_z = 0;
-  gl_scale         = 1;
+  gl_rotation_x = 180;
+  gl_rotation_y = 0;
+  gl_rotation_z = 180;
+  gl_scale      = 1;
 }
 
 void
@@ -161,6 +162,7 @@ Window3D::draw_scene (void)
   Item::ptr   item;
   Camera::ptr camera;
   Item::type  item_type;
+  bool        updated = false;
 
   for (const auto seq : scenegraph_ptr->sequences ())
     {
@@ -174,7 +176,8 @@ Window3D::draw_scene (void)
       auto it = items.find (current_frame);
       if (it == items.end ())
         continue;
-      item = it->second;
+      item    = it->second;
+      updated = true;
 
       switch (item_type)
         {
@@ -196,6 +199,16 @@ Window3D::draw_scene (void)
         default: break;
         }
     }
+  if (!updated)
+    {
+      if (last_successful_frame == -1)
+        return;
+      int cf = current_frame;
+      update (last_successful_frame);
+      current_frame = cf;
+    }
+  else
+    last_successful_frame = current_frame;
 }
 
 void
