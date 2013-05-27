@@ -8,13 +8,14 @@
 namespace arstudio {
 class Bitmap : public Item
 {
+  Q_OBJECT
 public:
-  typedef std::shared_ptr<Bitmap> ptr;
+  typedef QSharedPointer<Bitmap> ptr;
   static ptr
   make (void)
   {
-    return std::make_shared<Bitmap> ();
-  };
+    return ptr (new Bitmap);
+  }
 
   cv::Mat bitmap;
 };

@@ -4,10 +4,6 @@ namespace arstudio {
 Repository::ptr Logger::repo;
 Logger          Logger::instance_;
 
-Logger::Logger ()
-{
-}
-
 Logger &
 Logger::instance (void)
 {
@@ -40,15 +36,17 @@ Logger::reset_frame_counter (void)
  */
 
 void
-Logger::log_point (cv::Point3d point, const std::string & name)
+Logger::log_point (const cv::Point3d & point, const std::string & name)
 {
-  Point3d::ptr p = Point3d::make (point.x, point.y, point.z, 1, 1, 1);
+  Point3D::ptr p = Point3D::make (QVector3D (point.x, point.y, point.z),
+                                  QColor (255, 255, 255));
 
-  repo->add_item (p, current_frame, Item::POINT3D, name);
+  repo->add_item (p, current_frame, Sequence::POINT3D,
+                  QString::fromStdString (name));
 }
 
 void
-Logger::log_point (cv::Point3d point)
+Logger::log_point (const cv::Point3d & point)
 {
   this->log_point (point, "points");
 }
@@ -63,25 +61,20 @@ Logger::log_point (cv::Point3d point)
  */
 
 void
-Logger::log_camera (cv::Point3d p, double rx, double ry, double rz,
+Logger::log_camera (const cv::Point3d & pos, const cv::Point3d & r,
                     const std::string & name)
 {
-  Camera::ptr c = Camera::make ();
+  Camera::ptr c = Camera::make (QVector3D (pos.x, pos.y, pos.z),
+                                QVector3D (r.x, r.y, r.z));
 
-  c->tx = p.x;
-  c->ty = p.y;
-  c->tz = p.z;
-  c->rx = rx;
-  c->ry = ry;
-  c->rz = rz;
-
-  repo->add_item (c, current_frame, Item::CAMERA, name);
+  repo->add_item (c, current_frame, Sequence::CAMERA,
+                  QString::fromStdString (name));
 }
 
 void
-Logger::log_camera (cv::Point3d p, double rx, double ry, double rz)
+Logger::log_camera (const cv::Point3d & pos, const cv::Point3d & r)
 {
-  this->log_camera (p, rx, ry, rz, "camera");
+  this->log_camera (pos, r, "camera");
 }
 
 /**
@@ -96,7 +89,8 @@ Logger::log_image (const cv::Mat & m, const std::string & name)
   Bitmap::ptr map = Bitmap::make ();
 
   map->bitmap = m;
-  repo->add_item (map, current_frame, Item::BITMAP, name);
+  repo->add_item (map, current_frame, Sequence::BITMAP,
+                  QString::fromStdString (name));
 }
 
 void

@@ -1,15 +1,21 @@
 #include <Sequence.hpp>
 
 namespace arstudio {
-Sequence::Sequence (Item::type type)
+Sequence::Sequence (ItemType type, QObject * parent)
+  : QObject (parent)
 {
   this->type_ = type;
 }
 
-Sequence::ptr
-Sequence::make (Item::type type)
+Sequence::Sequence (QObject * parent)
+  : QObject (parent)
 {
-  return std::make_shared<Sequence> (type);
+}
+
+Sequence::ptr
+Sequence::make (ItemType type)
+{
+  return QSharedPointer<Sequence> (new Sequence (type));
 }
 
 void
@@ -24,9 +30,19 @@ Sequence::items (void)
   return items_;
 }
 
-Item::type
+Sequence::ItemType
 Sequence::type (void)
 {
   return type_;
+}
+
+arstudio::Item *
+Sequence::item_for_frame (int frame)
+{
+  auto it = items_.find (frame);
+
+  if (it == items_.end ())
+    return nullptr;
+  return it->second.data ();
 }
 }

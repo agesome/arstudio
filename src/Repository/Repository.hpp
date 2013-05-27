@@ -1,9 +1,11 @@
 #ifndef REPOSITORY_H
 #define REPOSITORY_H
 
-#include <string>
-#include <functional>
-#include <memory>
+#include <QObject>
+#include <QSharedPointer>
+#include <QString>
+#include <QAbstractListModel>
+#include <QtDebug>
 
 #include <Sequence.hpp>
 
@@ -20,38 +22,74 @@ namespace arstudio {
  * logging
  */
 
-class Repository
+class RepositoryNode
 {
 public:
-  typedef std::shared_ptr<Repository> ptr;
+  RepositoryNode (const QString & name,
+                  Sequence::ptr data)
+    : name_ (name), data_ (data)
+  {
+  }
 
-  typedef std::function <void (const std::string &)> branch_cb;
-  typedef std::function <void (const std::string &,
-                               const std::string &)> sequence_cb;
+  arstudio::Sequence *
+  data (void) const
+  {
+    return data_.data ();
+  }
 
-  void add_sequence (Sequence::ptr, const std::string &, const std::string &);
-  void add_sequence (Sequence::ptr, const std::string &);
-  const Sequence::ptr find_sequence (const std::string &name,
-                                     const std::string &branch_name);
-  const Sequence::ptr find_sequence (const std::string &);
-  void add_item (Item::ptr, unsigned int, Item::type, const std::string &,
-                 const std::string &);
-  void add_item (Item::ptr, unsigned int, Item::type, const std::string &);
-  void clear (void);
-  static ptr make (void);
+  Sequence::ptr
+  ptr (void) const
+  {
+    return data_;
+  }
 
-  branch_cb   new_branch_cb; //< called when a new branch is added
-  branch_cb   removed_branch_cb; //< called when a branch is removed
-  sequence_cb new_sequence_cb; //< called when a new sequence is added
-  sequence_cb removed_sequence_cb; //< called when a sequence is removed
+  QString
+  name (void) const
+  {
+    return name_;
+  }
+
+  arstudio::Sequence::ItemType
+  type (void) const
+  {
+    return data_->type ();
+  }
+
 private:
-  typedef std::map <std::string, Sequence::ptr> sequence_map;
-  typedef std::pair <std::string, Sequence::ptr> map_item;
-  typedef std::map <std::string, sequence_map> map_tree;
+  QString       name_;
+  Sequence::ptr data_;
+};
 
-  sequence_map & get_sequence_map (const std::string &);
+class Repository : public QAbstractListModel
+{
+  Q_OBJECT
+public:
+  typedef QSharedPointer<Repository> ptr;
+  enum NodeRoles
+  {
+    NameRole = Qt::UserRole + 1,
+    TypeRole
+  };
 
-  map_tree sequences_;
+  Repository (QObject * parent = nullptr);
+
+  static ptr
+  make (QObject * parent = nullptr)
+  {
+    return ptr (new Repository (parent));
+  }
+
+  QVariant data (const QModelIndex & index, int role = NameRole) const;
+  int rowCount (const QModelIndex & parent = QModelIndex ()) const;
+  Q_INVOKABLE arstudio::Sequence * get (int index);
+
+  void add_sequence (Sequence::ptr sequence, const QString & node_name);
+  void add_item (Item::ptr item, unsigned int frame, Sequence::ItemType type,
+                 const QString & node_name);
+protected:
+  QHash<int, QByteArray> roleNames () const;
+private:
+  QList<RepositoryNode> data_;
 };
 }
 

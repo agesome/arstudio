@@ -1,9 +1,11 @@
 ﻿#ifndef SCENEGRAPH_H
 #define SCENEGRAPH_H
 
-#include <list>
+#include <QObject>
+#include <QQmlListProperty>
+#include <QList>
+
 #include <climits>
-#include <memory>
 
 #include <Sequence.hpp>
 
@@ -11,20 +13,22 @@ namespace arstudio {
 /**
  *      Keeps track of all sequences to be displayed.
  */
-class Scenegraph
+class Scenegraph : public QObject
 {
+  Q_OBJECT
+  Q_PROPERTY (QQmlListProperty<arstudio::Sequence> sequences READ sequences
+              NOTIFY sequences_changed)
 public:
-  typedef std::shared_ptr<Scenegraph> ptr;
-  typedef std::list<Sequence::ptr> sequence_list;
+  Q_INVOKABLE void add_sequence (Sequence *);
+  Q_INVOKABLE void remove_sequence (Sequence *);
+  Q_INVOKABLE unsigned int min_frame (void);
+  Q_INVOKABLE unsigned int max_frame (void);
 
-  static ptr make ();
-  void add_sequence (Sequence::ptr);
-  void remove_sequence (Sequence::ptr);
-  const sequence_list & sequences (void);
-  unsigned int min_frame (void);
-  unsigned int max_frame (void);
+  QQmlListProperty<arstudio::Sequence> sequences (void);
 private:
-  sequence_list sequences_;
+  QList<arstudio::Sequence *> sequences_;
+signals:
+  void sequences_changed (void);
 };
 }
 

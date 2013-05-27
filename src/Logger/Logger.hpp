@@ -29,14 +29,15 @@ public:
 
   void log_image (const cv::Mat &, const std::string &);
   void log_image (const cv::Mat &);
-  void log_point (cv::Point3d point, const std::string &);
-  void log_point (cv::Point3d point);
-  void log_camera (cv::Point3d, double, double, double, const std::string &);
-  void log_camera (cv::Point3d, double, double, double);
+  void log_point (const cv::Point3d & point, const std::string & name);
+  void log_point (const cv::Point3d & point);
+  void log_camera (const cv::Point3d & pos, const cv::Point3d & r,
+                   const std::string & name);
+  void log_camera (const cv::Point3d & pos, const cv::Point3d & r);
   void advance_frame (void);
   void reset_frame_counter (void);
 private:
-  Logger ();
+  Logger ()                           = default;
   Logger (const Logger &)             = delete;
   Logger & operator= (const Logger &) = delete;
 

@@ -1,28 +1,24 @@
 #include <Scenegraph.hpp>
 
 namespace arstudio {
-Scenegraph::ptr
-Scenegraph::make ()
-{
-  return std::make_shared<Scenegraph> ();
-}
-
 void
-Scenegraph::add_sequence (Sequence::ptr seq)
+Scenegraph::add_sequence (Sequence * seq)
 {
   sequences_.push_back (seq);
+  sequences_changed ();
 }
 
 void
-Scenegraph::remove_sequence (Sequence::ptr seq)
+Scenegraph::remove_sequence (Sequence * seq)
 {
-  sequences_.remove (seq);
+  sequences_.removeOne (seq);
+  sequences_changed ();
 }
 
-const Scenegraph::sequence_list &
+QQmlListProperty<arstudio::Sequence>
 Scenegraph::sequences (void)
 {
-  return sequences_;
+  return QQmlListProperty<arstudio::Sequence> (this, sequences_);
 }
 
 /**

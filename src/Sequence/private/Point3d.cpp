@@ -1,11 +1,11 @@
 #include <Point3D.hpp>
 
 namespace arstudio {
-Point3d::Point3d ()
+Point3D::Point3D ()
 {
 }
 
-Point3d::Point3d (GLfloat cx,
+Point3D::Point3D (GLfloat cx,
                   GLfloat cy,
                   GLfloat cz,
                   GLfloat cr,
@@ -20,20 +20,20 @@ Point3d::Point3d (GLfloat cx,
   b = cb;
 }
 
-Point3d::ptr
-Point3d::make (GLfloat cx,
+Point3D::ptr
+Point3D::make (GLfloat cx,
                GLfloat cy,
                GLfloat cz,
                GLfloat cr,
                GLfloat cg,
                GLfloat cb)
 {
-  return std::make_shared<Point3d> (cx, cy, cz, cr, cg, cb);
+  return std::make_shared<Point3D> (cx, cy, cz, cr, cg, cb);
 }
 
-Point3d::ptr
-Point3d::make ()
+Point3D::ptr
+Point3D::make ()
 {
-  return std::make_shared<Point3d> ();
+  return std::make_shared<Point3D> ();
 }
 }

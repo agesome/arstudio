@@ -1,0 +1,5 @@
+module WindowTool
+Axis          1.0 Axis.qml
+WindowTool    1.0 WindowTool.qml
+WindowHandler 1.0 WindowHandler.qml
+ItemWindow    1.0 ItemWindow.qml

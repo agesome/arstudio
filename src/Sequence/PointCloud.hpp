@@ -1,23 +1,39 @@
 #ifndef PCLOUD_H
 #define PCLOUD_H
 
-#include <list>
+#include <QVector3D>
+#include <QList>
 
-#include <Point3D.hpp>
 #include <Sequence.hpp>
 
 namespace arstudio {
 class PointCloud : public Item
 {
+  Q_OBJECT
+  Q_PROPERTY (QList<QVector3D> points READ points)
 public:
-  typedef std::shared_ptr<PointCloud> ptr;
+  typedef QSharedPointer<PointCloud> ptr;
   static ptr
-  make (void)
+  make (const QList<QVector3D> & points)
   {
-    return std::make_shared<PointCloud> ();
-  };
+    return ptr (new PointCloud (points));
+  }
 
-  std::list<Point3d::ptr> cloud;
+  PointCloud (const QList<QVector3D> & points)
+  {
+    points_ = points;
+  }
+
+  PointCloud () = default;
+
+  const QList<QVector3D> &
+  points (void)
+  {
+    return points_;
+  }
+
+private:
+  QList<QVector3D> points_;
 };
 }
 

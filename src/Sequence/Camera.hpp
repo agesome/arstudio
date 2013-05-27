@@ -1,33 +1,46 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include <GL/glu.h>
+#include <QVector3D>
 
 #include <Sequence.hpp>
 
 namespace arstudio {
 class Camera : public Item
 {
+  Q_OBJECT
+  Q_PROPERTY (QVector3D position READ position)
+  Q_PROPERTY (QVector3D rotation READ rotation)
 public:
-  typedef std::shared_ptr<Camera> ptr;
+  typedef QSharedPointer<Camera> ptr;
   static ptr
-  make (void)
+  make (const QVector3D & position, const QVector3D & rotation)
   {
-    return std::make_shared<Camera> ();
+    return ptr (new Camera (position, rotation));
   }
 
-  Camera ()
+  Camera (const QVector3D & position, const QVector3D & rotation)
   {
-  };
+    position_ = position;
+    rotation_ = rotation;
+  }
 
+  Camera () = default;
 
-  GLfloat tx;
-  GLfloat ty;
-  GLfloat tz;
+  const QVector3D
+  position (void)
+  {
+    return position_;
+  }
+  const QVector3D
+  rotation (void)
+  {
+    return rotation_;
+  }
 
-  GLfloat rx;
-  GLfloat ry;
-  GLfloat rz;
+private:
+  QVector3D position_;
+  QVector3D rotation_;
 };
 }
 
