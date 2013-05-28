@@ -28,14 +28,7 @@ ColumnLayout {
 
         Button {
             text: "Add window"
-
-            onClicked: {
-                // force the Tab to create an instance of WindowHandler right now
-                // by default, it will only do so when switched to
-                var tab = tabview.addTab(tabview.count + 1)
-                tab.active = true
-                tab.sourceComponent = windowHandler
-            }
+            onClicked: tabview.addTab(tabview.count + 1, windowHandler)
 
             Component {
                 id: windowHandler
