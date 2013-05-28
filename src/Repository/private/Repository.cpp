@@ -1,10 +1,11 @@
 #include <Repository.hpp>
 
-
 namespace arstudio {
 Repository::Repository (QObject * parent)
   : QAbstractListModel (parent)
 {
+  connect (this, &Repository::append_node_signal,
+           this, &Repository::append_node_slot);
 }
 
 QHash<int, QByteArray>
@@ -19,7 +20,7 @@ Repository::roleNames () const
 QVariant
 Repository::data (const QModelIndex & index, int role) const
 {
-  const RepositoryNode & n = data_[index.row ()];
+  const RepositoryNode & n = m_nodes[index.row ()];
 
   if (role == NameRole)
     return n.name ();
@@ -31,13 +32,13 @@ Repository::data (const QModelIndex & index, int role) const
 int
 Repository::rowCount (const QModelIndex &) const
 {
-  return data_.count ();
+  return m_nodes.count ();
 }
 
 arstudio::Sequence *
 Repository::get (int index)
 {
-  Sequence * ptr = data_[index].data ();
+  Sequence * ptr = m_nodes[index].data ();
   // the sequence is managed by Repository. forbid QML from owning it,
   // to prevent grabage collection
   QQmlEngine::setObjectOwnership (ptr, QQmlEngine::CppOwnership);
@@ -52,7 +53,7 @@ Repository::add_item (Item::ptr item, unsigned int frame,
 {
   Sequence::ptr s;
 
-  for (RepositoryNode & m : data_)
+  for (RepositoryNode & m : m_nodes)
     if (m.name () == node_name)
       {
         s = m.ptr ();
@@ -60,13 +61,19 @@ Repository::add_item (Item::ptr item, unsigned int frame,
       }
   if (!s)
     {
-      int position = rowCount ();
       s = Sequence::make (type);
-      RepositoryNode v (node_name, s);
-      beginInsertRows (QModelIndex (), position, position);
-      data_ << v;
-      endInsertRows ();
+      append_node_signal (RepositoryNode (node_name, s));
     }
   s->add_item (frame, item);
+}
+
+void
+Repository::append_node_slot (const RepositoryNode & node)
+{
+  int position = rowCount ();
+
+  beginInsertRows (QModelIndex (), position, position);
+  m_nodes << node;
+  endInsertRows ();
 }
 }

@@ -27,37 +27,39 @@ class RepositoryNode
 public:
   RepositoryNode (const QString & name,
                   Sequence::ptr data)
-    : name_ (name), data_ (data)
+    : m_name (name), m_data (data)
   {
   }
+
+  RepositoryNode () = default;
 
   arstudio::Sequence *
   data (void) const
   {
-    return data_.data ();
+    return m_data.data ();
   }
 
   Sequence::ptr
   ptr (void) const
   {
-    return data_;
+    return m_data;
   }
 
   QString
   name (void) const
   {
-    return name_;
+    return m_name;
   }
 
   arstudio::Sequence::ItemType
   type (void) const
   {
-    return data_->type ();
+    return m_data->type ();
   }
 
 private:
-  QString       name_;
-  Sequence::ptr data_;
+  QString       m_name;
+  Sequence::ptr m_data;
 };
 
 class Repository : public QAbstractListModel
@@ -89,8 +91,20 @@ public:
 protected:
   QHash<int, QByteArray> roleNames () const;
 private:
-  QList<RepositoryNode> data_;
+  QList<RepositoryNode> m_nodes;
+
+  /*
+   * add_item ends up being called from the processing thread,
+   * but QAbstractListModel is not thread-safe, so do we append
+   * in the main thread
+   */
+signals:
+  void append_node_signal (const RepositoryNode & node);
+private slots:
+  void append_node_slot (const RepositoryNode & node);
 };
 }
+
+Q_DECLARE_METATYPE (arstudio::RepositoryNode)
 
 #endif // REPOSITORY_H

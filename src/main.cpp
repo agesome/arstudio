@@ -35,6 +35,8 @@ main (int argc, char * argv[])
   qmlRegisterType<arstudio::Point3D> ("arstudio", 1, 0, "Point3D");
   qmlRegisterType<arstudio::PointCloud> ("arstudio", 1, 0, "PointCloud");
 
+  qRegisterMetaType<arstudio::RepositoryNode> ("RepositoryNode");
+
   qml_engine.setBaseUrl (QUrl::fromLocalFile ("@QML_ROOT@"));
   qml_engine.addImportPath ("@QML_ROOT@");
   qml_core.loadUrl (QUrl::fromLocalFile ("Core/Core.qml"));
