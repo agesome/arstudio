@@ -6,18 +6,11 @@ ColumnLayout {
     id: column
     spacing: 5
 
-    Text {
-        id: wl
-        anchors.top: parent.top
-        text: "Window List"
-        renderType: Text.NativeRendering
-    }
-
     TabView {
         id: tabview
 
         anchors.left: parent.left
-        anchors.top: wl.bottom
+        anchors.top: parent.top
         anchors.bottom: buttonRow.top
     }
 
