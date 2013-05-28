@@ -5,7 +5,7 @@
 #include <QSharedPointer>
 #include <QString>
 #include <QAbstractListModel>
-#include <QtDebug>
+#include <QQmlEngine>
 
 #include <Sequence.hpp>
 

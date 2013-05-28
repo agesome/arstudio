@@ -37,7 +37,12 @@ Repository::rowCount (const QModelIndex &) const
 arstudio::Sequence *
 Repository::get (int index)
 {
-  return data_[index].data ();
+  Sequence * ptr = data_[index].data ();
+  // the sequence is managed by Repository. forbid QML from owning it,
+  // to prevent grabage collection
+  QQmlEngine::setObjectOwnership (ptr, QQmlEngine::CppOwnership);
+
+  return ptr;
 }
 
 void
