@@ -26,7 +26,7 @@ public:
 
   QQmlListProperty<arstudio::Sequence> sequences (void);
 private:
-  QList<arstudio::Sequence *> sequences_;
+  QList<arstudio::Sequence *> m_sequences;
 signals:
   void sequences_changed (void);
 };

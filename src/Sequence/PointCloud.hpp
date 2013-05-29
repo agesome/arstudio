@@ -21,7 +21,7 @@ public:
 
   PointCloud (const QList<QVector3D> & points)
   {
-    points_ = points;
+    m_points = points;
   }
 
   PointCloud () = default;
@@ -29,11 +29,11 @@ public:
   const QList<QVector3D> &
   points (void)
   {
-    return points_;
+    return m_points;
   }
 
 private:
-  QList<QVector3D> points_;
+  QList<QVector3D> m_points;
 };
 }
 

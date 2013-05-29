@@ -24,8 +24,8 @@ public:
   const cv::Mat depth_map (void);
   const std::string file_basename (void);
 private:
-  std::shared_ptr<IVideoSource> video_source;
-  std::string                   file_basename_;
+  std::shared_ptr<IVideoSource> m_video_source;
+  std::string                   m_file_basename;
 };
 }
 #endif // VIDEOHELPER_HPP

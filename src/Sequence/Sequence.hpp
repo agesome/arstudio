@@ -46,8 +46,8 @@ public:
   ItemType type (void);
   Q_INVOKABLE arstudio::Item * item_for_frame (int);
 private:
-  ItemType  type_; //< type of items stored
-  frame_map items_;  //< map of items to frames
+  ItemType  m_type; //< type of items stored
+  frame_map m_items;  //< map of items to frames
 };
 }
 

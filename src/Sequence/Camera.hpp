@@ -21,8 +21,8 @@ public:
 
   Camera (const QVector3D & position, const QVector3D & rotation)
   {
-    position_ = position;
-    rotation_ = rotation;
+    m_position = position;
+    m_rotation = rotation;
   }
 
   Camera () = default;
@@ -30,17 +30,17 @@ public:
   const QVector3D
   position (void)
   {
-    return position_;
+    return m_position;
   }
   const QVector3D
   rotation (void)
   {
-    return rotation_;
+    return m_rotation;
   }
 
 private:
-  QVector3D position_;
-  QVector3D rotation_;
+  QVector3D m_position;
+  QVector3D m_rotation;
 };
 }
 

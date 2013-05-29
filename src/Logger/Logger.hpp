@@ -41,10 +41,9 @@ private:
   Logger (const Logger &)             = delete;
   Logger & operator= (const Logger &) = delete;
 
-  static Logger          instance_;
-  static Repository::ptr repo; //< currently used instance
-  unsigned int           current_frame = 1; //< log sequences for this
-                                            // frame
+  static Logger          m_instance;
+  static Repository::ptr m_repository; //< currently used instance
+  unsigned int           m_frame = 1; //< log sequences for this frame
 };
 }
 

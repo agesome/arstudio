@@ -17,7 +17,7 @@ public:
     return ptr (new Bitmap);
   }
 
-  cv::Mat bitmap;
+  cv::Mat m_bitmap;
 };
 }
 

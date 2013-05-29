@@ -21,12 +21,12 @@ public:
   const cv::Mat image (void);
   const cv::Mat depth_map (void);
 private:
-  std::shared_ptr<FileCapture> video_capture;
-  std::string                  source_file;
-  int                          current_frame;
-  int                          frame_count_;
-  cv::Mat                      current_image_;
-  cv::Mat                      current_dmap_;
+  std::shared_ptr<FileCapture> m_video_capture;
+  std::string                  m_source_file;
+  int                          m_current_frame;
+  int                          m_frame_count;
+  cv::Mat                      m_current_image;
+  cv::Mat                      m_current_dmap;
 };
 }
 #endif

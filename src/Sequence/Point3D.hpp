@@ -19,8 +19,8 @@ public:
 
   Point3D (const QVector3D & position, const QColor & color)
   {
-    position_ = position;
-    color_    = color;
+    m_position = position;
+    m_color    = color;
   }
 
   Point3D () = default;
@@ -35,16 +35,16 @@ public:
   const QVector3D
   position (void)
   {
-    return position_;
+    return m_position;
   }
   const QColor
   color (void)
   {
-    return color_;
+    return m_color;
   }
 private:
-  QVector3D position_;
-  QColor    color_;
+  QVector3D m_position;
+  QColor    m_color;
 };
 }
 
