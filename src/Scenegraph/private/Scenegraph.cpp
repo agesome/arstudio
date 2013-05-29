@@ -4,21 +4,21 @@ namespace arstudio {
 void
 Scenegraph::add_sequence (Sequence * seq)
 {
-  sequences_.push_back (seq);
+  m_sequences.push_back (seq);
   sequences_changed ();
 }
 
 void
 Scenegraph::remove_sequence (Sequence * seq)
 {
-  sequences_.removeOne (seq);
+  m_sequences.removeOne (seq);
   sequences_changed ();
 }
 
 QQmlListProperty<arstudio::Sequence>
 Scenegraph::sequences (void)
 {
-  return QQmlListProperty<arstudio::Sequence> (this, sequences_);
+  return QQmlListProperty<arstudio::Sequence> (this, m_sequences);
 }
 
 /**
@@ -31,7 +31,7 @@ Scenegraph::min_frame (void)
 {
   unsigned int frame = UINT_MAX;
 
-  for (auto seq : sequences_)
+  for (auto seq : m_sequences)
     for (auto it : seq->items ())
       if (it.first < frame)
         frame = it.first;
@@ -49,7 +49,7 @@ Scenegraph::max_frame (void)
 {
   unsigned int frame = 0;
 
-  for (auto seq : sequences_)
+  for (auto seq : m_sequences)
     for (auto it : seq->items ())
       if (it.first > frame)
         frame = it.first;

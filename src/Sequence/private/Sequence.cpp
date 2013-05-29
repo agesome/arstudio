@@ -4,7 +4,7 @@ namespace arstudio {
 Sequence::Sequence (ItemType type, QObject * parent)
   : QObject (parent)
 {
-  this->type_ = type;
+  m_type = type;
 }
 
 Sequence::Sequence (QObject * parent)
@@ -21,27 +21,27 @@ Sequence::make (ItemType type)
 void
 Sequence::add_item (unsigned int frame, Item::ptr item_ptr)
 {
-  items_.insert (std::make_pair (frame, item_ptr));
+  m_items.insert (std::make_pair (frame, item_ptr));
 }
 
 const Sequence::frame_map &
 Sequence::items (void)
 {
-  return items_;
+  return m_items;
 }
 
 Sequence::ItemType
 Sequence::type (void)
 {
-  return type_;
+  return m_type;
 }
 
 arstudio::Item *
 Sequence::item_for_frame (int frame)
 {
-  auto it = items_.find (frame);
+  auto it = m_items.find (frame);
 
-  if (it == items_.end ())
+  if (it == m_items.end ())
     return nullptr;
   return it->second.data ();
 }
