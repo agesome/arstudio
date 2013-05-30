@@ -8,10 +8,11 @@ ColumnLayout {
 
     TabView {
         id: tabview
-
-        anchors.left: parent.left
-        anchors.top: parent.top
-        anchors.bottom: buttonRow.top
+        anchors {
+            left: parent.left
+            top: parent.top
+            bottom: buttonRow.top
+        }
     }
 
     RowLayout {

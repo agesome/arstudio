@@ -36,13 +36,13 @@ Sequence::type (void)
   return m_type;
 }
 
-arstudio::Item *
+Item::ptr
 Sequence::item_for_frame (int frame)
 {
   auto it = m_items.find (frame);
 
   if (it == m_items.end ())
-    return nullptr;
-  return it->second.data ();
+    return Item::ptr ();
+  return it->second;
 }
 }

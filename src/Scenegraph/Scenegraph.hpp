@@ -16,17 +16,25 @@ namespace arstudio {
 class Scenegraph : public QObject
 {
   Q_OBJECT
-  Q_PROPERTY (QQmlListProperty<arstudio::Sequence> sequences READ sequences
-              NOTIFY sequences_changed)
 public:
+  typedef QSharedPointer<Scenegraph> ptr;
+  typedef QList<Sequence *> SequenceList;
+
+  Scenegraph (QObject * parent = nullptr);
+  static ptr
+  make (QObject * parent = nullptr)
+  {
+    return ptr (new Scenegraph (parent));
+  }
+
   Q_INVOKABLE void add_sequence (Sequence *);
   Q_INVOKABLE void remove_sequence (Sequence *);
-  Q_INVOKABLE unsigned int min_frame (void);
-  Q_INVOKABLE unsigned int max_frame (void);
+  int min_frame (void);
+  int max_frame (void);
 
-  QQmlListProperty<arstudio::Sequence> sequences (void);
+  const SequenceList sequences (void);
 private:
-  QList<arstudio::Sequence *> m_sequences;
+  SequenceList m_sequences;
 signals:
   void sequences_changed (void);
 };

@@ -1,6 +1,11 @@
 #include <Scenegraph.hpp>
 
 namespace arstudio {
+Scenegraph::Scenegraph (QObject * parent)
+  : QObject (parent)
+{
+}
+
 void
 Scenegraph::add_sequence (Sequence * seq)
 {
@@ -15,10 +20,10 @@ Scenegraph::remove_sequence (Sequence * seq)
   sequences_changed ();
 }
 
-QQmlListProperty<arstudio::Sequence>
+const Scenegraph::SequenceList
 Scenegraph::sequences (void)
 {
-  return QQmlListProperty<arstudio::Sequence> (this, m_sequences);
+  return m_sequences;
 }
 
 /**
@@ -26,7 +31,7 @@ Scenegraph::sequences (void)
  *      in this instance.
  */
 
-unsigned int
+int
 Scenegraph::min_frame (void)
 {
   unsigned int frame = UINT_MAX;
@@ -44,7 +49,7 @@ Scenegraph::min_frame (void)
  *      in this instance.
  */
 
-unsigned int
+int
 Scenegraph::max_frame (void)
 {
   unsigned int frame = 0;

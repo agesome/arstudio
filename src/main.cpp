@@ -4,6 +4,7 @@
 #include <QQmlComponent>
 #include <QQuickWindow>
 
+#include <IWManager.hpp>
 #include <Logger.hpp>
 #include <Scenegraph.hpp>
 #include <Sequence.hpp>
@@ -34,6 +35,7 @@ main (int argc, char * argv[])
   qmlRegisterType<arstudio::Camera> ("arstudio", 1, 0, "Camera");
   qmlRegisterType<arstudio::Point3D> ("arstudio", 1, 0, "Point3D");
   qmlRegisterType<arstudio::PointCloud> ("arstudio", 1, 0, "PointCloud");
+  qmlRegisterType<arstudio::IWManager> ("arstudio", 1, 0, "IWManager");
 
   qRegisterMetaType<arstudio::RepositoryNode> ("RepositoryNode");
 
@@ -49,10 +51,9 @@ main (int argc, char * argv[])
   if (window_ != nullptr)
     {
       QQuickWindow * window = qobject_cast<QQuickWindow *> (window_);
-      window->show ();
       QObject::connect (&qml_engine, &QQmlEngine::quit,
                         [&application]() { application.exit (EXIT_SUCCESS); });
-
+      window->show ();
       return application.exec ();
     }
 

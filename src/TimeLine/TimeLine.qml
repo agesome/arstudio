@@ -4,28 +4,27 @@ import QtQuick.Layouts 1.0
 
 Column {
     id: column
-
     property alias slider: slider
-
     spacing: 5
 
     Slider {
         id: slider
-
-        anchors.left: parent.left
-        anchors.right: parent.right
-
+        anchors {
+            left: parent.left
+            right: parent.right
+        }
         minimumValue: 1
         maximumValue: 100
         stepSize: 1.0
-
         tickmarksEnabled: true
         updateValueWhileDragging: true
     }
 
     Row {
-        anchors.left: parent.left
-        anchors.right: parent.right
+        anchors {
+            left: parent.left
+            right: parent.right
+        }
         spacing: parent.spacing
 
         Button {
@@ -41,8 +40,10 @@ Column {
             text: "Stop"
         }
         SpinBox {
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
+            anchors {
+                top: parent.top
+                bottom: parent.bottom
+            }
             value: slider.value
         }
     }

@@ -21,6 +21,7 @@ set(arstudio_sources
     ${CMAKE_BINARY_DIR}/AlgoPipeline.cpp
     pipeline.cpp
     ${CMAKE_BINARY_DIR}/main.cpp
+    IWManager/private/IWManager.cpp
 
     Core/Core.qml
     Core/MainMenuBar.qml
@@ -51,6 +52,7 @@ set(arstudio_headers
     VideoHelper/IVideoSource.hpp
     VideoHelper/VideoSourceOpenCV.hpp
     VideoHelper/VideoSourceKinvideo.hpp
+    IWManager/IWManager.hpp
 )
 
 set(arstudio_moc_headers
@@ -62,6 +64,7 @@ set(arstudio_moc_headers
     Sequence/PointCloud.hpp
     Sequence/Sequence.hpp
     Repository/Repository.hpp
+    IWManager/IWManager.hpp
 )
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -101,6 +104,7 @@ include_directories(
   Scenegraph
   Sequence
   VideoHelper
+  IWManager
   ../submodules/KinectRecorder/src/
   ${Boost_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}

@@ -19,6 +19,7 @@ Item {
 
             onCheckedChanged: {
                 var sequence = model.get(rowIndex)
+                var scenegraph = itemwindow.manager.scenegraph
                 if (checked)
                     scenegraph.add_sequence(sequence)
                 else
@@ -45,31 +46,12 @@ Item {
         }
     }
 
-    Scenegraph {
-        id: scenegraph
-
-        onSequencesChanged: {
-//            itemwindow.update(-1)
-            console.debug("sequences changed")
-        }
-    }
-
     ItemWindow {
         id: itemwindow
-        scenegraph: scenegraph
         width: 400
         height: 400
         x: g_rootWindow.x + g_displayArea.x
         y: g_rootWindow.y + g_displayArea.y
-        Button {
-            text: "show all"
-            onClicked: {
-                var min = scenegraph.min_frame()
-                var max = scenegraph.max_frame()
-                for (var i = min; i < max; i++)
-                    itemwindow.update(i)
-            }
-        }
     }
 }
 

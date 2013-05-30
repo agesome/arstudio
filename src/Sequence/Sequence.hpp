@@ -31,8 +31,7 @@ public:
 class Sequence : public QObject
 {
   Q_OBJECT
-  Q_PROPERTY (ItemType type READ type)
-  Q_ENUMS (ItemType)
+                        Q_ENUMS (ItemType)
 public:
   typedef QSharedPointer<Sequence> ptr;
   typedef std::map <unsigned int, Item::ptr> frame_map;
@@ -44,7 +43,7 @@ public:
   void add_item (unsigned int, Item::ptr);
   const frame_map & items (void);
   ItemType type (void);
-  Q_INVOKABLE arstudio::Item * item_for_frame (int);
+  Item::ptr item_for_frame (int);
 private:
   ItemType  m_type; //< type of items stored
   frame_map m_items;  //< map of items to frames
