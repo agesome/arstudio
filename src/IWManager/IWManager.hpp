@@ -1,11 +1,16 @@
 #ifndef IWMANAGER_HPP
 #define IWMANAGER_HPP
 
+#include <QQuickPaintedItem>
+#include <QQmlEngine>
+
+#ifndef QT_NO_DEBUG
+#include <QDateTime>
+#endif
+
 #include <QQuickItem3D>
 #include <QQuickMesh>
 #include <QQuickEffect>
-#include <QQuickPaintedItem>
-#include <QQmlEngine>
 #include <QGraphicsRotation3D>
 
 #include <line.h>
@@ -34,6 +39,11 @@ private:
   void add_camera_path (Sequence *);
 
   QQuickPaintedItem * m_viewport;
+  CylinderMesh      * m_camera_mesh;
+  QQuickEffect      * m_camera_effect;
+  SphereMesh        * m_path_mesh;
+  QQuickEffect      * m_path_effect;
+  QQuickEffect      * m_line_effect;
   Scenegraph::ptr     m_scenegraph;
   int                 m_current_frame;
 public slots:

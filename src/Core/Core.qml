@@ -31,7 +31,7 @@ ApplicationWindow {
         RowLayout {
             anchors {
                 top: parent.top
-                bottom: timeline.top
+                bottom: g_TimeLine.top
                 left: parent.left
                 right: parent.right
             }
@@ -58,7 +58,7 @@ ApplicationWindow {
         }
 
         TimeLine {
-            id: timeline
+            id: g_TimeLine
             anchors {
                 left: parent.left
                 right: parent.right

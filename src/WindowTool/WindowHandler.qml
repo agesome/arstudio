@@ -50,8 +50,6 @@ Item {
         id: itemwindow
         width: 400
         height: 400
-        x: g_rootWindow.x + g_displayArea.x
-        y: g_rootWindow.y + g_displayArea.y
     }
 }
 

@@ -4,8 +4,7 @@
 #include <QObject>
 #include <QQmlListProperty>
 #include <QList>
-
-#include <climits>
+#include <QSet>
 
 #include <Sequence.hpp>
 
@@ -29,12 +28,14 @@ public:
 
   Q_INVOKABLE void add_sequence (Sequence *);
   Q_INVOKABLE void remove_sequence (Sequence *);
-  int min_frame (void);
-  int max_frame (void);
 
   const SequenceList sequences (void);
+  const QSet<int> frames (void);
 private:
+  void rebuild_frames (void);
+
   SequenceList m_sequences;
+  QSet<int>    m_frames;
 signals:
   void sequences_changed (void);
 };

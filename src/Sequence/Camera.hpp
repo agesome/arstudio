@@ -8,9 +8,6 @@
 namespace arstudio {
 class Camera : public Item
 {
-  Q_OBJECT
-  Q_PROPERTY (QVector3D position READ position)
-  Q_PROPERTY (QVector3D rotation READ rotation)
 public:
   typedef QSharedPointer<Camera> ptr;
   static ptr
@@ -24,8 +21,6 @@ public:
     m_position = position;
     m_rotation = rotation;
   }
-
-  Camera () = default;
 
   const QVector3D
   position (void)

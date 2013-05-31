@@ -8,7 +8,6 @@
 namespace arstudio {
 class Bitmap : public Item
 {
-  Q_OBJECT
 public:
   typedef QSharedPointer<Bitmap> ptr;
   static ptr

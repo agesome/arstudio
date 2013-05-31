@@ -2,9 +2,10 @@ import QtQuick 2.1
 import QtQuick.Controls 1.0
 import QtQuick.Layouts 1.0
 
+import arstudio 1.0
+
 Column {
     id: column
-    property alias slider: slider
     spacing: 5
 
     Slider {
@@ -13,11 +14,17 @@ Column {
             left: parent.left
             right: parent.right
         }
-        minimumValue: 1
-        maximumValue: 100
+        minimumValue: g_SAggregator.min_frame
+        maximumValue: g_SAggregator.max_frame
         stepSize: 1.0
         tickmarksEnabled: true
         updateValueWhileDragging: true
+        value: spinbox.value
+        onValueChanged: {
+            if (g_SAggregator.valid_frame (value))
+                g_SAggregator.signal_frame (value)
+        }
+
     }
 
     Row {
@@ -40,10 +47,13 @@ Column {
             text: "Stop"
         }
         SpinBox {
+            id: spinbox
             anchors {
                 top: parent.top
                 bottom: parent.bottom
             }
+            minimumValue: g_SAggregator.min_frame
+            maximumValue: g_SAggregator.max_frame
             value: slider.value
         }
     }

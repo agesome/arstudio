@@ -8,7 +8,6 @@ import Qt3D.Shapes 2.0
 import arstudio 1.0
 
 Window {
-    property int current_frame: 1
     property IWManager manager: manager
 
     title: "Item Window"
@@ -26,11 +25,17 @@ Window {
             anchors.fill: parent
             light: Light { ambientColor: "#ffffff" }
             Axis { objectName: "vp_axis" }
+
         }
     }
 
     IWManager {
         id: manager
         viewport: viewport
+
+        Component.onCompleted: {
+            g_SAggregator.add_scenegraph(scenegraph)
+            g_SAggregator.change_frame.connect(paint_frame)
+        }
     }
 }

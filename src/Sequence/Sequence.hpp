@@ -15,9 +15,8 @@ namespace arstudio {
  * This is the base class for all data items.
  */
 
-class Item : public QObject
+class Item
 {
-  Q_OBJECT
 public:
   typedef QSharedPointer<Item> ptr;
   virtual

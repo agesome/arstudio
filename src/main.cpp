@@ -6,7 +6,7 @@
 
 #include <IWManager.hpp>
 #include <Logger.hpp>
-#include <Scenegraph.hpp>
+#include <ScenegraphAggregator.hpp>
 #include <Sequence.hpp>
 #include <pipeline.hpp>
 
@@ -19,8 +19,10 @@ main (int argc, char * argv[])
   QQmlEngine    qml_engine;
   QQmlComponent qml_core (&qml_engine);
 
-  QQmlContext       * root_context = qml_engine.rootContext ();
-  as::Repository::ptr repository   = as::Repository::make ();
+  QQmlContext                 * root_context = qml_engine.rootContext ();
+  as::Repository::ptr           repository   = as::Repository::make ();
+  as::ScenegraphAggregator::ptr aggregator   =
+    as::ScenegraphAggregator::make ();
 
   QSharedPointer<Pipeline> p = QSharedPointer<Pipeline> (new Pipeline ());
 
@@ -28,16 +30,14 @@ main (int argc, char * argv[])
   QApplication::setOrganizationName ("CVTeam");
   as::Logger::set_repository (repository);
 
-  qmlRegisterType<arstudio::Sequence> ("arstudio", 1, 0, "Sequence");
-  qmlRegisterType<arstudio::Scenegraph> ("arstudio", 1, 0, "Scenegraph");
-  qmlRegisterType<arstudio::Repository> ("arstudio", 1, 0, "Repository");
-  qmlRegisterType<arstudio::Item> ("arstudio", 1, 0, "DataItem");
-  qmlRegisterType<arstudio::Camera> ("arstudio", 1, 0, "Camera");
-  qmlRegisterType<arstudio::Point3D> ("arstudio", 1, 0, "Point3D");
-  qmlRegisterType<arstudio::PointCloud> ("arstudio", 1, 0, "PointCloud");
-  qmlRegisterType<arstudio::IWManager> ("arstudio", 1, 0, "IWManager");
+  qmlRegisterType<as::Sequence> ("arstudio", 1, 0, "Sequence");
+  qmlRegisterType<as::Scenegraph> ("arstudio", 1, 0, "Scenegraph");
+  qmlRegisterType<as::ScenegraphAggregator> ("arstudio", 1, 0,
+                                             "ScenegraphAggregator");
+  qmlRegisterType<as::Repository> ("arstudio", 1, 0, "Repository");
+  qmlRegisterType<as::IWManager> ("arstudio", 1, 0, "IWManager");
 
-  qRegisterMetaType<arstudio::RepositoryNode> ("RepositoryNode");
+  qRegisterMetaType<as::RepositoryNode> ("RepositoryNode");
 
   qml_engine.setBaseUrl (QUrl::fromLocalFile ("@QML_ROOT@"));
   qml_engine.addImportPath ("@QML_ROOT@");
@@ -45,6 +45,7 @@ main (int argc, char * argv[])
 
   root_context->setContextProperty ("g_Pipeline", p.data ());
   root_context->setContextProperty ("g_Repository", repository.data ());
+  root_context->setContextProperty ("g_SAggregator", aggregator.data ());
 
   QObject * window_ = qml_core.create ();
 

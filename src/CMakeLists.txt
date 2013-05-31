@@ -14,6 +14,7 @@ set(arstudio_sources
     Logger/private/Logger.cpp
     Repository/private/Repository.cpp
     Scenegraph/private/Scenegraph.cpp
+    Scenegraph/private/ScenegraphAggregator.cpp
     Sequence/private/Sequence.cpp
     VideoHelper/private/VideoHelper.cpp
     VideoHelper/private/VideoSourceOpenCV.cpp
@@ -48,6 +49,7 @@ set(arstudio_headers
     Sequence/Point3D.hpp
     Repository/Repository.hpp
     Scenegraph/Scenegraph.hpp
+    Scenegraph/ScenegraphAggregator.hpp
     VideoHelper/VideoHelper.hpp
     VideoHelper/IVideoSource.hpp
     VideoHelper/VideoSourceOpenCV.hpp
@@ -58,10 +60,7 @@ set(arstudio_headers
 set(arstudio_moc_headers
     pipeline.hpp
     Scenegraph/Scenegraph.hpp
-    Sequence/Bitmap.hpp
-    Sequence/Camera.hpp
-    Sequence/Point3D.hpp
-    Sequence/PointCloud.hpp
+    Scenegraph/ScenegraphAggregator.hpp
     Sequence/Sequence.hpp
     Repository/Repository.hpp
     IWManager/IWManager.hpp
@@ -89,7 +88,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Concurrent_EXECUTABLE_COMPILE_FLAGS
 if(CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS_DEBUG
       "${CMAKE_CXX_FLAGS} -std=c++11 -O2 -ggdb3 -Wall -Wextra -pedantic")
-  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -std=c++11 -O2")
+  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -std=c++11 -O2 -DQT_NO_DEBUG")
 endif()
 
 add_subdirectory(../submodules/KinectRecorder/src/

@@ -11,9 +11,6 @@
 namespace arstudio {
 class Point3D : public Item
 {
-  Q_OBJECT
-  Q_PROPERTY (QVector3D position READ position)
-  Q_PROPERTY (QColor color READ color)
 public:
   typedef QSharedPointer<Point3D> ptr;
 
@@ -22,8 +19,6 @@ public:
     m_position = position;
     m_color    = color;
   }
-
-  Point3D () = default;
 
   static ptr
   make (const QVector3D & position,

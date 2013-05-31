@@ -9,8 +9,6 @@
 namespace arstudio {
 class PointCloud : public Item
 {
-  Q_OBJECT
-  Q_PROPERTY (QList<QVector3D> points READ points)
 public:
   typedef QSharedPointer<PointCloud> ptr;
   static ptr
@@ -23,8 +21,6 @@ public:
   {
     m_points = points;
   }
-
-  PointCloud () = default;
 
   const QList<QVector3D> &
   points (void)
