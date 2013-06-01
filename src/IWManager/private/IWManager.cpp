@@ -12,8 +12,13 @@ IWManager::IWManager (QObject * parent)
   m_scenegraph (Scenegraph::make ()),
   m_current_frame (1)
 {
+  ScenegraphAggregator * sa = ScenegraphAggregator::instance ();
+
   connect (m_scenegraph.data (), &Scenegraph::sequences_changed,
            [this] () { paint_frame (m_current_frame); });
+  sa->add_scenegraph (m_scenegraph.data ());
+  connect (sa, &ScenegraphAggregator::change_frame,
+           this, &IWManager::paint_frame);
 }
 
 QQuickPaintedItem *

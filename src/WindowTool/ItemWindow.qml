@@ -32,10 +32,5 @@ Window {
     IWManager {
         id: manager
         viewport: viewport
-
-        Component.onCompleted: {
-            g_SAggregator.add_scenegraph(scenegraph)
-            g_SAggregator.change_frame.connect(paint_frame)
-        }
     }
 }

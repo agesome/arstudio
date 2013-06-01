@@ -1,24 +1,26 @@
 #ifndef SCENEGRAPH_AGGREGATOR_HPP
 #define SCENEGRAPH_AGGREGATOR_HPP
 
+#include <QQmlEngine>
 #include <Scenegraph.hpp>
-#include <QDebug>
 
 namespace arstudio {
 class ScenegraphAggregator : public QObject
 {
   Q_OBJECT
-  Q_PROPERTY (int max_frame READ max_frame NOTIFY max_frame_changed)
-  Q_PROPERTY (int min_frame READ min_frame NOTIFY min_frame_changed)
+  Q_PROPERTY (int max_frame READ max_frame NOTIFY limits_changed)
+  Q_PROPERTY (int min_frame READ min_frame NOTIFY limits_changed)
 public:
-  typedef QSharedPointer<ScenegraphAggregator> ptr;
-
-  ScenegraphAggregator (QObject * parent = nullptr);
-
-  static ptr
-  make (QObject * parent = nullptr)
+  static ScenegraphAggregator *
+  instance (void)
   {
-    return ptr (new ScenegraphAggregator (parent));
+    return m_instance;
+  }
+
+  static QObject *
+  qml_instance (QQmlEngine *, QJSEngine *)
+  {
+    return m_instance;
   }
 
   Q_INVOKABLE void add_scenegraph (Scenegraph * scenegraph);
@@ -29,17 +31,21 @@ public:
   Q_INVOKABLE bool valid_frame (int frame);
   Q_INVOKABLE void signal_frame (int frame);
 private:
+  ScenegraphAggregator (void);
+
   void rebuild_frames (void);
   void recalculate_limits (void);
 
-  QList<Scenegraph *> m_scenegraph_list;
-  QSet<int>           m_frames;
-  int                 m_min_frame;
-  int                 m_max_frame;
+  static ScenegraphAggregator * m_instance;
+  QList<Scenegraph *>           m_scenegraph_list;
+  QSet<int>                     m_frames;
+  int                           m_min_frame;
+  int                           m_max_frame;
 signals:
-  void min_frame_changed (void);
-  void max_frame_changed (void);
+  void limits_changed (void);
   void change_frame (int);
+public slots:
+  void repository_clearing (void);
 };
 }
 #endif // SCENEGRAPH_AGGREGATOR_HPP

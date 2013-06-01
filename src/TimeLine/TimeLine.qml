@@ -14,15 +14,15 @@ Column {
             left: parent.left
             right: parent.right
         }
-        minimumValue: g_SAggregator.min_frame
-        maximumValue: g_SAggregator.max_frame
+        minimumValue: SAggregator.min_frame
+        maximumValue: SAggregator.max_frame
         stepSize: 1.0
         tickmarksEnabled: true
         updateValueWhileDragging: true
         value: spinbox.value
         onValueChanged: {
-            if (g_SAggregator.valid_frame (value))
-                g_SAggregator.signal_frame (value)
+            if (SAggregator.valid_frame (value))
+                SAggregator.signal_frame (value)
         }
 
     }
@@ -52,8 +52,8 @@ Column {
                 top: parent.top
                 bottom: parent.bottom
             }
-            minimumValue: g_SAggregator.min_frame
-            maximumValue: g_SAggregator.max_frame
+            minimumValue: SAggregator.min_frame
+            maximumValue: SAggregator.max_frame
             value: slider.value
         }
     }

@@ -1,8 +1,11 @@
 #include <ScenegraphAggregator.hpp>
 
 namespace arstudio {
-ScenegraphAggregator::ScenegraphAggregator (QObject * parent)
-  : QObject (parent),
+ScenegraphAggregator * ScenegraphAggregator::m_instance =
+  new ScenegraphAggregator ();
+
+ScenegraphAggregator::ScenegraphAggregator (void)
+  : QObject (nullptr),
   m_min_frame (1),
   m_max_frame (1)
 {
@@ -21,7 +24,7 @@ ScenegraphAggregator::max_frame (void)
 }
 
 void
-ScenegraphAggregator::rebuild_frames ()
+ScenegraphAggregator::rebuild_frames (void)
 {
   m_frames.clear ();
   for (Scenegraph * s : m_scenegraph_list)
@@ -30,17 +33,21 @@ ScenegraphAggregator::rebuild_frames ()
 }
 
 void
-ScenegraphAggregator::recalculate_limits ()
+ScenegraphAggregator::recalculate_limits (void)
 {
   if (m_frames.empty ())
-    return;
+    {
+      m_max_frame = m_min_frame = 1;
+      limits_changed ();
+      return;
+    }
+
   QList<int> v = m_frames.values ();
   qSort (v);
 
   m_max_frame = v.last ();
-  max_frame_changed ();
   m_min_frame = v.first ();
-  min_frame_changed ();
+  limits_changed ();
 }
 
 void
@@ -68,5 +75,13 @@ void
 ScenegraphAggregator::signal_frame (int frame)
 {
   change_frame (frame);
+}
+
+void
+ScenegraphAggregator::repository_clearing (void)
+{
+  for (Scenegraph * s : m_scenegraph_list)
+    s->clear ();
+  rebuild_frames ();
 }
 }

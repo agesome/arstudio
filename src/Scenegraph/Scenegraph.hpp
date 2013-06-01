@@ -31,6 +31,7 @@ public:
 
   const SequenceList sequences (void);
   const QSet<int> frames (void);
+  void clear (void);
 private:
   void rebuild_frames (void);
 

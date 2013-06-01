@@ -8,6 +8,11 @@ Repository::Repository (QObject * parent)
            this, &Repository::append_node_slot);
 }
 
+Repository::~Repository (void)
+{
+  clear ();
+}
+
 QHash<int, QByteArray>
 Repository::roleNames () const
 {
@@ -75,5 +80,16 @@ Repository::append_node_slot (const RepositoryNode & node)
   beginInsertRows (QModelIndex (), position, position);
   m_nodes << node;
   endInsertRows ();
+}
+
+void
+Repository::clear (void)
+{
+  removing_all_nodes ();
+  beginResetModel ();
+  // Sequence::ptr go out of scope, sequences are freed
+  m_nodes.clear ();
+  endResetModel ();
+  Logger::reset_frame_counter ();
 }
 }

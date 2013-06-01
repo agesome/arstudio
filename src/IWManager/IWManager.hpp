@@ -20,6 +20,7 @@
 #include <point.h>
 
 #include <Scenegraph.hpp>
+#include <ScenegraphAggregator.hpp>
 #include <Camera.hpp>
 
 namespace arstudio {

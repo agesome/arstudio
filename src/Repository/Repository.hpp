@@ -8,6 +8,7 @@
 #include <QQmlEngine>
 
 #include <Sequence.hpp>
+#include <Logger.hpp>
 
 namespace arstudio {
 /**
@@ -74,6 +75,7 @@ public:
   };
 
   Repository (QObject * parent = nullptr);
+  ~Repository (void);
 
   static ptr
   make (QObject * parent = nullptr)
@@ -99,9 +101,12 @@ private:
    * in the main thread
    */
 signals:
+  void removing_all_nodes (void);
   void append_node_signal (const RepositoryNode & node);
 private slots:
   void append_node_slot (const RepositoryNode & node);
+public slots:
+  void clear (void);
 };
 }
 

@@ -19,12 +19,15 @@ main (int argc, char * argv[])
   QQmlEngine    qml_engine;
   QQmlComponent qml_core (&qml_engine);
 
-  QQmlContext                 * root_context = qml_engine.rootContext ();
-  as::Repository::ptr           repository   = as::Repository::make ();
-  as::ScenegraphAggregator::ptr aggregator   =
-    as::ScenegraphAggregator::make ();
+  QQmlContext       * root_context = qml_engine.rootContext ();
+  as::Repository::ptr repository   = as::Repository::make ();
 
   QSharedPointer<Pipeline> p = QSharedPointer<Pipeline> (new Pipeline ());
+
+  QObject::connect (repository.data (),
+                    &Repository::removing_all_nodes,
+                    as::ScenegraphAggregator::instance (),
+                    &ScenegraphAggregator::repository_clearing);
 
   QApplication::setApplicationName ("arstudio");
   QApplication::setOrganizationName ("CVTeam");
@@ -32,12 +35,14 @@ main (int argc, char * argv[])
 
   qmlRegisterType<as::Sequence> ("arstudio", 1, 0, "Sequence");
   qmlRegisterType<as::Scenegraph> ("arstudio", 1, 0, "Scenegraph");
-  qmlRegisterType<as::ScenegraphAggregator> ("arstudio", 1, 0,
-                                             "ScenegraphAggregator");
   qmlRegisterType<as::Repository> ("arstudio", 1, 0, "Repository");
   qmlRegisterType<as::IWManager> ("arstudio", 1, 0, "IWManager");
 
   qRegisterMetaType<as::RepositoryNode> ("RepositoryNode");
+
+  qmlRegisterSingletonType<as::ScenegraphAggregator>
+    ("arstudio", 1, 0, "SAggregator",
+    &as::ScenegraphAggregator::qml_instance);
 
   qml_engine.setBaseUrl (QUrl::fromLocalFile ("@QML_ROOT@"));
   qml_engine.addImportPath ("@QML_ROOT@");
@@ -45,7 +50,6 @@ main (int argc, char * argv[])
 
   root_context->setContextProperty ("g_Pipeline", p.data ());
   root_context->setContextProperty ("g_Repository", repository.data ());
-  root_context->setContextProperty ("g_SAggregator", aggregator.data ());
 
   QObject * window_ = qml_core.create ();
 

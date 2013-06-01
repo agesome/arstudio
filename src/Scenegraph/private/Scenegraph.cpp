@@ -43,4 +43,12 @@ Scenegraph::rebuild_frames (void)
     for (auto i : s->items ())
       m_frames.insert (i.first);
 }
+
+void
+Scenegraph::clear (void)
+{
+  m_sequences.clear ();
+  m_frames.clear ();
+  sequences_changed ();
+}
 }
