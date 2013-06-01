@@ -87,8 +87,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Concurrent_EXECUTABLE_COMPILE_FLAGS
 
 if(CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS_DEBUG
-      "${CMAKE_CXX_FLAGS} -std=c++11 -O2 -ggdb3 -Wall -Wextra -pedantic")
-  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -std=c++11 -O2 -DQT_NO_DEBUG")
+			"${CMAKE_CXX_FLAGS} -std=c++11 -O0 -ggdb3 -Wall -Wextra -pedantic")
+	set(CMAKE_CXX_FLAGS_RELEASE
+			"${CMAKE_CXX_FLAGS} -std=c++11 -O3 -march=native -mtune=native -DQT_NO_DEBUG")
 endif()
 
 add_subdirectory(../submodules/KinectRecorder/src/
