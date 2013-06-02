@@ -8,19 +8,10 @@
 #include <QQmlEngine>
 
 #include <Sequence.hpp>
-#include <Logger.hpp>
 
 namespace arstudio {
-/**
- *      This class handles storage of data sequences in a tree-like
- * structure,
- *      limited to one level of branches.
- *
- *      All methods are designed to create a branch/sequence if it is not
- *      present in the tree.
- *
- *      TODO: make the default branch name configurable, can be nice for
- * logging
+/*
+ * This class describes a single item in the Repository model
  */
 
 class RepositoryNode
@@ -62,6 +53,12 @@ private:
   QString       m_name;
   Sequence::ptr m_data;
 };
+
+/*
+ * This class stores a list of Nodes, each containig a pointer to a
+ *sequence
+ * and a string identifier. This list is exposed to views as a list model
+ */
 
 class Repository : public QAbstractListModel
 {

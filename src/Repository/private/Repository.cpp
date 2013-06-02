@@ -5,7 +5,8 @@ Repository::Repository (QObject * parent)
   : QAbstractListModel (parent)
 {
   connect (this, &Repository::append_node_signal,
-           this, &Repository::append_node_slot);
+           this, &Repository::append_node_slot,
+           Qt::QueuedConnection);
 }
 
 Repository::~Repository (void)
@@ -90,6 +91,5 @@ Repository::clear (void)
   // Sequence::ptr go out of scope, sequences are freed
   m_nodes.clear ();
   endResetModel ();
-  Logger::reset_frame_counter ();
 }
 }

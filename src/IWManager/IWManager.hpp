@@ -49,6 +49,7 @@ private:
   int                 m_current_frame;
 public slots:
   void paint_frame (int);
+  void repaint_frame (void);
 };
 }
 

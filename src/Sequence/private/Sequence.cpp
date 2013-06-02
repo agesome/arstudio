@@ -22,6 +22,7 @@ void
 Sequence::add_item (unsigned int frame, Item::ptr item_ptr)
 {
   m_items.insert (std::make_pair (frame, item_ptr));
+  items_changed ();
 }
 
 const Sequence::frame_map &

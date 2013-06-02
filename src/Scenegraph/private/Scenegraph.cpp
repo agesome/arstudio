@@ -12,6 +12,9 @@ Scenegraph::add_sequence (Sequence * seq)
   m_sequences.push_back (seq);
   for (auto i : seq->items ())
     m_frames.insert (i.first);
+
+  connect (seq, &Sequence::items_changed,
+           this, &Scenegraph::rebuild_frames);
   sequences_changed ();
 }
 
@@ -42,6 +45,7 @@ Scenegraph::rebuild_frames (void)
   for (Sequence * s : m_sequences)
     for (auto i : s->items ())
       m_frames.insert (i.first);
+  sequences_changed ();
 }
 
 void

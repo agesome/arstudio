@@ -6,6 +6,7 @@
 
 #include <IWManager.hpp>
 #include <Logger.hpp>
+#include <Repository.hpp>
 #include <ScenegraphAggregator.hpp>
 #include <Sequence.hpp>
 #include <pipeline.hpp>
@@ -28,6 +29,10 @@ main (int argc, char * argv[])
                     &Repository::removing_all_nodes,
                     as::ScenegraphAggregator::instance (),
                     &ScenegraphAggregator::repository_clearing);
+
+  QObject::connect (repository.data (),
+                    &Repository::removing_all_nodes,
+                    []() { as::Logger::instance ().reset_frame_counter (); });
 
   QApplication::setApplicationName ("arstudio");
   QApplication::setOrganizationName ("CVTeam");

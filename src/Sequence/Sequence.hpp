@@ -38,7 +38,9 @@ public:
 
   Sequence (ItemType, QObject * parent = nullptr);
   Sequence (QObject * parent = nullptr);
+
   static ptr make (ItemType);
+
   void add_item (unsigned int, Item::ptr);
   const frame_map & items (void);
   ItemType type (void);
@@ -46,6 +48,8 @@ public:
 private:
   ItemType  m_type; //< type of items stored
   frame_map m_items;  //< map of items to frames
+signals:
+  void items_changed ();
 };
 }
 

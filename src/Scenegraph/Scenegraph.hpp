@@ -33,12 +33,12 @@ public:
   const QSet<int> frames (void);
   void clear (void);
 private:
-  void rebuild_frames (void);
-
   SequenceList m_sequences;
   QSet<int>    m_frames;
 signals:
   void sequences_changed (void);
+private slots:
+  void rebuild_frames (void);
 };
 }
 

@@ -15,7 +15,7 @@ IWManager::IWManager (QObject * parent)
   ScenegraphAggregator * sa = ScenegraphAggregator::instance ();
 
   connect (m_scenegraph.data (), &Scenegraph::sequences_changed,
-           [this] () { paint_frame (m_current_frame); });
+           this, &IWManager::repaint_frame);
   sa->add_scenegraph (m_scenegraph.data ());
   connect (sa, &ScenegraphAggregator::change_frame,
            this, &IWManager::paint_frame);
@@ -156,5 +156,11 @@ IWManager::paint_frame (int frame)
   time = QDateTime::currentMSecsSinceEpoch () - time;
   qDebug () << QString ("paint_frame() done in %0 msec").arg (time);
 #endif
+}
+
+void
+IWManager::repaint_frame (void)
+{
+  paint_frame (m_current_frame);
 }
 }
