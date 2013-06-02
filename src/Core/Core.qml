@@ -1,9 +1,7 @@
 import QtQuick 2.1
 import QtQuick.Controls 1.0
 import QtQuick.Layouts 1.0
-
-import Qt3D 2.0
-import Qt3D.Shapes 2.0
+import QtQuick.Window 2.1
 
 import arstudio 1.0
 import WindowTool 1.0
@@ -16,7 +14,9 @@ ApplicationWindow {
     width: 800
     height: 600
 
-    menuBar: MainMenuBar {}
+    visibility: menubar.goFullscreen ? Window.FullScreen : Window.Windowed
+
+    menuBar: MainMenuBar { id: menubar }
     toolBar: MainToolBar {}
 
     SystemPalette { id: g_systemPalette }
@@ -26,44 +26,23 @@ ApplicationWindow {
             fill: parent
             margins: 5
         }
-
+        spacing: 5
 
         RowLayout {
-            anchors {
-                top: parent.top
-                bottom: g_TimeLine.top
-                left: parent.left
-                right: parent.right
-            }
-
-            WindowTool {
-                id: windowTool
-                anchors {
-                    left: parent.left
-                    top: parent.top
-                    bottom: parent.bottom
-                }
-            }
+            WindowTool { visible: menubar.showWindowTool }
 
             Rectangle {
-                id: g_displayArea
-                anchors {
-                    left: windowTool.right
-                    right: parent.right
-                    top: parent.top
-                    bottom: parent.bottom
-                }
-                color: g_systemPalette.window
+                Layout.minimumHeight: 1
+                Layout.minimumWidth: 1
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                color: g_systemPalette.dark
             }
         }
 
         TimeLine {
             id: g_TimeLine
-            anchors {
-                left: parent.left
-                right: parent.right
-                bottom: parent.bottom
-            }
+            visible: menubar.showTimeline
         }
     }
 }

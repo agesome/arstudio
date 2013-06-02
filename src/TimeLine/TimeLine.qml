@@ -4,34 +4,29 @@ import QtQuick.Layouts 1.0
 
 import arstudio 1.0
 
-Column {
-    id: column
+ColumnLayout {
     spacing: 5
+    Layout.fillHeight: false
 
     Slider {
         id: slider
-        anchors {
-            left: parent.left
-            right: parent.right
-        }
+        Layout.fillWidth: true
+
         minimumValue: SAggregator.min_frame
         maximumValue: SAggregator.max_frame
+        value: spinbox.value
+
         stepSize: 1.0
         tickmarksEnabled: true
         updateValueWhileDragging: true
-        value: spinbox.value
+
         onValueChanged: {
             if (SAggregator.valid_frame (value))
                 SAggregator.signal_frame (value)
         }
-
     }
 
-    Row {
-        anchors {
-            left: parent.left
-            right: parent.right
-        }
+    RowLayout {
         spacing: parent.spacing
 
         Button {
@@ -48,10 +43,7 @@ Column {
         }
         SpinBox {
             id: spinbox
-            anchors {
-                top: parent.top
-                bottom: parent.bottom
-            }
+            Layout.minimumHeight: parent.height
             minimumValue: SAggregator.min_frame
             maximumValue: SAggregator.max_frame
             value: slider.value
