@@ -5,7 +5,6 @@ import QtQuick.Layouts 1.0
 import arstudio 1.0
 
 ColumnLayout {
-    spacing: 5
     Layout.fillHeight: false
 
     Slider {
@@ -27,8 +26,6 @@ ColumnLayout {
     }
 
     RowLayout {
-        spacing: parent.spacing
-
         Button {
             text: "<"
         }
@@ -44,6 +41,7 @@ ColumnLayout {
         SpinBox {
             id: spinbox
             Layout.minimumHeight: parent.height
+            Layout.minimumWidth: 80
             minimumValue: SAggregator.min_frame
             maximumValue: SAggregator.max_frame
             value: slider.value

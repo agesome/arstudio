@@ -41,9 +41,8 @@ main (int argc, char * argv[])
   qmlRegisterType<as::Sequence> ("arstudio", 1, 0, "Sequence");
   qmlRegisterType<as::Scenegraph> ("arstudio", 1, 0, "Scenegraph");
   qmlRegisterType<as::Repository> ("arstudio", 1, 0, "Repository");
+  qmlRegisterType<as::RepositoryNode> ("arstudio", 1, 0, "RepositoryNode");
   qmlRegisterType<as::IWManager> ("arstudio", 1, 0, "IWManager");
-
-  qRegisterMetaType<as::RepositoryNode> ("RepositoryNode");
 
   qmlRegisterSingletonType<as::ScenegraphAggregator>
     ("arstudio", 1, 0, "SAggregator",

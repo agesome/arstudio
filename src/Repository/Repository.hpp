@@ -14,16 +14,23 @@ namespace arstudio {
  * This class describes a single item in the Repository model
  */
 
-class RepositoryNode
+class RepositoryNode : public QObject
 {
+  Q_OBJECT
+  Q_PROPERTY (arstudio::Sequence::ItemType type READ type CONSTANT)
+  Q_PROPERTY (arstudio::Sequence * ptr READ data CONSTANT)
 public:
   RepositoryNode (const QString & name,
-                  Sequence::ptr data)
-    : m_name (name), m_data (data)
+                  Sequence::ptr data,
+                  QObject * parent = nullptr)
+    :
+    QObject (parent),
+    m_name (name),
+    m_data (data)
   {
   }
 
-  RepositoryNode () = default;
+  RepositoryNode (void) = default;
 
   arstudio::Sequence *
   data (void) const
@@ -56,7 +63,7 @@ private:
 
 /*
  * This class stores a list of Nodes, each containig a pointer to a
- *sequence
+ * sequence
  * and a string identifier. This list is exposed to views as a list model
  */
 
@@ -82,7 +89,7 @@ public:
 
   QVariant data (const QModelIndex & index, int role = NameRole) const;
   int rowCount (const QModelIndex & parent = QModelIndex ()) const;
-  Q_INVOKABLE arstudio::Sequence * get (int index);
+  Q_INVOKABLE arstudio::RepositoryNode * get (int index);
 
   void add_sequence (Sequence::ptr sequence, const QString & node_name);
   void add_item (Item::ptr item, unsigned int frame, Sequence::ItemType type,
@@ -90,7 +97,7 @@ public:
 protected:
   QHash<int, QByteArray> roleNames () const;
 private:
-  QList<RepositoryNode> m_nodes;
+  QList<RepositoryNode *> m_nodes;
 
   /*
    * add_item ends up being called from the processing thread,
@@ -99,14 +106,11 @@ private:
    */
 signals:
   void removing_all_nodes (void);
-  void append_node_signal (const RepositoryNode & node);
+  void append_node_signal (RepositoryNode * node);
 private slots:
-  void append_node_slot (const RepositoryNode & node);
+  void append_node_slot (RepositoryNode * node);
 public slots:
   void clear (void);
 };
 }
-
-Q_DECLARE_METATYPE (arstudio::RepositoryNode)
-
 #endif // REPOSITORY_H

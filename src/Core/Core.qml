@@ -26,23 +26,12 @@ ApplicationWindow {
             fill: parent
             margins: 5
         }
-        spacing: 5
 
-        RowLayout {
-            WindowTool { visible: menubar.showWindowTool }
-
-            Rectangle {
-                Layout.minimumHeight: 1
-                Layout.minimumWidth: 1
-                Layout.fillHeight: true
-                Layout.fillWidth: true
-                color: g_systemPalette.dark
-            }
-        }
+        WindowTool { visible: menubar.showWindowTool }
 
         TimeLine {
-            id: g_TimeLine
             visible: menubar.showTimeline
+            Layout.alignment: Qt.AlignBottom
         }
     }
 }

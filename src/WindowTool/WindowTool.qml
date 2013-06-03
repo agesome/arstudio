@@ -3,7 +3,6 @@ import QtQuick.Controls 1.0
 import QtQuick.Layouts 1.0
 
 ColumnLayout {
-    spacing: 5
     Layout.fillWidth: false
 
     TabView {
