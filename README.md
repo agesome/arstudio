@@ -10,13 +10,13 @@ Repository structure
 - git-hooks/  -- useful git hooks to use when working on this project;
 - src/        -- the source three;
 - submodules/ -- contains KinectRecorder, a dependency to support .kinvideo files.
+- releases/   -- contains complete source archives of previous releases
 
 Dependencies
 =====
 
 - Boost (system, filesystem)
-- Qt4 (QtCore QtGui QtOpenGL QtXml QtTest)
-- OpenGL
+- Qt 5 (Widgets, OpenGL, Declarative for branch qtquick)
 - OpenCV
 
 To generate documentation, optional:
@@ -37,7 +37,7 @@ Cloning & Compiling
 	$ cd src
 	$ mkdir build
 	$ cd build
-	$ cmake [-D ALGORITHMS="algo1;algo2"] ..
+	$ cmake [-D ALGORITHMS="algo1;algo2"] [-D CMAKE_BUILD_TYPE=Debug/Release] ..
 	$ make [-jN]
 	$ ./arstudio
 
