@@ -7,17 +7,28 @@ import arstudio 1.0
 ColumnLayout {
     Layout.fillHeight: false
 
+    Binding {
+        target: slider
+        property: "value"
+        value: spinbox.value
+    }
+
+    Binding {
+        target: spinbox
+        property: "value"
+        value: slider.value
+    }
+
     Slider {
         id: slider
         Layout.fillWidth: true
 
         minimumValue: SAggregator.min_frame
         maximumValue: SAggregator.max_frame
-        value: spinbox.value
+        value: 1
 
         stepSize: 1.0
         tickmarksEnabled: true
-        updateValueWhileDragging: true
 
         onValueChanged: {
             if (SAggregator.valid_frame (value))
@@ -44,7 +55,7 @@ ColumnLayout {
             Layout.minimumWidth: 80
             minimumValue: SAggregator.min_frame
             maximumValue: SAggregator.max_frame
-            value: slider.value
+            value: 1
         }
     }
 }
