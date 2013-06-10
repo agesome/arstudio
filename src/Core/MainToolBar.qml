@@ -9,10 +9,5 @@ ToolBar {
             iconName: "application-exit"
             onClicked: g_Repository.clear()
         }
-        ToolButton {
-            text: "Process"
-            iconName: "system-run"
-            onClicked: g_Pipeline.process()
-        }
     }
 }

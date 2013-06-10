@@ -1,21 +1,42 @@
 #include <VideoHelper.hpp>
 
 namespace arstudio {
-bool
-VideoHelper::load_file (const std::string & file)
+VideoHelper::VideoHelper (QObject * parent)
+  : QObject (parent),
+  m_file_basename ("invalid"),
+  m_status (false),
+  m_frame_count (0)
 {
-  fs::path p (file);
+  frame_count_changed ();
+  basename_changed ();
+  status_changed ();
+}
 
-  if (!fs::exists (p))
+bool
+VideoHelper::load_file (const QString & file)
+{
+  QFileInfo f (file);
+
+  if (!f.exists ())
     return false;
-  if (p.extension () == ".kinvideo")
-    m_video_source = std::make_shared <VideoSourceKinvideo> (file);
+  if (f.suffix () == "kinvideo")
+    m_video_source = QSharedPointer <VideoSourceKinvideo> (
+      new VideoSourceKinvideo (file));
   else
-    m_video_source = std::make_shared <VideoSourceOpenCV> (file);
-  assert (m_video_source);
+    m_video_source = QSharedPointer <VideoSourceOpenCV> (
+      new VideoSourceOpenCV (file));
+  Q_ASSERT (m_video_source);
+
   bool init = m_video_source->init ();
-  assert (init);
-  m_file_basename = fs::basename (p);
+  Q_ASSERT (init);
+
+  m_file_basename = f.baseName ();
+  m_source_file   = file;
+  m_frame_count   = m_video_source->frame_count ();
+
+  basename_changed ();
+  frame_count_changed ();
+
   return true;
 }
 
@@ -34,7 +55,7 @@ VideoHelper::next_frame (void)
 int
 VideoHelper::frame_count (void)
 {
-  return m_video_source->frame_count ();
+  return m_frame_count;
 }
 
 const cv::Mat
@@ -49,9 +70,28 @@ VideoHelper::depth_map (void)
   return m_video_source->depth_map ();
 }
 
-const std::string
+const QString
 VideoHelper::file_basename (void)
 {
   return m_file_basename;
+}
+
+const QUrl
+VideoHelper::source_file ()
+{
+  return m_source_file;
+}
+
+void
+VideoHelper::set_source (const QUrl & url)
+{
+  m_status = load_file (url.path ());
+  status_changed ();
+}
+
+bool
+VideoHelper::status (void)
+{
+  return m_status;
 }
 }

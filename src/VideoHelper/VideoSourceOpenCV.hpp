@@ -1,10 +1,8 @@
 #ifndef VIDEOSOURCEOPENCV_HPP
 #define VIDEOSOURCEOPENCV_HPP
 
-#include <memory>
-#include <iostream>
-
-#include <opencv2/highgui/highgui.hpp>
+#include <QString>
+#include <QSharedPointer>
 
 #include <IVideoSource.hpp>
 
@@ -12,7 +10,7 @@ namespace arstudio {
 class VideoSourceOpenCV : public IVideoSource
 {
 public:
-  VideoSourceOpenCV (const std::string &);
+  VideoSourceOpenCV (const QString &);
   bool init (void);
   int frame_count (void);
   bool go_to_frame (int);
@@ -20,11 +18,11 @@ public:
   const cv::Mat image (void);
   const cv::Mat depth_map (void);
 private:
-  std::shared_ptr<cv::VideoCapture> video_capture;
-  std::string                       source_file;
-  int                               current_frame;
-  int                               frame_count_;
-  cv::Mat                           current_image_;
+  QSharedPointer<cv::VideoCapture> m_video_capture;
+  QString                          m_source_file;
+  int                              current_frame;
+  int                              m_frame_count;
+  cv::Mat                          m_current_image;
 };
 }
 #endif

@@ -20,9 +20,9 @@ set(arstudio_sources
     VideoHelper/private/VideoSourceOpenCV.cpp
     VideoHelper/private/VideoSourceKinvideo.cpp
     ${CMAKE_BINARY_DIR}/AlgoPipeline.cpp
-    pipeline.cpp
     ${CMAKE_BINARY_DIR}/main.cpp
     IWManager/private/IWManager.cpp
+    VideoPipeline/private/VideoPipeline.cpp
 
     Core/Core.qml
     Core/MainMenuBar.qml
@@ -32,6 +32,7 @@ set(arstudio_sources
     WindowTool/ItemWindow.qml
     WindowTool/WindowHandler.qml
     WindowTool/WindowTool.qml
+    ProcessingDialog/ProcessingDialog.qml
 )
 
 # this is somewhat tricky. we want a separate list of all headers so that they
@@ -55,15 +56,17 @@ set(arstudio_headers
     VideoHelper/VideoSourceOpenCV.hpp
     VideoHelper/VideoSourceKinvideo.hpp
     IWManager/IWManager.hpp
+    VideoPipeline/VideoPipeline.hpp
 )
 
 set(arstudio_moc_headers
-    pipeline.hpp
     Scenegraph/Scenegraph.hpp
     Scenegraph/ScenegraphAggregator.hpp
     Sequence/Sequence.hpp
     Repository/Repository.hpp
     IWManager/IWManager.hpp
+    VideoPipeline/VideoPipeline.hpp
+    VideoHelper/VideoHelper.hpp
 )
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -71,7 +74,7 @@ if(NOT CMAKE_BUILD_TYPE)
   "Choose the type of build: Debug/Release" FORCE)
 endif()
 
-find_package(Boost REQUIRED COMPONENTS system filesystem)
+find_package(Boost REQUIRED)
 find_package(Qt5Quick REQUIRED)
 find_package(Qt5Concurrent REQUIRED)
 find_package(Qt53DQuick REQUIRED)
@@ -88,7 +91,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Concurrent_EXECUTABLE_COMPILE_FLAGS
 if(CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS_DEBUG
 			"${CMAKE_CXX_FLAGS} -std=c++11 -O0 -ggdb3 -Wall -Wextra -pedantic")
-	set(CMAKE_CXX_FLAGS_RELEASE
+  set(CMAKE_CXX_FLAGS_RELEASE
 			"${CMAKE_CXX_FLAGS} -std=c++11 -O3 -march=native -mtune=native -DQT_NO_DEBUG")
 endif()
 
@@ -105,6 +108,7 @@ include_directories(
   Sequence
   VideoHelper
   IWManager
+  VideoPipeline
   ../submodules/KinectRecorder/src/
   ${Boost_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}

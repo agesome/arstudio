@@ -1,19 +1,20 @@
 #include <VideoSourceOpenCV.hpp>
 
 namespace arstudio {
-VideoSourceOpenCV::VideoSourceOpenCV (const std::string & file)
+VideoSourceOpenCV::VideoSourceOpenCV (const QString & file)
+  : m_source_file (file)
 {
-  this->source_file = file;
 }
 
 bool
 VideoSourceOpenCV::init (void)
 {
-  current_frame = 0;
-  video_capture = std::make_shared <cv::VideoCapture> (source_file);
-  if (video_capture->isOpened ())
+  current_frame   = 0;
+  m_video_capture = QSharedPointer <cv::VideoCapture> (
+    new cv::VideoCapture (m_source_file.toStdString ()));
+  if (m_video_capture->isOpened ())
     {
-      frame_count_ = video_capture->get (CV_CAP_PROP_FRAME_COUNT);
+      m_frame_count = m_video_capture->get (CV_CAP_PROP_FRAME_COUNT);
       return true;
     }
   return false;
@@ -22,18 +23,18 @@ VideoSourceOpenCV::init (void)
 int
 VideoSourceOpenCV::frame_count (void)
 {
-  return frame_count_;
+  return m_frame_count;
 }
 
 bool
 VideoSourceOpenCV::go_to_frame (int frame)
 {
   --frame; // we use 1-based frame indexing, opencv uses 0-based
-  if (frame > frame_count_ - 1 || frame < 0)
+  if (frame > m_frame_count - 1 || frame < 0)
     return false;
   current_frame = frame;
-  video_capture->set (CV_CAP_PROP_POS_FRAMES, frame);
-  *video_capture >> current_image_;
+  m_video_capture->set (CV_CAP_PROP_POS_FRAMES, frame);
+  *m_video_capture >> m_current_image;
   return true;
 }
 
@@ -46,7 +47,7 @@ VideoSourceOpenCV::next_frame (void)
 const cv::Mat
 VideoSourceOpenCV::image (void)
 {
-  return current_image_;
+  return m_current_image;
 }
 
 const cv::Mat

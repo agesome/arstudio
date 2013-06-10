@@ -1,16 +1,17 @@
 #include <VideoSourceKinvideo.hpp>
 
 namespace arstudio {
-VideoSourceKinvideo::VideoSourceKinvideo (const std::string & file)
+VideoSourceKinvideo::VideoSourceKinvideo (const QString & file)
+  : m_source_file (file)
 {
-  this->m_source_file = file;
 }
 
 bool
 VideoSourceKinvideo::init (void)
 {
   m_current_frame = 0;
-  m_video_capture = std::make_shared <FileCapture> (m_source_file);
+  m_video_capture = QSharedPointer <FileCapture> (
+    new FileCapture (m_source_file.toStdString ()));
   if (m_video_capture->isConnected ())
     {
       m_frame_count = m_video_capture->getFrameCount ();

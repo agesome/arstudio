@@ -3,13 +3,15 @@
 #include <QQmlContext>
 #include <QQmlComponent>
 #include <QQuickWindow>
+#include <QObject>
 
 #include <IWManager.hpp>
 #include <Logger.hpp>
 #include <Repository.hpp>
 #include <ScenegraphAggregator.hpp>
 #include <Sequence.hpp>
-#include <pipeline.hpp>
+#include <VideoHelper.hpp>
+#include <VideoPipeline.hpp>
 
 namespace as = arstudio;
 
@@ -23,15 +25,13 @@ main (int argc, char * argv[])
   QQmlContext       * root_context = qml_engine.rootContext ();
   as::Repository::ptr repository   = as::Repository::make ();
 
-  QSharedPointer<Pipeline> p = QSharedPointer<Pipeline> (new Pipeline ());
-
   QObject::connect (repository.data (),
-                    &Repository::removing_all_nodes,
+                    &as::Repository::removing_all_nodes,
                     as::ScenegraphAggregator::instance (),
-                    &ScenegraphAggregator::repository_clearing);
+                    &as::ScenegraphAggregator::repository_clearing);
 
   QObject::connect (repository.data (),
-                    &Repository::removing_all_nodes,
+                    &as::Repository::removing_all_nodes,
                     []() { as::Logger::instance ().reset_frame_counter (); });
 
   QApplication::setApplicationName ("arstudio");
@@ -43,6 +43,8 @@ main (int argc, char * argv[])
   qmlRegisterType<as::Repository> ("arstudio", 1, 0, "Repository");
   qmlRegisterType<as::RepositoryNode> ("arstudio", 1, 0, "RepositoryNode");
   qmlRegisterType<as::IWManager> ("arstudio", 1, 0, "IWManager");
+  qmlRegisterType<as::VideoHelper> ("arstudio", 1, 0, "VideoHelper");
+  qmlRegisterType<as::VideoPipeline> ("arstudio", 1, 0, "VideoPipeline");
 
   qmlRegisterSingletonType<as::ScenegraphAggregator>
     ("arstudio", 1, 0, "SAggregator",
@@ -52,7 +54,6 @@ main (int argc, char * argv[])
   qml_engine.addImportPath ("@QML_ROOT@");
   qml_core.loadUrl (QUrl::fromLocalFile ("Core/Core.qml"));
 
-  root_context->setContextProperty ("g_Pipeline", p.data ());
   root_context->setContextProperty ("g_Repository", repository.data ());
 
   QObject * window_ = qml_core.create ();

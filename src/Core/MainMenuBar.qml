@@ -5,6 +5,7 @@ MenuBar {
     property alias showWindowTool: show_window_tool.checked
     property alias showTimeline: show_timeline.checked
     property alias goFullscreen: go_fullscreen.checked
+    property bool showOpenFile: false
 
     Menu {
         title: "File"
@@ -13,6 +14,7 @@ MenuBar {
             text: "Open"
             shortcut: "Ctrl+O"
             iconName: "document-open"
+            onTriggered: showOpenFile = true
         }
 
         MenuItem {

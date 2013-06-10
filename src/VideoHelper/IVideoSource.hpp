@@ -13,6 +13,8 @@ public:
   virtual bool next_frame (void)         = 0;
   virtual const cv::Mat image (void)     = 0;
   virtual const cv::Mat depth_map (void) = 0;
+  virtual
+  ~IVideoSource () = default;
 };
 }
 
