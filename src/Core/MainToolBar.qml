@@ -9,5 +9,10 @@ ToolBar {
             iconName: "application-exit"
             onClicked: g_Repository.clear()
         }
+        ToolButton {
+            text: "Processing dialog"
+            onClicked: processing_dialog.show()
+            enabled: processing_dialog.video_helper.status
+        }
     }
 }

@@ -3,7 +3,6 @@
 #include <QQmlContext>
 #include <QQmlComponent>
 #include <QQuickWindow>
-#include <QObject>
 
 #include <IWManager.hpp>
 #include <Logger.hpp>
@@ -12,6 +11,7 @@
 #include <Sequence.hpp>
 #include <VideoHelper.hpp>
 #include <VideoPipeline.hpp>
+#include <Config.hpp>
 
 namespace as = arstudio;
 
@@ -24,6 +24,7 @@ main (int argc, char * argv[])
 
   QQmlContext       * root_context = qml_engine.rootContext ();
   as::Repository::ptr repository   = as::Repository::make ();
+  as::Config::ptr     config       = as::Config::make ();
 
   QObject::connect (repository.data (),
                     &as::Repository::removing_all_nodes,
@@ -45,22 +46,26 @@ main (int argc, char * argv[])
   qmlRegisterType<as::IWManager> ("arstudio", 1, 0, "IWManager");
   qmlRegisterType<as::VideoHelper> ("arstudio", 1, 0, "VideoHelper");
   qmlRegisterType<as::VideoPipeline> ("arstudio", 1, 0, "VideoPipeline");
+  qmlRegisterType<as::Config> ("arstudio", 1, 0, "Config");
 
   qmlRegisterSingletonType<as::ScenegraphAggregator>
     ("arstudio", 1, 0, "SAggregator",
     &as::ScenegraphAggregator::qml_instance);
+
+  config->import_directory ("@CONFIG_DIRECTORY@");
 
   qml_engine.setBaseUrl (QUrl::fromLocalFile ("@QML_ROOT@"));
   qml_engine.addImportPath ("@QML_ROOT@");
   qml_core.loadUrl (QUrl::fromLocalFile ("Core/Core.qml"));
 
   root_context->setContextProperty ("g_Repository", repository.data ());
+  root_context->setContextProperty ("g_Config", config.data ());
 
-  QObject * window_ = qml_core.create ();
+  QObject * window_object = qml_core.create ();
 
-  if (window_ != nullptr)
+  if (window_object != nullptr)
     {
-      QQuickWindow * window = qobject_cast<QQuickWindow *> (window_);
+      QQuickWindow * window = qobject_cast<QQuickWindow *> (window_object);
       QObject::connect (&qml_engine, &QQmlEngine::quit,
                         [&application]() { application.exit (EXIT_SUCCESS); });
       window->show ();

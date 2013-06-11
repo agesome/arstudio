@@ -4,7 +4,6 @@ project(arstudio CXX C)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_SKIP_RULE_DEPENDENCY ON)
-set(Boost_USE_MULTITHREADED ON)
 set(GLOBAL_LIBS "")
 set(ALGO_INCLUDES "")
 set(ALGO_CODE "")
@@ -33,6 +32,7 @@ set(arstudio_sources
     WindowTool/WindowHandler.qml
     WindowTool/WindowTool.qml
     ProcessingDialog/ProcessingDialog.qml
+    ConfigView/ConfigView.qml
 )
 
 # this is somewhat tricky. we want a separate list of all headers so that they
@@ -41,6 +41,7 @@ set(arstudio_sources
 # that will produce warnings
 
 set(arstudio_headers
+    AlgoPipeline/AlgoInterface.hpp
     Config/Config.hpp
     Logger/Logger.hpp
     Sequence/Sequence.hpp
@@ -67,6 +68,7 @@ set(arstudio_moc_headers
     IWManager/IWManager.hpp
     VideoPipeline/VideoPipeline.hpp
     VideoHelper/VideoHelper.hpp
+    Config/Config.hpp
 )
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -74,7 +76,6 @@ if(NOT CMAKE_BUILD_TYPE)
   "Choose the type of build: Debug/Release" FORCE)
 endif()
 
-find_package(Boost REQUIRED)
 find_package(Qt5Quick REQUIRED)
 find_package(Qt5Concurrent REQUIRED)
 find_package(Qt53DQuick REQUIRED)
@@ -110,7 +111,6 @@ include_directories(
   IWManager
   VideoPipeline
   ../submodules/KinectRecorder/src/
-  ${Boost_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
   ${Qt5Quick_INCLUDE_DIRS}
   ${Qt53DQuick_INCLUDE_DIRS}
@@ -185,6 +185,5 @@ target_link_libraries(
   arstudio
 
   ${GLOBAL_LIBS}
-  ${Boost_LIBRARIES}
   ${OpenCV_LIBS}
 )

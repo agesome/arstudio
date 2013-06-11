@@ -15,6 +15,7 @@ class VideoPipeline : public QObject
   Q_PROPERTY (bool running READ running WRITE set_running NOTIFY running_changed)
   Q_PROPERTY (arstudio::VideoHelper * video_helper READ video_helper
               WRITE set_video_helper)
+  Q_PROPERTY (arstudio::Config * config READ config WRITE set_config)
   Q_PROPERTY (int start_frame READ start_frame WRITE set_start_frame)
   Q_PROPERTY (int end_frame READ end_frame WRITE set_end_frame)
   Q_PROPERTY (float progress READ progress NOTIFY progress_changed)
@@ -25,6 +26,8 @@ public:
   void set_running (bool);
   VideoHelper * video_helper (void);
   void set_video_helper (VideoHelper *);
+  Config * config (void);
+  void set_config (Config *);
   int start_frame (void);
   int end_frame (void);
   void set_start_frame (int);
@@ -35,6 +38,7 @@ private:
 
   bool          m_run_processing;
   VideoHelper * m_video_helper;
+  Config      * m_config;
   int           m_start_frame;
   int           m_end_frame;
   float         m_processing_progress;

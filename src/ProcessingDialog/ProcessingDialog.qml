@@ -7,6 +7,7 @@ import arstudio 1.0
 
 Window {
     property url sourceFile
+    property alias video_helper: vh
 
     title: "Processing Dialog"
     flags: Qt.Dialog
@@ -92,6 +93,7 @@ Window {
     VideoPipeline {
         id: vp
         video_helper: vh
+        config: g_Config
         start_frame: wholeFile.checked ? 1 : min.value
         end_frame: wholeFile.checked ? vh.frame_count : max.value
         onRunningChanged: {

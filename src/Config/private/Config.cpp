@@ -1,52 +1,98 @@
 #include <Config.hpp>
+#include <QtDebug>
 
 namespace arstudio {
-/**
- *      Import setting from an XML file
- *
- *      \param file_path path to the XML file
- */
-void
-Config::import_xml (const std::string & file_path)
+Config::Config (QObject * parent)
+  : QAbstractListModel (parent)
 {
-  pt::ptree xml_tree;
-
-  read_xml (file_path, xml_tree);
-  walk_tree (xml_tree, "");
 }
 
-void
-Config::walk_tree (const pt::ptree & tree, const std::string & prefix)
+QHash<int, QByteArray>
+Config::roleNames () const
 {
-  for (auto node : tree)
+  QHash<int, QByteArray> roles;
+  roles[PathRole]  = "path";
+  roles[ValueRole] = "value";
+  return roles;
+}
+
+QVariant
+Config::data (const QModelIndex & index, int role) const
+{
+  if (role == PathRole)
+    return m_settings.keys ().at (index.row ());
+  else if (role == ValueRole)
+    return m_settings.values ().at (index.row ());
+
+  return QVariant ();
+}
+
+int
+Config::rowCount (const QModelIndex &) const
+{
+  return m_settings.count ();
+}
+
+bool
+Config::import_xml (const QString & path)
+{
+  QXmlStreamReader xml;
+  QFile            xml_file (path);
+  QStringList      prefix;
+
+  if (!xml_file.open (QIODevice::ReadOnly | QIODevice::Text))
+    return false;
+  xml.setDevice (&xml_file);
+
+  while (!xml.atEnd ())
     {
-      if (!node.second.empty ())
-        walk_tree (node.second, prefix + node.first + ".");
-      else
+      switch (xml.readNext ())
         {
-          std::string path  = prefix + node.first;
-          std::string value = node.second.get_value<std::string> ();
-          main_tree.put ("root." + path, value);
-          if (import_callback)
-            import_callback (path, value);
+        case QXmlStreamReader::Characters:
+          if (xml.isWhitespace ())
+            continue;
+          beginInsertRows (QModelIndex (), rowCount (), rowCount ());
+          m_settings.insert (prefix.join ('.'), xml.text ().toString ());
+          endInsertRows ();
+          break;
+
+        case QXmlStreamReader::StartElement:
+          prefix << xml.name ().toString ();
+          break;
+
+        case QXmlStreamReader::EndElement:
+          prefix.pop_back ();
+          break;
+
+        default:
+          break;
         }
     }
+
+  return !xml.hasError ();
 }
 
-Config::ptr
-Config::make (void)
-{
-  return std::make_shared<Config> ();
-}
-
-/**
- *      Set the import callback function
- *
- *      \param callback the function to be called
- */
 void
-Config::set_import_callback (import_callback_t callback)
+Config::import_directory (const QString &path)
 {
-  import_callback = callback;
+  QDir d (path);
+
+  if (!d.exists ())
+    return;
+  for (QString subdir : d.entryList (QDir::Dirs | QDir::NoDotAndDotDot))
+    import_xml (d.absolutePath () + QDir::separator () + subdir
+                + QDir::separator () + "settings.xml");
+}
+
+QVariant
+Config::get (const QString &path)
+{
+  return m_settings[path];
+}
+
+void
+Config::set (int row, const QVariant & value)
+{
+  m_settings[m_settings.keys ().at (row)] = value;
 }
 }

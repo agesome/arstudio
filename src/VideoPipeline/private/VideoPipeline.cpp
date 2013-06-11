@@ -1,11 +1,11 @@
 #include <VideoPipeline.hpp>
-#include <QtDebug>
 
 namespace arstudio {
 VideoPipeline::VideoPipeline (QObject * parent)
   : QObject (parent),
   m_run_processing (false),
   m_video_helper (nullptr),
+  m_config (nullptr),
   m_start_frame (1),
   m_end_frame (1),
   m_processing_progress (0)
@@ -37,6 +37,18 @@ void
 VideoPipeline::set_video_helper (VideoHelper * vh)
 {
   m_video_helper = vh;
+}
+
+Config *
+VideoPipeline::config ()
+{
+  return m_config;
+}
+
+void
+VideoPipeline::set_config (Config * ptr)
+{
+  m_config = ptr;
 }
 
 int
@@ -72,28 +84,24 @@ VideoPipeline::progress (void)
 void
 VideoPipeline::processing_thread (void)
 {
-  Config::ptr c = Config::make ();
-
-  c->import_xml (
-    "/home/age/Sources/arstudio/src/algorithms/slam/settings.xml");
-  AlgoPipeline::ptr ap = AlgoPipeline::make (c);
+  AlgoPipeline::ptr ap = AlgoPipeline::make (m_config);
 
   ap->create_all ();
   m_video_helper->go_to_frame (m_start_frame);
 
-  const float to_process    = m_end_frame - m_start_frame;
-  int         current_frame = 1;
-  qDebug () << m_start_frame << " " << m_end_frame << " " << to_process;
+  const float to_process       = m_end_frame - m_start_frame + 1;
+  int         frames_processed = 0;
+
   do
     {
-      m_processing_progress = current_frame / to_process;
-      current_frame++;
-      progress_changed ();
-
       ap->process_frame (m_video_helper->image (),
                          m_video_helper->depth_map ());
 
-      if (current_frame == m_end_frame)
+      m_processing_progress = frames_processed / to_process;
+      frames_processed++;
+      progress_changed ();
+
+      if (frames_processed == to_process)
         break;
     } while (m_run_processing && m_video_helper->next_frame ());
   set_running (false);

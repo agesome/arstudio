@@ -10,14 +10,21 @@ bool
 VideoSourceOpenCV::init (void)
 {
   current_frame   = 0;
-  m_video_capture = QSharedPointer <cv::VideoCapture> (
-    new cv::VideoCapture (m_source_file.toStdString ()));
-  if (m_video_capture->isOpened ())
+  m_video_capture = QSharedPointer <cv::VideoCapture> (new cv::VideoCapture ());
+
+  if (!m_video_capture->open (m_source_file.toStdString ()))
+    return false;
+
+  // try reading from opened file, see if we fail
+  if (!m_video_capture->grab ())
     {
-      m_frame_count = m_video_capture->get (CV_CAP_PROP_FRAME_COUNT);
-      return true;
+      qWarning () << "VideoCapture failed to grab frame; bad file format?";
+      return false;
     }
-  return false;
+
+  m_video_capture->set (CV_CAP_PROP_POS_FRAMES, 0);
+  m_frame_count = m_video_capture->get (CV_CAP_PROP_FRAME_COUNT);
+  return true;
 }
 
 int

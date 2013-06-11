@@ -23,10 +23,10 @@ public:
   typedef std::shared_ptr<AlgoPipeline> ptr;       // < a convenience
                                                    // typedef
 
-  AlgoPipeline (Config::ptr);
+  AlgoPipeline (Config *);
   ~AlgoPipeline ();
 
-  static ptr make (Config::ptr);
+  static ptr make (Config *);
   void process_frame (const cv::Mat &, const cv::Mat &);
   void create_all (void);
 

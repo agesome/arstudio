@@ -1,4 +1,5 @@
 #include <VideoHelper.hpp>
+#include <QtDebug>
 
 namespace arstudio {
 VideoHelper::VideoHelper (QObject * parent)
@@ -25,10 +26,12 @@ VideoHelper::load_file (const QString & file)
   else
     m_video_source = QSharedPointer <VideoSourceOpenCV> (
       new VideoSourceOpenCV (file));
-  Q_ASSERT (m_video_source);
 
-  bool init = m_video_source->init ();
-  Q_ASSERT (init);
+  if (!m_video_source)
+    return false;
+
+  if (!m_video_source->init ())
+    return false;
 
   m_file_basename = f.baseName ();
   m_source_file   = file;
@@ -85,6 +88,8 @@ VideoHelper::source_file ()
 void
 VideoHelper::set_source (const QUrl & url)
 {
+  if (!url.isValid ())
+    return;
   m_status = load_file (url.path ());
   status_changed ();
 }

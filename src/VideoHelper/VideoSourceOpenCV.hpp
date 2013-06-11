@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QSharedPointer>
+#include <QtDebug>
 
 #include <IVideoSource.hpp>
 

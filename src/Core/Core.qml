@@ -8,13 +8,14 @@ import arstudio 1.0
 import WindowTool 1.0
 import TimeLine 1.0
 import ProcessingDialog 1.0
+import ConfigView 1.0
 
 ApplicationWindow {
     id: g_rootWindow
 
     title: "CVAR Studio"
-    width: 800
-    height: 600
+    width: 500
+    height: 450
 
     visibility: menubar.goFullscreen ? Window.FullScreen : Window.Windowed
 
@@ -29,7 +30,10 @@ ApplicationWindow {
             margins: 5
         }
 
-        WindowTool { visible: menubar.showWindowTool }
+        RowLayout {
+            WindowTool { visible: menubar.showWindowTool }
+            ConfigView {}
+        }
 
         TimeLine {
             visible: menubar.showTimeline
@@ -43,11 +47,14 @@ ApplicationWindow {
         selectMultiple: false
         selectExisting: true
         selectFolder: false
-        nameFilters: [ "Kinvideo files(*.kinvideo)" ]
+        nameFilters: [ "Kinvideo files(*.kinvideo)", "All files(*.*)" ]
         onAccepted: menubar.showOpenFile = false
         onRejected: menubar.showOpenFile = false
         visible: menubar.showOpenFile
     }
 
-    ProcessingDialog { sourceFile: fd.fileUrl }
+    ProcessingDialog {
+        id: processing_dialog
+        sourceFile: fd.fileUrl
+    }
 }

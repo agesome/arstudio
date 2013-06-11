@@ -1,57 +1,89 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include <memory>
-#include <iostream>
-
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/xml_parser.hpp>
+#include <QXmlStreamReader>
+#include <QSharedPointer>
+#include <QAbstractListModel>
+#include <QMap>
+#include <QFile>
+#include <QDir>
+#include <QStringList>
 
 namespace arstudio {
-namespace pt = boost::property_tree;
-
 /**
- * This class handles import from XML files and storage of
- * algorithm-specific settings in a tree structure.
+ * Settings storage class
+ *
+ * This class handles loading and storage of per-algorithm settings in a
+ * simple
+ * list-like form. It also implements QAbstractListModel to serve as a
+ * model
+ * to display all stored settings to the user for editing.
+ *
+ * Example of XML settings file:
+ * ~~~~~{.xml}
+ *     <algo_name>
+ *       <setting1>text</setting1>
+ *       <setting2>42</setting2>
+ *       <subpath>
+ *         <setting1>1</setting1>
+ *       </subpath>
+ *     </algo_name>
+ * ~~~~~
+ * The above gets parsed to the following setting list (path->value)
+ * ~~~~
+ *     algo_name.setting1         -> text
+ *     algo_name.setting2         -> 42
+ *     algo_name.subpath.setting1 -> 1
+ * ~~~~
  */
 
-class Config
+class Config : public QAbstractListModel
 {
+  Q_OBJECT
 public:
-  typedef std::shared_ptr <Config> ptr;
-  typedef std::function <void (const std::string &,
-                               const std::string &)> import_callback_t;
+  typedef QSharedPointer <Config> ptr;
+  enum ConfigRoles
+  {
+    PathRole = Qt::UserRole + 1,
+    ValueRole
+  };
 
-  void import_xml (const std::string &);
-  void set_import_callback (import_callback_t);
-  static ptr make (void);
-  /**
-   * Return the value of a property, cast to type T.
-   *
-   * \param prop dot-sepatared path to the setting, like
-   * "path.to.setting"
-   */
-  template <typename T>
-  inline T
-  get (const std::string & prop)
+  Config (QObject * parent = nullptr);
+
+  static ptr
+  make (QObject * parent = nullptr)
   {
-    return main_tree.get<T> ("root." + prop);
+    return ptr (new Config (parent));
   }
+
+  QVariant data (const QModelIndex & index, int role = PathRole) const;
+  int rowCount (const QModelIndex & parent = QModelIndex ()) const;
+
   /**
-   *      Change or place a setting in the tree.
-   *
-   *      \param prop path to the setting
-   *      \param value desired value
+   * Import settings from a single XML file
+   * @param path path to the file
    */
-  inline void
-  put (const std::string & prop, const std::string & value)
-  {
-    main_tree.put ("root." + prop, value);
-  }
+  bool import_xml (const QString & path);
+  /**
+   * Import settings from all subdirectories of a directory
+   *
+   * By convention, this method looks for a file names "settings.xml" in
+   * every
+   * subdirectory and imports that file
+   * @param path path to the directory
+   */
+  void import_directory (const QString & path);
+
+  /**
+   * Get a setting with specified path
+   * @param path path to the setting
+   */
+  QVariant get (const QString & path);
+  Q_INVOKABLE void set (int, const QVariant &);
+protected:
+  QHash<int, QByteArray> roleNames () const;
 private:
-  void walk_tree (const pt::ptree &, const std::string &);
-  import_callback_t import_callback; ///< called for each value imported
-  pt::ptree         main_tree; ///< contains settings for all algorithms
+  QMap<QString, QVariant> m_settings;
 };
 }
 

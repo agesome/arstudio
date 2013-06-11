@@ -22,7 +22,7 @@ public:
    *
    *      \param config pointer to an instance of Config
    */
-  IAbstractAlgorithm (as::Config::ptr config)
+  IAbstractAlgorithm (as::Config * config)
   {
     this->config = config;
   };
@@ -50,7 +50,7 @@ public:
   virtual const std::string id_string (void) = 0;
 
 protected:
-  as::Config::ptr config;
+  as::Config * config;
 };
 
 #endif // ALGO_INTERFACE_HPP

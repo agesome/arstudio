@@ -46,8 +46,7 @@ Repository::get (int index)
 {
   RepositoryNode * ptr = m_nodes[index];
   // the RepositoryNode is managed by Repository. forbid QML from owning
-  // it,
-  // to prevent grabage collection
+  // it, to prevent grabage collection
   QQmlEngine::setObjectOwnership (ptr, QQmlEngine::CppOwnership);
 
   return ptr;

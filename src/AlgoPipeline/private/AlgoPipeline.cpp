@@ -9,7 +9,7 @@ namespace arstudio {
  *      \param config is passed to every algorithm being instantified
  */
 
-AlgoPipeline::AlgoPipeline (Config::ptr config)
+AlgoPipeline::AlgoPipeline (Config * config)
 {
   @ALGO_CODE@
 }
@@ -46,7 +46,7 @@ AlgoPipeline::~AlgoPipeline ()
  */
 
 AlgoPipeline::ptr
-AlgoPipeline::make (Config::ptr config)
+AlgoPipeline::make (Config * config)
 {
   return std::make_shared<AlgoPipeline> (config);
 }
