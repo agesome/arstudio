@@ -17,8 +17,8 @@
 *~
 
 # everything in the build directory
-*build/*
+*build*
 
 docs/html
 
-CMakeLists.txt.user
+CMakeLists.txt.user*
