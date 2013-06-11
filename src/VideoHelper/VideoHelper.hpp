@@ -12,6 +12,14 @@
 #include <VideoSourceKinvideo.hpp>
 
 namespace arstudio {
+/**
+ * Video loading helper
+ *
+ * This class provides a convenient, consistent interface for retrieving
+ * frames
+ * from video files of different types, using different sources
+ */
+
 class VideoHelper : public QObject
 {
   Q_OBJECT

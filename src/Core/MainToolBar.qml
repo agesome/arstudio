@@ -6,7 +6,6 @@ ToolBar {
     RowLayout {
         ToolButton {
             text: "Clear Repository"
-            iconName: "application-exit"
             onClicked: g_Repository.clear()
         }
         ToolButton {

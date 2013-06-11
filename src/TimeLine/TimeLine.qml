@@ -4,6 +4,10 @@ import QtQuick.Layouts 1.0
 
 import arstudio 1.0
 
+/**
+  This component provies player-like controls for navigating Sequence frames
+*/
+
 ColumnLayout {
     Layout.fillHeight: false
 

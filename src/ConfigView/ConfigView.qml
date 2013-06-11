@@ -2,6 +2,11 @@ import QtQuick 2.1
 import QtQuick.Controls 1.0
 import QtQuick.Layouts 1.0
 
+/**
+  This component is a simple viewer for Config, using it as the
+  model for a TableView
+*/
+
 TableView {
     id: tableview
     Layout.fillWidth: true

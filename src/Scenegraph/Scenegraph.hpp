@@ -10,7 +10,14 @@
 
 namespace arstudio {
 /**
- *      Keeps track of all sequences to be displayed.
+ * Keeps track of all sequences to be displayed
+ *
+ * This class is instantinied by ItemWindow QML component and is
+ * responsible
+ * of tracking all sequences associated with that window. It also provides
+ * to
+ * ScenegraphAggregator a QSet of all frames for which associated sequences
+ * have items.
  */
 class Scenegraph : public QObject
 {

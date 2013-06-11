@@ -10,6 +10,12 @@ import TimeLine 1.0
 import ProcessingDialog 1.0
 import ConfigView 1.0
 
+/**
+  This is the Core component, it is responsible for creating and managing
+  all other components, provides menu and toolbar.
+*/
+
+
 ApplicationWindow {
     id: g_rootWindow
 

@@ -9,6 +9,15 @@
 #include <VideoHelper.hpp>
 
 namespace arstudio {
+/**
+ * Video processing pipeline
+ *
+ * This class is instantinied by ItemWindow QML component and is
+ * responsible
+ * for non-blocking processing of video files in a separate thread
+ * using AlgoPipeline. It provides a convenient QML interface to both
+ * VideoHelper and AlgoPipeline.
+ */
 class VideoPipeline : public QObject
 {
   Q_OBJECT

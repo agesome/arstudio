@@ -4,6 +4,9 @@
 #include <opencv2/highgui/highgui.hpp>
 
 namespace arstudio {
+/**
+ * Unified interface for accessing video files
+ */
 class IVideoSource
 {
 public:

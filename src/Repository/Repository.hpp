@@ -67,6 +67,16 @@ private:
  * and a string identifier. This list is exposed to views as a list model
  */
 
+/**
+ * Sequence storage class
+ *
+ * This class serves as storage for all data processed by Logger. At the
+ * same
+ * time, Repository provieds a QAbstractListModel reflecting it's contents
+ * to be viewed by the user. Sequences are stored in RepositoryNodes for
+ * convenient access from views.
+ */
+
 class Repository : public QAbstractListModel
 {
   Q_OBJECT
@@ -91,7 +101,20 @@ public:
   int rowCount (const QModelIndex & parent = QModelIndex ()) const;
   Q_INVOKABLE arstudio::RepositoryNode * get (int index);
 
+  /**
+   * Add a sequence to the list by it's Sequence::ptr
+   * @param sequence the pointer
+   * @param node_name name under which to store the sequence
+   */
   void add_sequence (Sequence::ptr sequence, const QString & node_name);
+  /**
+   * Add an item to already stored sequence, or create a sequence for this
+   * item if there isn't one yet.
+   * @param item the item to store
+   * @param frame the frame to which this item corresponds
+   * @param type type of the item
+   * @param node_name name of the destination sequence
+   */
   void add_item (Item::ptr item, unsigned int frame, Sequence::ItemType type,
                  const QString & node_name);
 protected:

@@ -24,6 +24,16 @@
 #include <Camera.hpp>
 
 namespace arstudio {
+/**
+ * ItemWindow manager
+ *
+ * This class is responsible for managing the contents of QML component
+ * ItemWindow. Doing that in QML was slow, hence this class was created.
+ *
+ * IWManager listens to Scenegraph associated with the ItemWindow and
+ * displays it's contents on the associated Viewport
+ */
+
 class IWManager : public QObject
 {
   Q_OBJECT

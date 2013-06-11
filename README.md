@@ -15,7 +15,6 @@ Repository structure
 Dependencies
 =====
 
-- Boost (system, filesystem)
 - Qt 5 (Widgets, OpenGL, Declarative for branch qtquick)
 - OpenCV
 

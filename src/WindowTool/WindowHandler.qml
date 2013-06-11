@@ -3,6 +3,12 @@ import QtQuick.Controls 1.0
 
 import arstudio 1.0
 
+/**
+  This component is responsible for displaying a list of sequences
+  available for display in an ItemWindow and for adding user-selected
+  sequences to ItemWindow's Scenegraph.
+*/
+
 Item {
     property bool exclusiveMode: false
     property int exclusiveTo: 0

@@ -5,6 +5,11 @@ import QtQuick.Layouts 1.0
 
 import arstudio 1.0
 
+/**
+  This component implements the processing dialog, allowing the user
+  to select processing options, begin processing and monitor it's progress
+*/
+
 Window {
     property url sourceFile
     property alias video_helper: vh

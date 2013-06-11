@@ -7,6 +7,10 @@ import Qt3D.Shapes 2.0
 
 import arstudio 1.0
 
+/**
+  This component implements a window for displaying items from Repository.
+*/
+
 Window {
     property IWManager manager: manager
 
