@@ -97,8 +97,8 @@ VideoPipeline::processing_thread (void)
       ap->process_frame (m_video_helper->image (),
                          m_video_helper->depth_map ());
 
-      m_processing_progress = frames_processed / to_process;
       frames_processed++;
+      m_processing_progress = frames_processed / to_process;
       progress_changed ();
 
       if (frames_processed == to_process)

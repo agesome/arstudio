@@ -11,6 +11,19 @@ import arstudio 1.0
 ColumnLayout {
     Layout.fillHeight: false
 
+    Timer {
+        id: timer
+        interval: 350
+        triggeredOnStart: true
+        repeat: true
+        onTriggered: {
+            slider.value++
+            if (slider.value === slider.maximumValue)
+                running = false
+        }
+    }
+
+
     Binding {
         target: slider
         property: "value"
@@ -43,15 +56,25 @@ ColumnLayout {
     RowLayout {
         Button {
             text: "<"
+            onClicked: {
+                if (slider.value - 1 >= slider.minimumValue)
+                    slider.value--
+            }
         }
         Button {
             text: ">"
+            onClicked: {
+                if (slider.value + 1 <= slider.maximumValue)
+                    slider.value++
+            }
         }
         Button {
             text: "Play"
+            onClicked: timer.start()
         }
         Button {
             text: "Stop"
+            onClicked: timer.stop()
         }
         SpinBox {
             id: spinbox

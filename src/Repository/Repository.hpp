@@ -61,12 +61,6 @@ private:
   Sequence::ptr m_data;
 };
 
-/*
- * This class stores a list of Nodes, each containig a pointer to a
- * sequence
- * and a string identifier. This list is exposed to views as a list model
- */
-
 /**
  * Sequence storage class
  *
