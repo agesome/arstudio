@@ -239,20 +239,20 @@ IWManager::reset_camera (const IWManager::Axis axis)
     {
     case X:
       m_camera->setEye (QVector3D (10, 0, 0));
-      m_camera->setCenter (QVector3D (0, 0, 0));
       m_camera->setUpVector (QVector3D (0, 1, 0));
       break;
 
     case Y:
       m_camera->setEye (QVector3D (0, 10, 0));
-      m_camera->setCenter (QVector3D (0, 0, 0));
-      m_camera->setUpVector (QVector3D (1, 0, 0));
+      m_camera->setUpVector (QVector3D (0, 0, -1));
+      break;
 
     case Z:
       m_camera->setEye (QVector3D (0, 0, 10));
-      m_camera->setCenter (QVector3D (0, 0, 0));
       m_camera->setUpVector (QVector3D (0, 1, 0));
+      break;
     }
+  m_camera->setCenter (QVector3D (0, 0, 0));
   m_camera->setNearPlane (5.0);
 }
 
