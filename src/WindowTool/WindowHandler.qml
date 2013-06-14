@@ -1,5 +1,6 @@
 import QtQuick 2.1
 import QtQuick.Controls 1.0
+import QtQuick.Layouts 1.0
 
 import arstudio 1.0
 
@@ -9,12 +10,14 @@ import arstudio 1.0
   sequences to ItemWindow's Scenegraph.
 */
 
-Item {
+ColumnLayout {
     property bool exclusiveMode: false
     property int exclusiveTo: 0
 
     TableView {
-        anchors.fill: parent
+
+        Layout.fillHeight: true
+        Layout.fillWidth: true
         model: g_Repository
 
 
@@ -69,8 +72,16 @@ Item {
 
     ItemWindow {
         id: itemwindow
-        width: 400
-        height: 400
+        followCamera: camera_view.checked
+        width: 500
+        height: 500
     }
+
+    CheckBox {
+        id: camera_view
+        text: "Camera view"
+        checked: false
+    }
+
 }
 

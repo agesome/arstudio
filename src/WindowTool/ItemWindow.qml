@@ -13,6 +13,7 @@ import arstudio 1.0
 
 Window {
     property IWManager manager: manager
+    property bool followCamera: false
 
     title: "Item Window"
     flags: Qt.Tool | Qt.SubWindow
@@ -28,13 +29,20 @@ Window {
             id: viewport
             anchors.fill: parent
             light: Light { ambientColor: "#ffffff" }
-            Axis { objectName: "vp_axis" }
+            camera: Camera { id: camera }
+            focus: true
+            fovzoom: true
+            picking: true
+            Keys.onPressed: manager.viewport_keypress (event.key)
 
+            Axis { objectName: "vp_ignore_axis" }
         }
     }
 
     IWManager {
         id: manager
         viewport: viewport
+        camera: camera
+        camera_view: followCamera
     }
 }
