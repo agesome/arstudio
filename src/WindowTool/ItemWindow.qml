@@ -12,7 +12,7 @@ import arstudio 1.0
 */
 
 Window {
-    property alias skyboxSource: skybox.source
+    property url skyboxSource
     property IWManager manager
     property bool cameraView: false
 
@@ -45,7 +45,10 @@ Window {
 
             Axis { objectName: "vp_ignore_axis" }
 
-            Skybox { id: skybox }
+            Skybox {
+                id: skybox
+                source: skyboxSource
+            }
         }
     }
 }

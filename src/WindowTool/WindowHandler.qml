@@ -16,6 +16,7 @@ ColumnLayout {
 
     readonly property ItemWindow window: itemwindow
     property alias cameraView: itemwindow.cameraView
+    property alias skyboxSource: itemwindow.skyboxSource
 
     ItemWindow {
         id: itemwindow

@@ -38,12 +38,6 @@ public:
 
   int min_frame (void);
   int max_frame (void);
-  /**
-   * This method checks if there are items in any
-   * Scenegraph for provided frame to avoid useless
-   * signal_frame() calls
-   */
-  Q_INVOKABLE bool valid_frame (int frame);
   Q_INVOKABLE void signal_frame (int frame);
 private:
   ScenegraphAggregator (void);

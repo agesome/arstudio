@@ -65,16 +65,11 @@ ScenegraphAggregator::remove_scenegraph (Scenegraph * scenegraph)
   rebuild_frames ();
 }
 
-bool
-ScenegraphAggregator::valid_frame (int frame)
-{
-  return m_frames.contains (frame);
-}
-
 void
 ScenegraphAggregator::signal_frame (int frame)
 {
-  change_frame (frame);
+  if (m_frames.contains (frame))
+    change_frame (frame);
 }
 
 void

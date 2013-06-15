@@ -47,10 +47,7 @@ ColumnLayout {
         stepSize: 1.0
         tickmarksEnabled: true
 
-        onValueChanged: {
-            if (SAggregator.valid_frame (value))
-                SAggregator.signal_frame (value)
-        }
+        onValueChanged: SAggregator.signal_frame(value)
     }
 
     RowLayout {

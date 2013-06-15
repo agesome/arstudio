@@ -41,7 +41,7 @@ ColumnLayout {
         selectMultiple: false
         selectExisting: true
         selectFolder: true
-        onAccepted: currentWindow.skyboxSource = fileUrl
+        onAccepted: currentHandler.skyboxSource = fileUrl
         visible: false
     }
 }
