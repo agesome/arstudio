@@ -20,12 +20,18 @@ ApplicationWindow {
     id: g_rootWindow
 
     title: "CVAR Studio"
-    width: 500
-    height: 450
+    minimumWidth: 600
+    minimumHeight: 550
 
     visibility: menubar.goFullscreen ? Window.FullScreen : Window.Windowed
 
-    menuBar: MainMenuBar { id: menubar }
+    menuBar: MainMenuBar {
+        id: menubar
+        onLoadSkybox: windowtool.skyboxSelector.visible = true
+        haveCurrentWindow: (windowtool.currentHandler !== null)
+        onCameraViewChanged: windowtool.currentHandler.cameraView = cameraView
+    }
+
     toolBar: MainToolBar {}
 
     SystemPalette { id: g_systemPalette }
@@ -37,7 +43,13 @@ ApplicationWindow {
         }
 
         RowLayout {
-            WindowTool { visible: menubar.showWindowTool }
+            WindowTool {
+                id: windowtool
+                visible: menubar.showWindowTool
+                onCurrentHandlerChanged: {
+                    menubar.cameraView = currentHandler.cameraView
+                }
+            }
             ConfigView {}
         }
 

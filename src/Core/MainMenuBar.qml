@@ -5,7 +5,12 @@ MenuBar {
     property alias showWindowTool: show_window_tool.checked
     property alias showTimeline: show_timeline.checked
     property alias goFullscreen: go_fullscreen.checked
+    property alias cameraView: camera_view.checked
+
     property bool showOpenFile: false
+    property bool haveCurrentWindow: false
+
+    signal loadSkybox ()
 
     Menu {
         title: "File"
@@ -21,6 +26,14 @@ MenuBar {
             text: "Record"
             shortcut: "Ctrl+R"
             iconName: "document-new"
+        }
+
+        MenuItem {
+            text: "Load Skybox"
+            shortcut: "Ctrl+Shift+S"
+            iconName: "folder"
+            enabled: haveCurrentWindow
+            onTriggered: loadSkybox()
         }
 
         MenuSeparator {}
@@ -58,6 +71,17 @@ MenuBar {
             checkable: true
             checked: false
             shortcut: "Ctrl+Shift+F11"
+        }
+
+        MenuSeparator {}
+
+        MenuItem {
+            id: camera_view
+            text: "Enable camera view"
+            checkable: true
+            checked: cameraView
+            enabled: haveCurrentWindow
+            shortcut: "Crtl+Shift+C"
         }
     }
 }

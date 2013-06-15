@@ -14,6 +14,15 @@ ColumnLayout {
     property bool exclusiveMode: false
     property int exclusiveTo: 0
 
+    readonly property ItemWindow window: itemwindow
+    property alias cameraView: itemwindow.cameraView
+
+    ItemWindow {
+        id: itemwindow
+        width: 500
+        height: 500
+    }
+
     TableView {
 
         Layout.fillHeight: true
@@ -69,19 +78,5 @@ ColumnLayout {
             }
         }
     }
-
-    ItemWindow {
-        id: itemwindow
-        followCamera: camera_view.checked
-        width: 500
-        height: 500
-    }
-
-    CheckBox {
-        id: camera_view
-        text: "Camera view"
-        checked: false
-    }
-
 }
 

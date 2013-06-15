@@ -25,11 +25,11 @@ public:
   IAbstractAlgorithm (as::Config * config)
   {
     this->config = config;
-  };
+  }
   virtual
   ~IAbstractAlgorithm (void)
   {
-  };
+  }
 
   /**
    *      Must initialize all algorithm-specific structures and

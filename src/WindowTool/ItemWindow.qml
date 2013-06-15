@@ -12,12 +12,20 @@ import arstudio 1.0
 */
 
 Window {
-    property IWManager manager: manager
-    property bool followCamera: false
+    property alias skyboxSource: skybox.source
+    property IWManager manager
+    property bool cameraView: false
 
     title: "Item Window"
     flags: Qt.Tool | Qt.SubWindow
     Component.onCompleted: show()
+
+    manager: IWManager {
+        id: iwmanager
+        viewport: viewport
+        camera: camera
+        camera_view: cameraView
+    }
 
     // have to contain the Viewport in a rectangle,
     // or navigation does not work
@@ -36,13 +44,8 @@ Window {
             Keys.onPressed: manager.viewport_keypress (event.key)
 
             Axis { objectName: "vp_ignore_axis" }
-        }
-    }
 
-    IWManager {
-        id: manager
-        viewport: viewport
-        camera: camera
-        camera_view: followCamera
+            Skybox { id: skybox }
+        }
     }
 }

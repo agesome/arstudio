@@ -81,6 +81,7 @@ IWManager::camera_view ()
 void
 IWManager::set_camera_view (bool v)
 {
+  Q_ASSERT (m_camera);
   m_camera_view = v;
   if (!v)
     reset_camera ();
