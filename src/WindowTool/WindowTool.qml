@@ -9,9 +9,10 @@ import QtQuick.Dialogs 1.0
 */
 
 ColumnLayout {
-    Layout.fillWidth: false
-    property FileDialog skyboxSelector: skybox_selector
+    readonly property FileDialog skyboxSelector: skybox_selector
     property WindowHandler currentHandler: null
+
+    Layout.fillWidth: false
 
     TabView {
         id: tabview

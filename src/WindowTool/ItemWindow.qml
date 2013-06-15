@@ -13,14 +13,14 @@ import arstudio 1.0
 
 Window {
     property url skyboxSource
-    property IWManager manager
+    readonly property IWManager manager: iwmanager
     property bool cameraView: false
 
     title: "Item Window"
     flags: Qt.Tool | Qt.SubWindow
     Component.onCompleted: show()
 
-    manager: IWManager {
+    IWManager {
         id: iwmanager
         viewport: viewport
         camera: camera
