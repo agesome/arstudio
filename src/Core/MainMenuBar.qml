@@ -4,6 +4,7 @@ import QtQuick.Controls 1.0
 MenuBar {
     property alias showWindowTool: show_window_tool.checked
     property alias showTimeline: show_timeline.checked
+    property alias showConfig: show_config.checked
     property alias goFullscreen: go_fullscreen.checked
     property alias cameraView: camera_view.checked
 
@@ -63,7 +64,7 @@ MenuBar {
             text: "Show Window Tool"
             checkable: true
             checked: true
-            shortcut: "Ctrl+Shift+W"
+            shortcut: "Ctrl+Alt+W"
         }
 
         MenuItem {
@@ -71,7 +72,15 @@ MenuBar {
             text: "Show Timeline"
             checkable: true
             checked: true
-            shortcut: "Ctrl+Shift+T"
+            shortcut: "Ctrl+Alt+T"
+        }
+
+        MenuItem {
+            id: show_config
+            text: "Show Config"
+            checkable: true
+            checked: true
+            shortcut: "Ctrl+Alt+C"
         }
 
         MenuItem {

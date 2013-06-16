@@ -13,8 +13,6 @@ ColumnLayout {
     property alias selectModel: model_selector.visible
     property WindowHandler currentHandler: null
 
-    Layout.fillWidth: false
-
     TabView {
         id: tabview
         Layout.fillHeight: true

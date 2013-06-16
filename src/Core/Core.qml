@@ -52,7 +52,7 @@ ApplicationWindow {
                     menubar.cameraView = currentHandler.cameraView
                 }
             }
-            ConfigView {}
+            ConfigView { visible: menubar.showConfig }
         }
 
         TimeLine {
