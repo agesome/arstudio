@@ -22,6 +22,7 @@ set(arstudio_sources
     ${CMAKE_BINARY_DIR}/main.cpp
     IWManager/private/IWManager.cpp
     VideoPipeline/private/VideoPipeline.cpp
+    CustomModel/private/CustomModel.cpp
 
     Core/Core.qml
     Core/MainMenuBar.qml
@@ -58,6 +59,7 @@ set(arstudio_headers
     VideoHelper/VideoSourceKinvideo.hpp
     IWManager/IWManager.hpp
     VideoPipeline/VideoPipeline.hpp
+    CustomModel/CustomModel.hpp
 )
 
 set(arstudio_moc_headers
@@ -69,6 +71,7 @@ set(arstudio_moc_headers
     VideoPipeline/VideoPipeline.hpp
     VideoHelper/VideoHelper.hpp
     Config/Config.hpp
+    CustomModel/CustomModel.hpp
 )
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -110,6 +113,7 @@ include_directories(
   VideoHelper
   IWManager
   VideoPipeline
+  CustomModel
   ../submodules/KinectRecorder/src/
   ${OpenCV_INCLUDE_DIRS}
   ${Qt5Quick_INCLUDE_DIRS}

@@ -28,6 +28,7 @@
 #include <Scenegraph.hpp>
 #include <ScenegraphAggregator.hpp>
 #include <Camera.hpp>
+#include <CustomModel.hpp>
 
 namespace arstudio {
 /**
@@ -51,6 +52,9 @@ class IWManager : public QObject
               NOTIFY camera_view_position_changed)
   Q_PROPERTY (qreal camera_view_distance READ camera_view_distance
               WRITE set_camera_view_distance)
+
+  Q_PROPERTY (arstudio::CustomModel * selected_model READ selected_model
+              NOTIFY selected_model_changed)
 public:
   IWManager (QObject * parent = nullptr);
 
@@ -66,6 +70,8 @@ public:
   void set_camera_view_distance (qreal);
 
   arstudio::Scenegraph * scenegraph (void);
+
+  arstudio::CustomModel * selected_model (void);
 private:
   enum Axis { X, Y, Z };
 
@@ -90,12 +96,19 @@ private:
   bool                m_camera_view;
   qreal               m_camera_view_distance;
   QVector3D           m_camera_view_position;
+
+  QList<CustomModel *>           m_custom_models;
+  QList<CustomModel *>::Iterator m_modellist_iterator;
+  CustomModel                  * m_selected_model;
 public slots:
   void paint_frame (int);
   void repaint_frame (void);
-  void viewport_keypress (const Qt::Key);
+  void viewport_keypress (const int);
+  void add_custom_model (const QUrl &);
+  void select_next_model ();
 signals:
   void camera_view_position_changed (void);
+  void selected_model_changed (void);
 };
 }
 

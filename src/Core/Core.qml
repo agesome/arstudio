@@ -27,7 +27,9 @@ ApplicationWindow {
 
     menuBar: MainMenuBar {
         id: menubar
-        onLoadSkybox: windowtool.skyboxSelector.visible = true
+        onLoadSkybox: windowtool.selectSkybox = true
+        onLoadModel: windowtool.selectModel = true
+
         haveCurrentWindow: (windowtool.currentHandler !== null)
         onCameraViewChanged: windowtool.currentHandler.cameraView = cameraView
     }

@@ -11,6 +11,7 @@ MenuBar {
     property bool haveCurrentWindow: false
 
     signal loadSkybox ()
+    signal loadModel ()
 
     Menu {
         title: "File"
@@ -34,6 +35,14 @@ MenuBar {
             iconName: "folder"
             enabled: haveCurrentWindow
             onTriggered: loadSkybox()
+        }
+
+        MenuItem {
+            text: "Load custom model"
+            shortcut: "Ctrl+Shift+M"
+            iconName: "package-x-generic"
+            enabled: haveCurrentWindow
+            onTriggered: loadModel()
         }
 
         MenuSeparator {}
@@ -81,7 +90,7 @@ MenuBar {
             checkable: true
             checked: cameraView
             enabled: haveCurrentWindow
-            shortcut: "Crtl+Shift+C"
+            shortcut: "Ctrl+Shift+C"
         }
     }
 }

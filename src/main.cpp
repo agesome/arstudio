@@ -12,6 +12,7 @@
 #include <VideoHelper.hpp>
 #include <VideoPipeline.hpp>
 #include <Config.hpp>
+#include <CustomModel.hpp>
 
 namespace as = arstudio;
 
@@ -47,6 +48,7 @@ main (int argc, char * argv[])
   qmlRegisterType<as::VideoHelper> ("arstudio", 1, 0, "VideoHelper");
   qmlRegisterType<as::VideoPipeline> ("arstudio", 1, 0, "VideoPipeline");
   qmlRegisterType<as::Config> ("arstudio", 1, 0, "Config");
+  qmlRegisterType<as::CustomModel> ("arstudio", 1, 0, "CustomModel");
 
   qmlRegisterSingletonType<as::ScenegraphAggregator>
     ("arstudio", 1, 0, "SAggregator",

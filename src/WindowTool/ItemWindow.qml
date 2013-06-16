@@ -15,10 +15,21 @@ Window {
     property url skyboxSource
     readonly property IWManager manager: iwmanager
     property bool cameraView: false
+    property Item3D selectedModel: manager.selected_model
 
     title: "Item Window"
     flags: Qt.Tool | Qt.SubWindow
     Component.onCompleted: show()
+
+    Effect {
+        id: selected_effect
+        color: "#ffffff"
+    }
+
+    Action {
+        shortcut: "Ctrl+M"
+        onTriggered: iwmanager.select_next_model()
+    }
 
     IWManager {
         id: iwmanager
@@ -43,7 +54,7 @@ Window {
             picking: true
             Keys.onPressed: manager.viewport_keypress (event.key)
 
-            Axis { objectName: "vp_ignore_axis" }
+            Axis { objectName: "vp_ignore" }
 
             Skybox {
                 id: skybox

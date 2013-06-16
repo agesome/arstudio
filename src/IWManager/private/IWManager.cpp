@@ -13,7 +13,9 @@ IWManager::IWManager (QObject * parent)
   m_scenegraph (Scenegraph::make ()),
   m_current_frame (1),
   m_camera_view (false),
-  m_camera_view_distance (1.5)
+  m_camera_view_distance (1.5),
+  m_modellist_iterator (m_custom_models.begin ()),
+  m_selected_model (nullptr)
 {
   ScenegraphAggregator * sa = ScenegraphAggregator::instance ();
 
@@ -116,6 +118,37 @@ IWManager::scenegraph (void)
   QQmlEngine::setObjectOwnership (p, QQmlEngine::CppOwnership);
 
   return p;
+}
+
+arstudio::CustomModel *
+IWManager::selected_model ()
+{
+  return m_selected_model;
+}
+
+void
+IWManager::add_custom_model (const QUrl & url)
+{
+  CustomModel * m = new CustomModel (m_viewport);
+
+  m->set_source (url);
+  m->setParentItem (m_viewport);
+  m_viewport->update ();
+
+  m_custom_models.append (m);
+  m_selected_model = m;
+  selected_model_changed ();
+}
+
+void
+IWManager::select_next_model ()
+{
+  if (m_selected_model == m_custom_models.last ())
+    m_modellist_iterator = m_custom_models.begin ();
+  else
+    m_modellist_iterator++;
+  m_selected_model = *m_modellist_iterator;
+  selected_model_changed ();
 }
 
 void
@@ -239,17 +272,17 @@ IWManager::reset_camera (const IWManager::Axis axis)
   switch (axis)
     {
     case X:
-      m_camera->setEye (QVector3D (10, 0, 0));
+      m_camera->setEye (QVector3D (8, 0, 0));
       m_camera->setUpVector (QVector3D (0, 1, 0));
       break;
 
     case Y:
-      m_camera->setEye (QVector3D (0, 10, 0));
+      m_camera->setEye (QVector3D (0, 8, 0));
       m_camera->setUpVector (QVector3D (0, 0, -1));
       break;
 
     case Z:
-      m_camera->setEye (QVector3D (0, 0, 10));
+      m_camera->setEye (QVector3D (0, 0, 8));
       m_camera->setUpVector (QVector3D (0, 1, 0));
       break;
     }
@@ -269,7 +302,7 @@ IWManager::paint_frame (int frame)
   QList<QQuickItem *> ci = m_viewport->childItems ();
   for (QQuickItem * i : ci)
     {
-      if (i->objectName ().contains ("vp_ignore"))
+      if (i->objectName () == "vp_ignore")
         continue;
       delete i;
     }
@@ -310,7 +343,7 @@ IWManager::repaint_frame (void)
 }
 
 void
-IWManager::viewport_keypress (const Qt::Key k)
+IWManager::viewport_keypress (const int k)
 {
   switch (k)
     {

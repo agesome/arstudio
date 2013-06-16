@@ -9,7 +9,8 @@ import QtQuick.Dialogs 1.0
 */
 
 ColumnLayout {
-    readonly property FileDialog skyboxSelector: skybox_selector
+    property alias selectSkybox: skybox_selector.visible
+    property alias selectModel: model_selector.visible
     property WindowHandler currentHandler: null
 
     Layout.fillWidth: false
@@ -43,6 +44,16 @@ ColumnLayout {
         selectExisting: true
         selectFolder: true
         onAccepted: currentHandler.skyboxSource = fileUrl
+        visible: false
+    }
+
+    FileDialog {
+        id: model_selector
+        title: "Please choose a file"
+        selectMultiple: false
+        selectExisting: true
+        selectFolder: false
+        onAccepted: currentHandler.window.manager.add_custom_model(fileUrl)
         visible: false
     }
 }
