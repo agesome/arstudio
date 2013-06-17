@@ -5,6 +5,7 @@ IWManager::IWManager (QObject * parent)
   : QObject (parent),
   m_viewport (nullptr),
   m_camera (nullptr),
+  m_window (nullptr),
   m_cylinder_mesh (nullptr),
   m_camera_effect (nullptr),
   m_sphere_mesh (nullptr),

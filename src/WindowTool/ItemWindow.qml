@@ -12,10 +12,13 @@ import arstudio 1.0
 */
 
 Window {
+    id: window
+
     property url skyboxSource
     readonly property IWManager manager: iwmanager
     property bool cameraView: false
     property Item3D selectedModel: manager.selected_model
+    property Skybox skybox: null
 
     title: "Item Window"
     flags: Qt.Tool | Qt.SubWindow
@@ -33,10 +36,13 @@ Window {
 
     IWManager {
         id: iwmanager
+        window: window
         viewport: viewport
         camera: camera
         camera_view: cameraView
     }
+
+    onSkyboxSourceChanged: skybox.visible = true
 
     // have to contain the Viewport in a rectangle,
     // or navigation does not work
@@ -61,6 +67,7 @@ Window {
             Skybox {
                 id: skybox
                 source: skyboxSource
+                visible: false
             }
         }
     }
