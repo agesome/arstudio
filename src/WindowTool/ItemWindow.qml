@@ -47,10 +47,12 @@ Window {
         Viewport {
             id: viewport
             anchors.fill: parent
-            light: Light { ambientColor: "#ffffff" }
+            light: Light {
+                ambientColor: "#ffffff"
+                position: Qt.vector3d(0, 0, 0)
+            }
             camera: Camera { id: camera }
             focus: true
-            fovzoom: true
             picking: true
             Keys.onPressed: manager.viewport_keypress (event.key)
 

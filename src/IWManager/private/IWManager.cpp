@@ -13,7 +13,7 @@ IWManager::IWManager (QObject * parent)
   m_scenegraph (Scenegraph::make ()),
   m_current_frame (1),
   m_camera_view (false),
-  m_camera_view_distance (1.5),
+  m_camera_view_distance (2.0),
   m_modellist_iterator (m_custom_models.begin ()),
   m_selected_model (nullptr)
 {
@@ -87,9 +87,6 @@ IWManager::set_camera_view (bool v)
   m_camera_view = v;
   if (!v)
     reset_camera ();
-  else
-    // set near plane for close object viewing
-    m_camera->setNearPlane (1.0);
   repaint_frame ();
 }
 
@@ -264,6 +261,8 @@ IWManager::look_from_camera (Camera::ptr c)
   m_camera->setCenter (m_camera_view_position);
   m_camera->setEye (c->position ());
   m_camera->setUpVector (view_plane.normal ());
+  // have to set this every frame, in case user has reset the camera
+  m_camera->setNearPlane (1.0);
 }
 
 void
