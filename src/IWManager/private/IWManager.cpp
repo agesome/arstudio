@@ -36,6 +36,8 @@ void
 IWManager::set_viewport (QQuickPaintedItem * viewport)
 {
   m_viewport = viewport;
+  viewport->setAntialiasing (true);
+
   // always created here, can check just one
   if (m_camera_effect)
     {
@@ -63,7 +65,7 @@ IWManager::set_viewport (QQuickPaintedItem * viewport)
 }
 
 QGLCamera *
-IWManager::camera ()
+IWManager::camera (void)
 {
   return m_camera;
 }
@@ -75,7 +77,7 @@ IWManager::set_camera (QGLCamera * camera)
 }
 
 bool
-IWManager::camera_view ()
+IWManager::camera_view (void)
 {
   return m_camera_view;
 }
@@ -91,13 +93,13 @@ IWManager::set_camera_view (bool v)
 }
 
 QVector3D
-IWManager::camera_view_position ()
+IWManager::camera_view_position (void)
 {
   return m_camera_view_position;
 }
 
 qreal
-IWManager::camera_view_distance ()
+IWManager::camera_view_distance (void)
 {
   return m_camera_view_distance;
 }
@@ -118,9 +120,21 @@ IWManager::scenegraph (void)
 }
 
 arstudio::CustomModel *
-IWManager::selected_model ()
+IWManager::selected_model (void)
 {
   return m_selected_model;
+}
+
+QQuickWindow *
+IWManager::window (void)
+{
+  return m_window;
+}
+
+void
+IWManager::set_window (QQuickWindow * w)
+{
+  m_window = w;
 }
 
 void
@@ -138,7 +152,7 @@ IWManager::add_custom_model (const QUrl & url)
 }
 
 void
-IWManager::select_next_model ()
+IWManager::select_next_model (void)
 {
   if (m_selected_model == m_custom_models.last ())
     m_modellist_iterator = m_custom_models.begin ();

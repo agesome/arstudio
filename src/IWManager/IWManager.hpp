@@ -6,6 +6,8 @@
 #include <QQuickPaintedItem>
 #include <QQmlEngine>
 #include <QKeyEvent>
+#include <QQuickWindow>
+#include <QSurfaceFormat>
 
 #ifndef QT_NO_DEBUG
 #include <QDateTime>
@@ -47,6 +49,7 @@ class IWManager : public QObject
   Q_PROPERTY (arstudio::Scenegraph * scenegraph READ scenegraph)
   Q_PROPERTY (QQuickPaintedItem * viewport READ viewport WRITE set_viewport)
   Q_PROPERTY (QGLCamera * camera READ camera WRITE set_camera)
+  Q_PROPERTY (QQuickWindow * window READ window WRITE set_window)
   Q_PROPERTY (bool camera_view READ camera_view WRITE set_camera_view)
   Q_PROPERTY (QVector3D camera_view_position READ camera_view_position
               NOTIFY camera_view_position_changed)
@@ -72,6 +75,9 @@ public:
   arstudio::Scenegraph * scenegraph (void);
 
   arstudio::CustomModel * selected_model (void);
+
+  QQuickWindow * window (void);
+  void set_window (QQuickWindow *);
 private:
   enum Axis { X, Y, Z };
 
@@ -86,6 +92,7 @@ private:
 
   QQuickPaintedItem * m_viewport;
   QGLCamera         * m_camera;
+  QQuickWindow      * m_window;
   CylinderMesh      * m_cylinder_mesh;
   QQuickEffect      * m_camera_effect;
   SphereMesh        * m_sphere_mesh;
@@ -105,7 +112,7 @@ public slots:
   void repaint_frame (void);
   void viewport_keypress (const int);
   void add_custom_model (const QUrl &);
-  void select_next_model ();
+  void select_next_model (void);
 signals:
   void camera_view_position_changed (void);
   void selected_model_changed (void);
