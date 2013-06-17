@@ -84,6 +84,9 @@ find_package(Qt5Concurrent REQUIRED)
 find_package(Qt53DQuick REQUIRED)
 find_package(OpenCV REQUIRED)
 
+message(STATUS "Qt version: ${Qt5Core_VERSION_STRING}")
+message(STATUS "OpenCV version: ${OpenCV_VERSION}")
+
 add_definitions(${Qt5Quick_DEFINITIONS})
 add_definitions(${Qt53DQuick_DEFINITIONS})
 add_definitions(${Qt5Concurrent_DEFINITIONS})
@@ -94,9 +97,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Concurrent_EXECUTABLE_COMPILE_FLAGS
 
 if(CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS_DEBUG
-			"${CMAKE_CXX_FLAGS} -std=c++11 -O0 -ggdb3 -Wall -Wextra -pedantic")
+                       "${CMAKE_CXX_FLAGS} -std=c++11 -O0 -ggdb3 -Wall -Wextra -pedantic")
   set(CMAKE_CXX_FLAGS_RELEASE
-			"${CMAKE_CXX_FLAGS} -std=c++11 -O3 -march=native -mtune=native -DQT_NO_DEBUG")
+                       "${CMAKE_CXX_FLAGS} -std=c++11 -O3 -march=native -mtune=native -DQT_NO_DEBUG")
 endif()
 
 add_subdirectory(../submodules/KinectRecorder/src/
@@ -185,6 +188,7 @@ add_executable(arstudio
 )
 
 qt5_use_modules(arstudio Quick 3DQuick Concurrent)
+
 target_link_libraries(
   arstudio
 
