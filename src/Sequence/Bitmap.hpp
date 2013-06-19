@@ -1,8 +1,8 @@
 #ifndef BITMAP_HPP
 #define BITMAP_HPP
 
+#include <QImage>
 #include <opencv2/highgui/highgui.hpp>
-
 #include <Sequence.hpp>
 
 namespace arstudio {
@@ -10,13 +10,26 @@ class Bitmap : public Item
 {
 public:
   typedef QSharedPointer<Bitmap> ptr;
-  static ptr
-  make (void)
+
+  Bitmap (QImage p)
   {
-    return ptr (new Bitmap);
+    m_image = p.copy ();
   }
 
-  cv::Mat m_bitmap;
+  static ptr
+  make (QImage & p)
+  {
+    return ptr (new Bitmap (p));
+  }
+
+  QImage
+  get (void)
+  {
+    return m_image;
+  }
+
+private:
+  QImage m_image;
 };
 }
 

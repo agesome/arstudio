@@ -16,7 +16,8 @@ IWManager::IWManager (QObject * parent)
   m_camera_view (false),
   m_camera_view_distance (2.0),
   m_modellist_iterator (m_custom_models.begin ()),
-  m_selected_model (nullptr)
+  m_selected_model (nullptr),
+  m_bitmap_view (nullptr)
 {
   ScenegraphAggregator * sa = ScenegraphAggregator::instance ();
 
@@ -136,6 +137,18 @@ void
 IWManager::set_window (QQuickWindow * w)
 {
   m_window = w;
+}
+
+BitmapView *
+IWManager::bitmap_view ()
+{
+  return m_bitmap_view;
+}
+
+void
+IWManager::set_bitmap_view (BitmapView * v)
+{
+  m_bitmap_view = v;
 }
 
 void
@@ -305,8 +318,29 @@ IWManager::reset_camera (const IWManager::Axis axis)
 }
 
 void
+IWManager::paint_bitmap ()
+{
+  Sequence * s = m_scenegraph->sequences ().first ();
+  Item::ptr  i = s->item_for_frame (m_current_frame);
+
+  Q_ASSERT (s->type () == Sequence::BITMAP);
+  Bitmap::ptr bmp = i.dynamicCast<Bitmap> ();
+  Q_ASSERT (bmp);
+  m_bitmap_view->update_image (bmp->get ());
+}
+
+void
 IWManager::paint_frame (int frame)
 {
+  m_current_frame = frame;
+
+  // special case, viewport is not shown
+  if (m_scenegraph->locked_to () == Scenegraph::BITMAP)
+    {
+      paint_bitmap ();
+      return;
+    }
+
   Q_ASSERT (m_viewport);
   Camera::ptr eye_camera;
 
@@ -343,7 +377,6 @@ IWManager::paint_frame (int frame)
     look_from_camera (eye_camera);
 
   m_viewport->update ();
-  m_current_frame = frame;
 #ifndef QT_NO_DEBUG
   time = QDateTime::currentMSecsSinceEpoch () - time;
   qDebug () << QString ("paint_frame() done in %0 msec").arg (time);

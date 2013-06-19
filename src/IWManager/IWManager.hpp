@@ -7,7 +7,6 @@
 #include <QQmlEngine>
 #include <QKeyEvent>
 #include <QQuickWindow>
-#include <QSurfaceFormat>
 
 #ifndef QT_NO_DEBUG
 #include <QDateTime>
@@ -31,6 +30,8 @@
 #include <ScenegraphAggregator.hpp>
 #include <Camera.hpp>
 #include <CustomModel.hpp>
+#include <Bitmap.hpp>
+#include <BitmapView.hpp>
 
 namespace arstudio {
 /**
@@ -46,16 +47,19 @@ namespace arstudio {
 class IWManager : public QObject
 {
   Q_OBJECT
-  Q_PROPERTY (arstudio::Scenegraph * scenegraph READ scenegraph)
+  Q_PROPERTY (arstudio::Scenegraph * scenegraph READ scenegraph CONSTANT)
+
   Q_PROPERTY (QQuickPaintedItem * viewport READ viewport WRITE set_viewport)
   Q_PROPERTY (QGLCamera * camera READ camera WRITE set_camera)
   Q_PROPERTY (QQuickWindow * window READ window WRITE set_window)
-  Q_PROPERTY (bool camera_view READ camera_view WRITE set_camera_view)
-  Q_PROPERTY (QVector3D camera_view_position READ camera_view_position
-              NOTIFY camera_view_position_changed)
+  Q_PROPERTY (arstudio::BitmapView * bitmap_view READ bitmap_view
+              WRITE set_bitmap_view)
   Q_PROPERTY (qreal camera_view_distance READ camera_view_distance
               WRITE set_camera_view_distance)
 
+  Q_PROPERTY (bool camera_view READ camera_view WRITE set_camera_view)
+  Q_PROPERTY (QVector3D camera_view_position READ camera_view_position
+              NOTIFY camera_view_position_changed)
   Q_PROPERTY (arstudio::CustomModel * selected_model READ selected_model
               NOTIFY selected_model_changed)
 public:
@@ -78,6 +82,9 @@ public:
 
   QQuickWindow * window (void);
   void set_window (QQuickWindow *);
+
+  BitmapView * bitmap_view (void);
+  void set_bitmap_view (BitmapView *);
 private:
   enum Axis { X, Y, Z };
 
@@ -89,6 +96,7 @@ private:
   void look_from_camera (Camera::ptr);
 
   inline void reset_camera (const Axis axis = Z);
+  inline void paint_bitmap (void);
 
   QQuickPaintedItem * m_viewport;
   QGLCamera         * m_camera;
@@ -107,6 +115,8 @@ private:
   QList<CustomModel *>           m_custom_models;
   QList<CustomModel *>::Iterator m_modellist_iterator;
   CustomModel                  * m_selected_model;
+
+  BitmapView * m_bitmap_view;
 public slots:
   void paint_frame (int);
   void repaint_frame (void);

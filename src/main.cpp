@@ -13,6 +13,7 @@
 #include <VideoPipeline.hpp>
 #include <Config.hpp>
 #include <CustomModel.hpp>
+#include <BitmapView.hpp>
 
 namespace as = arstudio;
 
@@ -34,7 +35,9 @@ main (int argc, char * argv[])
 
   QObject::connect (repository.data (),
                     &as::Repository::removing_all_nodes,
-                    []() { as::Logger::instance ().reset_frame_counter (); });
+                    []() {
+                      as::Logger::instance ().reset_frame_counter ();
+                    });
 
   QApplication::setApplicationName ("arstudio");
   QApplication::setOrganizationName ("CVTeam");
@@ -49,6 +52,7 @@ main (int argc, char * argv[])
   qmlRegisterType<as::VideoPipeline> ("arstudio", 1, 0, "VideoPipeline");
   qmlRegisterType<as::Config> ("arstudio", 1, 0, "Config");
   qmlRegisterType<as::CustomModel> ("arstudio", 1, 0, "CustomModel");
+  qmlRegisterType<as::BitmapView> ("arstudio", 1, 0, "BitmapView");
 
   qmlRegisterSingletonType<as::ScenegraphAggregator>
     ("arstudio", 1, 0, "SAggregator",
@@ -69,7 +73,9 @@ main (int argc, char * argv[])
     {
       QQuickWindow * window = qobject_cast<QQuickWindow *> (window_object);
       QObject::connect (&qml_engine, &QQmlEngine::quit,
-                        [&application]() { application.exit (EXIT_SUCCESS); });
+                        [&application]() {
+                          application.exit (EXIT_SUCCESS);
+                        });
       window->show ();
       return application.exec ();
     }

@@ -86,10 +86,17 @@ Logger::log_camera (const cv::Point3d & pos, const cv::Point3d & r)
 void
 Logger::log_image (const cv::Mat & m, const std::string & name)
 {
-  Bitmap::ptr map = Bitmap::make ();
+  QImage      img;
+  cv::Mat     rgb;
+  Bitmap::ptr bitmap;
 
-  map->m_bitmap = m;
-  m_repository->add_item (map, m_frame, Sequence::BITMAP,
+  cv::cvtColor (m, rgb, CV_BGR2RGB);
+
+  img =
+    QImage (rgb.data, rgb.cols, rgb.rows, rgb.step, QImage::Format_RGB888);
+  bitmap = Bitmap::make (img);
+
+  m_repository->add_item (bitmap, m_frame, Sequence::BITMAP,
                           QString::fromStdString (name));
 }
 

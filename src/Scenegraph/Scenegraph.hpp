@@ -22,7 +22,12 @@ namespace arstudio {
 class Scenegraph : public QObject
 {
   Q_OBJECT
+  Q_ENUMS (LockType)
+  // FIXME: segfault when setting type to LockType
+  Q_PROPERTY (int locked_to READ locked_to
+              NOTIFY locked_to_changed)
 public:
+  enum LockType { NORMAL, BITMAP, NOT_LOCKED };
   typedef QSharedPointer<Scenegraph> ptr;
   typedef QList<Sequence *> SequenceList;
 
@@ -39,11 +44,15 @@ public:
   const SequenceList sequences (void);
   const QSet<int> frames (void);
   void clear (void);
+
+  int locked_to (void) const;
 private:
   SequenceList m_sequences;
   QSet<int>    m_frames;
+  LockType     m_locked_to;
 signals:
   void sequences_changed (void);
+  void locked_to_changed (void);
 private slots:
   void rebuild_frames (void);
 };

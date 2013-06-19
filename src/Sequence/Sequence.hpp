@@ -34,7 +34,7 @@ class Sequence : public QObject
 public:
   typedef QSharedPointer<Sequence> ptr;
   typedef std::map <unsigned int, Item::ptr> frame_map;
-  enum ItemType { CAMERA, PCLOUD, POINT3D, BITMAP };
+  enum ItemType { CAMERA, PCLOUD, POINT3D, BITMAP, INVALID };
 
   Sequence (ItemType, QObject * parent = nullptr);
   Sequence (QObject * parent = nullptr);

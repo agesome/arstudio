@@ -11,10 +11,11 @@ import arstudio 1.0
 */
 
 ColumnLayout {
-    property bool exclusiveMode: false
-    property int exclusiveTo: 0
+    property int exclusiveSequenceIndex: 0
 
     readonly property ItemWindow window: itemwindow
+    readonly property Scenegraph scenegraph: itemwindow.manager.scenegraph
+
     property alias cameraView: itemwindow.cameraView
     property alias skyboxSource: itemwindow.skyboxSource
 
@@ -39,17 +40,23 @@ ColumnLayout {
     }
 
     TableView {
-
         Layout.fillHeight: true
         Layout.fillWidth: true
         model: g_Repository
 
-
         itemDelegate: CheckBox {
             anchors.fill: parent
             text: styleData.value
-            enabled: !(exclusiveMode && (styleData.row !== exclusiveTo))
+            enabled: {
+                var type = model.get(styleData.row).type
+                if (scenegraph.locked_to === Scenegraph.BITMAP)
+                    return (type === Sequence.BITMAP)
+                            && (styleData.row === exclusiveSequenceIndex)
+                else if (scenegraph.locked_to === Scenegraph.NORMAL)
+                    return type !== Sequence.BITMAP
 
+                return true
+            }
             MouseArea {
                 anchors.fill: parent
                 onClicked: checked = !checked
@@ -63,15 +70,8 @@ ColumnLayout {
                 else
                     scenegraph.remove_sequence(sequence)
 
-                var type = model.get(styleData.row).type
-                if (type === Sequence.BITMAP) {
-                    if (checked) {
-                        exclusiveMode = true
-                        exclusiveTo = styleData.row
-                    }
-                    else
-                        exclusiveMode = false
-                }
+                if (scenegraph.locked_to === Scenegraph.BITMAP)
+                    exclusiveSequenceIndex = styleData.row
             }
         }
 

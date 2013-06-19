@@ -38,6 +38,7 @@ Window {
         id: iwmanager
         window: window
         viewport: viewport
+        bitmap_view: bitmapView
         camera: camera
         camera_view: cameraView
     }
@@ -50,8 +51,15 @@ Window {
         anchors.fill: parent
         color: "black"
 
+        BitmapView {
+            id: bitmapView
+            anchors.fill: parent
+            visible: (manager.scenegraph.locked_to === Scenegraph.BITMAP)
+        }
+
         Viewport {
             id: viewport
+            visible: !bitmapView.visible
             anchors.fill: parent
             light: Light {
                 ambientColor: "#ffffff"
