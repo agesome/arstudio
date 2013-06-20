@@ -20,18 +20,13 @@ ApplicationWindow {
     id: g_rootWindow
 
     title: "CVAR Studio"
-    minimumWidth: 600
-    minimumHeight: 550
-
-    visibility: menubar.goFullscreen ? Window.FullScreen : Window.Windowed
+    minimumWidth: 500
+    minimumHeight: 500
 
     menuBar: MainMenuBar {
         id: menubar
-        onLoadSkybox: windowtool.selectSkybox = true
-        onLoadModel: windowtool.selectModel = true
 
-        haveCurrentWindow: (windowtool.currentHandler !== null)
-        onCameraViewChanged: windowtool.currentHandler.cameraView = cameraView
+        onShowOpenFile: openFileDialog.visible = true
     }
 
     toolBar: MainToolBar {}
@@ -44,37 +39,36 @@ ApplicationWindow {
             margins: 5
         }
 
-        RowLayout {
-            WindowTool {
-                id: windowtool
-                visible: menubar.showWindowTool
-                onCurrentHandlerChanged: {
-                    menubar.cameraView = currentHandler.cameraView
-                }
+        TabView {
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+
+            Tab {
+                title: "Window Management"
+                WindowTool {}
             }
-            ConfigView { visible: menubar.showConfig }
+            Tab {
+                title: "Algorithm Settings"
+                ConfigView {}
+            }
         }
 
         TimeLine {
-            visible: menubar.showTimeline
             Layout.alignment: Qt.AlignBottom
         }
     }
 
     FileDialog {
-        id: fd
+        id: openFileDialog
         title: "Please choose a file"
         selectMultiple: false
         selectExisting: true
         selectFolder: false
         nameFilters: [ "Kinvideo files(*.kinvideo)", "All files(*.*)" ]
-        onAccepted: menubar.showOpenFile = false
-        onRejected: menubar.showOpenFile = false
-        visible: menubar.showOpenFile
     }
 
     ProcessingDialog {
         id: processing_dialog
-        sourceFile: fd.fileUrl
+        sourceFile: openFileDialog.fileUrl
     }
 }

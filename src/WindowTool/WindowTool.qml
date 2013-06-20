@@ -9,34 +9,45 @@ import QtQuick.Dialogs 1.0
 */
 
 ColumnLayout {
-    property alias selectSkybox: skybox_selector.visible
-    property alias selectModel: model_selector.visible
     property WindowHandler currentHandler: null
 
     TabView {
-        id: tabview
+        id: windowList
+        tabPosition: Qt.BottomEdge
         Layout.fillHeight: true
         Layout.fillWidth: true
         onCurrentIndexChanged: currentHandler = getTab(currentIndex).item
     }
 
-    Button {
-        Layout.fillWidth: true
-        text: "Add window"
-        onClicked: {
-            var tab = tabview.addTab(tabview.count + 1, windowHandler)
-            if (currentHandler == null)
-                currentHandler = tab.item
+    RowLayout {
+        Button {
+            Layout.fillWidth: true
+            text: "Add window"
+            onClicked: {
+                var title = windowName.text
+                var tab = windowList.addTab(windowName.text,
+                                            windowHandler)
+                tab.active = true
+                tab.item.title = title
+                if (currentHandler == null)
+                    currentHandler = tab.item
+            }
+            Component {
+                id: windowHandler
+                WindowHandler {
+                    onLoadSkybox: skyboxSelector.visible = true
+                    onLoadModel: modelSelector.visible = true
+                }
+            }
         }
-
-        Component {
-            id: windowHandler
-            WindowHandler {}
+        TextField {
+            id: windowName
+            text: "Window #" + windowList.count
         }
     }
 
     FileDialog {
-        id: skybox_selector
+        id: skyboxSelector
         title: "Please choose a folder"
         selectMultiple: false
         selectExisting: true
@@ -46,12 +57,13 @@ ColumnLayout {
     }
 
     FileDialog {
-        id: model_selector
+        id: modelSelector
         title: "Please choose a file"
         selectMultiple: false
         selectExisting: true
         selectFolder: false
-        onAccepted: currentHandler.window.manager.add_custom_model(fileUrl)
+        onAccepted: currentHandler.windowManager.add_custom_model(fileUrl)
+        nameFilters: [ "3D Models(*.obj *.3ds)" ]
         visible: false
     }
 }

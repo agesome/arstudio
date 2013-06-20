@@ -3,6 +3,7 @@ import QtQuick.Controls 1.0
 import QtQuick.Layouts 1.0
 
 import arstudio 1.0
+import WindowTool 1.0
 
 /**
   This component is responsible for displaying a list of sequences
@@ -10,36 +11,32 @@ import arstudio 1.0
   sequences to ItemWindow's Scenegraph.
 */
 
-ColumnLayout {
-    property int exclusiveSequenceIndex: 0
+RowLayout {
+    id: root
+    property int exclusiveSequenceIndex
 
-    readonly property ItemWindow window: itemwindow
-    readonly property Scenegraph scenegraph: itemwindow.manager.scenegraph
+    readonly property ItemWindow window: itemWindow
+    property Scenegraph scenegraph: itemWindow.manager.scenegraph
+    property alias windowManager: itemWindow.manager
+    property alias title: itemWindow.title
 
-    property alias cameraView: itemwindow.cameraView
-    property alias skyboxSource: itemwindow.skyboxSource
+    property alias skyboxSource: itemWindow.skyboxSource
 
-    property vector3d modelPosition
-    property vector3d modelRotation
-
-    onModelPositionChanged: itemwindow.selectedModel.position = modelPosition
-    onModelRotationChanged: itemwindow.selectedModel.rotation = modelRotation
+    signal loadSkybox(Item handler)
+    signal loadModel()
 
     ItemWindow {
-        id: itemwindow
-        width: 500
-        height: 500
-        onSelectedModelChanged: {
-            modelPositionX.value = selectedModel.position.x
-            modelPositionY.value = selectedModel.position.y
-            modelPositionZ.value = selectedModel.position.z
-            modelRotationX.value = selectedModel.rotation.x
-            modelRotationY.value = selectedModel.rotation.y
-            modelRotationZ.value = selectedModel.rotation.z
+        id: itemWindow
+        width: 450
+        height: 450
+        onModelChanged: {
+            modelControls.reset(position, rotation)
         }
+        cameraView: cameraView.checked
     }
 
     TableView {
+        id: tableView
         Layout.fillHeight: true
         Layout.fillWidth: true
         model: g_Repository
@@ -48,6 +45,9 @@ ColumnLayout {
             anchors.fill: parent
             text: styleData.value
             enabled: {
+                if (!scenegraph)
+                    return false
+
                 var type = model.get(styleData.row).type
                 if (scenegraph.locked_to === Scenegraph.BITMAP)
                     return (type === Sequence.BITMAP)
@@ -57,14 +57,9 @@ ColumnLayout {
 
                 return true
             }
-            MouseArea {
-                anchors.fill: parent
-                onClicked: checked = !checked
-            }
 
             onCheckedChanged: {
                 var sequence = model.get(styleData.row).ptr
-                var scenegraph = itemwindow.manager.scenegraph
                 if (checked)
                     scenegraph.add_sequence(sequence)
                 else
@@ -73,12 +68,17 @@ ColumnLayout {
                 if (scenegraph.locked_to === Scenegraph.BITMAP)
                     exclusiveSequenceIndex = styleData.row
             }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: checked = !checked
+            }
         }
 
         TableViewColumn {
             role: "name"
             title: "Repository"
-            width: parent.width - 20
+            width: tableView.width - 20
         }
 
         TableViewColumn {
@@ -94,80 +94,30 @@ ColumnLayout {
         }
     }
 
-    GroupBox {
-        title: "Model controls"
-        flat: false
-        enabled: itemwindow.manager.selected_model
+    ColumnLayout {
+        Layout.alignment: Qt.AlignTop
+        ModelControls {
+            id: modelControls
+            enabled: windowManager.selected_model
+            onPositionChanged: window.selectedModel.position = position
+            onRotationChanged: window.selectedModel.rotation = rotation
+            Layout.alignment: Qt.AlignTop
+        }
+
         RowLayout {
-
-            ColumnLayout {
-
-                SpinBox {
-                    Layout.minimumWidth: 95
-                    Layout.fillHeight: true
-                    id: modelPositionX
-                    prefix: "X: "
-                    stepSize: 0.01
-                    decimals: 3
-                    minimumValue: -10
-                    maximumValue: 10
-                    onValueChanged: modelPosition.x = value
-                }
-                SpinBox {
-                    Layout.minimumWidth: 95
-                    Layout.fillHeight: true
-                    id: modelPositionY
-                    prefix: "Y: "
-                    stepSize: 0.01
-                    decimals: 3
-                    minimumValue: -10
-                    maximumValue: 10
-                    onValueChanged: modelPosition.y = value
-                }
-                SpinBox {
-                    Layout.minimumWidth: 95
-                    Layout.fillHeight: true
-                    id: modelPositionZ
-                    prefix: "Z: "
-                    stepSize: 0.01
-                    decimals: 3
-                    minimumValue: -10
-                    maximumValue: 10
-                    onValueChanged: modelPosition.z = value
-                }
+            Button {
+                text: "Load Skybox"
+                onClicked: loadSkybox(root)
             }
-            ColumnLayout {
-                SpinBox {
-                    Layout.minimumWidth: 95
-                    Layout.fillHeight: true
-                    id: modelRotationX
-                    prefix: "α: "
-                    stepSize: 1
-                    minimumValue: -180
-                    maximumValue: 180
-                    onValueChanged: modelRotation.x = value
-                }
-                SpinBox {
-                    Layout.minimumWidth: 95
-                    Layout.fillHeight: true
-                    id: modelRotationY
-                    prefix: "β: "
-                    stepSize: 1
-                    minimumValue: -180
-                    maximumValue: 180
-                    onValueChanged: modelRotation.y = value
-                }
-                SpinBox {
-                    Layout.minimumWidth: 95
-                    Layout.fillHeight: true
-                    id: modelRotationZ
-                    prefix: "γ: "
-                    stepSize: 1
-                    minimumValue: -180
-                    maximumValue: 180
-                    onValueChanged: modelRotation.z = value
-                }
+            Button {
+                text: "Load Model"
+                onClicked: loadModel()
             }
+        }
+        CheckBox {
+            id: cameraView
+            text: "Camera View"
+            checked: false
         }
     }
 }

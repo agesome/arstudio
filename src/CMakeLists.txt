@@ -33,6 +33,7 @@ set(arstudio_sources
     WindowTool/ItemWindow.qml
     WindowTool/WindowHandler.qml
     WindowTool/WindowTool.qml
+    WindowTool/ModelControls.qml
     ProcessingDialog/ProcessingDialog.qml
     ConfigView/ConfigView.qml
 )

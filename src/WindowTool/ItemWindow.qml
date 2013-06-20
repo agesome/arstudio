@@ -15,14 +15,17 @@ Window {
     id: window
 
     property url skyboxSource
-    readonly property IWManager manager: iwmanager
     property bool cameraView: false
-    property Item3D selectedModel: manager.selected_model
-    property Skybox skybox: null
 
-    title: "Item Window"
-    flags: Qt.Tool | Qt.SubWindow
+    readonly property IWManager manager: iwmanager
+    property alias selectedModel: iwmanager.selected_model
+
+    signal modelChanged(vector3d position, vector3d rotation)
+
+    flags: Qt.Tool
     Component.onCompleted: show()
+
+    onSkyboxSourceChanged: skybox.visible = true
 
     Effect {
         id: selected_effect
@@ -31,7 +34,10 @@ Window {
 
     Action {
         shortcut: "Ctrl+M"
-        onTriggered: iwmanager.select_next_model()
+        onTriggered: {
+            iwmanager.select_next_model()
+            modelChanged(selectedModel.position, selectedModel.rotation)
+        }
     }
 
     IWManager {
@@ -41,9 +47,9 @@ Window {
         bitmap_view: bitmapView
         camera: camera
         camera_view: cameraView
+        onSelected_modelChanged: modelChanged(selectedModel.position,
+                                              selectedModel.rotation)
     }
-
-    onSkyboxSourceChanged: skybox.visible = true
 
     // have to contain the Viewport in a rectangle,
     // or navigation does not work
