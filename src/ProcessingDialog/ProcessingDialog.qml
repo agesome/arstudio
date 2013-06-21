@@ -36,6 +36,7 @@ Window {
             text: "Process whole file"
             exclusiveGroup: frameChoiceGroup
             checked: true
+            enabled: !vp.running
         }
 
         RowLayout {
@@ -43,6 +44,7 @@ Window {
                 id: selectFrames
                 text: "Select frames: "
                 exclusiveGroup: frameChoiceGroup
+                enabled: !vp.running
             }
 
             SpinBox {
@@ -73,19 +75,21 @@ Window {
             Button {
                 text: "Stop"
                 onClicked: vp.running = false
+                enabled: vp.running
             }
         }
 
         RowLayout {
             Button {
                 text: "Process"
-                enabled: vh.status
+                enabled: vh.status && !vp.running
                 onClicked: vp.running = true
             }
 
             Button {
                 text: "Cancel"
                 onClicked: vp.running = false
+                enabled: !vp.running
             }
         }
     }
