@@ -12,13 +12,27 @@ VideoSourceOpenCV::init (void)
   current_frame   = 0;
   m_video_capture = QSharedPointer <cv::VideoCapture> (new cv::VideoCapture ());
 
+#ifdef HAVE_LIBMAGIC
+  magic_t cookie = magic_open (MAGIC_MIME_TYPE);
+  magic_load (cookie, NULL);
+  QString d (magic_file (cookie, m_source_file.toLocal8Bit ().data ()));
+  if (!d.contains ("video"))
+    {
+      qWarning () << "libmagic suggests that" << m_source_file
+                  << "is not a video file; will not proceed";
+      return false;
+    }
+  magic_close (cookie);
+#endif
+
   if (!m_video_capture->open (m_source_file.toStdString ()))
     return false;
 
   // try reading from opened file, see if we fail
   if (!m_video_capture->grab ())
     {
-      qWarning () << "VideoCapture failed to grab frame; bad file format?";
+      qWarning () << "VideoCaptureOpenCV failed to grab frame; "
+                     "bad file format?";
       return false;
     }
 

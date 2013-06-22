@@ -1,6 +1,10 @@
 #ifndef VIDEOSOURCEOPENCV_HPP
 #define VIDEOSOURCEOPENCV_HPP
 
+#ifdef HAVE_LIBMAGIC
+#include <magic.h>
+#endif
+
 #include <QString>
 #include <QSharedPointer>
 #include <QtDebug>

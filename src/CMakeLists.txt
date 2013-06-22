@@ -88,6 +88,16 @@ find_package(Qt5Concurrent REQUIRED)
 find_package(Qt53DQuick REQUIRED)
 find_package(OpenCV REQUIRED)
 
+find_library(MAGIC magic)
+
+if(MAGIC STREQUAL "LIBMAGIC-NOTFOUND")
+    message(STATUS "libmagic not found")
+else()
+    message(STATUS "libmagic found")
+    add_definitions(-DHAVE_LIBMAGIC)
+    set(LIBMAGIC ${MAGIC})
+endif()
+
 message(STATUS "Qt version: ${Qt5Core_VERSION_STRING}")
 message(STATUS "OpenCV version: ${OpenCV_VERSION}")
 
@@ -148,26 +158,26 @@ if(NOT ALGORITHMS)
     "List algorithms to build" FORCE)
 endif()
 
-message (STATUS "Algorithms to build: " ${ALGORITHMS})
+message(STATUS "Algorithms to build: " ${ALGORITHMS})
 
-if (NOT ALGORITHMS STREQUAL "")
-  message (STATUS "Will now add algorithms")
+if(NOT ALGORITHMS STREQUAL "")
+  message(STATUS "Will now add algorithms")
   foreach(subdir ${ALGORITHMS})
-    message (STATUS "  Adding algorithm "${subdir})
+    message(STATUS "  Adding algorithm "${subdir})
     include_directories(algorithms/${subdir}/)
     if (IS_DIRECTORY algorithms/${subdir}/include/)
       include_directories(algorithms/${subdir}/include/)
-    endif ()
+    endif()
     if (IS_DIRECTORY algorithms/${subdir}/src/)
       include_directories(algorithms/${subdir}/src/)
       add_subdirectory(algorithms/${subdir}/src/
           ${CMAKE_CURRENT_BINARY_DIR}/${subdir} EXCLUDE_FROM_ALL)
-    else ()
+    else()
       add_subdirectory(algorithms/${subdir}/
           ${CMAKE_CURRENT_BINARY_DIR}/${subdir} EXCLUDE_FROM_ALL)
-    endif ()
+    endif()
   endforeach()
-endif ()
+endif()
 
 set(CONFIG_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/algorithms/")
 set(QML_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/")
@@ -199,4 +209,5 @@ target_link_libraries(
 
   ${GLOBAL_LIBS}
   ${OpenCV_LIBS}
+  ${LIBMAGIC}
 )
