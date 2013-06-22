@@ -2,13 +2,14 @@
 
 namespace arstudio {
 Sequence::Sequence (ItemType type, QObject * parent)
-  : QObject (parent)
+  : QObject (parent),
+  m_type (type)
 {
-  m_type = type;
 }
 
 Sequence::Sequence (QObject * parent)
-  : QObject (parent)
+  : QObject (parent),
+  m_type (INVALID)
 {
 }
 
@@ -19,25 +20,25 @@ Sequence::make (ItemType type)
 }
 
 void
-Sequence::add_item (unsigned int frame, Item::ptr item_ptr)
+Sequence::add_item (int frame, const Item::ptr item_ptr)
 {
   m_items.insert (std::make_pair (frame, item_ptr));
   items_changed ();
 }
 
 const Sequence::frame_map &
-Sequence::items (void)
+Sequence::items ()
 {
   return m_items;
 }
 
 Sequence::ItemType
-Sequence::type (void)
+Sequence::type ()
 {
   return m_type;
 }
 
-Item::ptr
+const Item::ptr
 Sequence::item_for_frame (int frame)
 {
   auto it = m_items.find (frame);

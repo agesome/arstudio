@@ -9,7 +9,7 @@ Repository::Repository (QObject * parent)
            Qt::QueuedConnection);
 }
 
-Repository::~Repository (void)
+Repository::~Repository ()
 {
   clear ();
 }
@@ -23,10 +23,31 @@ Repository::roleNames () const
   return roles;
 }
 
+int
+Repository::nodelist_count (NodeListProperty * list)
+{
+  Repository * r = qobject_cast<Repository *> (list->object);
+
+  Q_ASSERT (r);
+  return r->m_nodes.count ();
+}
+
+RepositoryNode *
+Repository::nodelist_at (NodeListProperty * list, int i)
+{
+  Repository * r = qobject_cast<Repository *> (list->object);
+
+  Q_ASSERT (r);
+
+  RepositoryNode * n = r->m_nodes.at (i);
+  QQmlEngine::setObjectOwnership (n, QQmlEngine::CppOwnership);
+  return n;
+}
+
 QVariant
 Repository::data (const QModelIndex & index, int role) const
 {
-  const RepositoryNode * n = m_nodes[index.row ()];
+  RepositoryNode * n = m_nodes[index.row ()];
 
   if (role == NameRole)
     return n->name ();
@@ -41,19 +62,8 @@ Repository::rowCount (const QModelIndex &) const
   return m_nodes.count ();
 }
 
-arstudio::RepositoryNode *
-Repository::get (int index)
-{
-  RepositoryNode * ptr = m_nodes[index];
-  // the RepositoryNode is managed by Repository. forbid QML from owning
-  // it, to prevent grabage collection
-  QQmlEngine::setObjectOwnership (ptr, QQmlEngine::CppOwnership);
-
-  return ptr;
-}
-
 void
-Repository::add_item (Item::ptr item, unsigned int frame,
+Repository::add_item (const Item::ptr item, int frame,
                       Sequence::ItemType type,
                       const QString & node_name)
 {
@@ -62,7 +72,7 @@ Repository::add_item (Item::ptr item, unsigned int frame,
   for (RepositoryNode * m : m_nodes)
     if (m->name () == node_name)
       {
-        s = m->ptr ();
+        s = m->shared_ptr ();
         break;
       }
   if (!s)
@@ -73,6 +83,15 @@ Repository::add_item (Item::ptr item, unsigned int frame,
   s->add_item (frame, item);
 }
 
+Repository::NodeListProperty
+Repository::nodes ()
+{
+  return NodeListProperty (this,
+                           nullptr,
+                           this->nodelist_count,
+                           this->nodelist_at);
+}
+
 void
 Repository::append_node_slot (RepositoryNode * node)
 {
@@ -81,10 +100,11 @@ Repository::append_node_slot (RepositoryNode * node)
   beginInsertRows (QModelIndex (), position, position);
   m_nodes << node;
   endInsertRows ();
+  nodes_changed ();
 }
 
 void
-Repository::clear (void)
+Repository::clear ()
 {
   removing_all_nodes ();
   beginResetModel ();

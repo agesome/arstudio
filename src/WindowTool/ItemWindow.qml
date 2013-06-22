@@ -68,8 +68,10 @@ Window {
             visible: !bitmapView.visible
             anchors.fill: parent
             light: Light {
+                position: Qt.vector3d(.1, .1, .1)
                 ambientColor: "#ffffff"
-                position: Qt.vector3d(0, 0, 0)
+                diffuseColor: "#ffffff"
+
             }
             camera: Camera { id: camera }
             focus: true

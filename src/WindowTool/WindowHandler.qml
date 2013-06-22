@@ -48,7 +48,7 @@ RowLayout {
                 if (!scenegraph)
                     return false
 
-                var type = model.get(styleData.row).type
+                var type = model.nodes[styleData.row].type
                 if (scenegraph.locked_to === Scenegraph.BITMAP)
                     return (type === Sequence.BITMAP)
                             && (styleData.row === exclusiveSequenceIndex)
@@ -59,7 +59,7 @@ RowLayout {
             }
 
             onCheckedChanged: {
-                var sequence = model.get(styleData.row).ptr
+                var sequence = model.nodes[styleData.row].ptr
                 if (checked)
                     scenegraph.add_sequence(sequence)
                 else

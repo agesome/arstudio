@@ -6,6 +6,7 @@
 #include <QString>
 #include <QAbstractListModel>
 #include <QQmlEngine>
+#include <QQmlListProperty>
 
 #include <Sequence.hpp>
 
@@ -18,7 +19,7 @@ class RepositoryNode : public QObject
 {
   Q_OBJECT
   Q_PROPERTY (arstudio::Sequence::ItemType type READ type CONSTANT)
-  Q_PROPERTY (arstudio::Sequence * ptr READ data CONSTANT)
+  Q_PROPERTY (arstudio::Sequence * ptr READ ptr CONSTANT)
 public:
   RepositoryNode (const QString & name,
                   Sequence::ptr data,
@@ -30,34 +31,35 @@ public:
   {
   }
 
-  RepositoryNode (void) = default;
+  RepositoryNode () = default;
 
   arstudio::Sequence *
-  data (void) const
+  ptr ()
   {
     return m_data.data ();
   }
 
   Sequence::ptr
-  ptr (void) const
+  shared_ptr ()
   {
     return m_data;
   }
 
-  QString
-  name (void) const
+  const QString
+  name ()
   {
     return m_name;
   }
 
   arstudio::Sequence::ItemType
-  type (void) const
+  type ()
   {
     return m_data->type ();
   }
 
 private:
-  QString       m_name;
+  Q_DISABLE_COPY (RepositoryNode)
+  const QString m_name;
   Sequence::ptr m_data;
 };
 
@@ -74,8 +76,12 @@ private:
 class Repository : public QAbstractListModel
 {
   Q_OBJECT
+  Q_PROPERTY (QQmlListProperty<arstudio::RepositoryNode> nodes READ nodes
+              NOTIFY nodes_changed)
 public:
   typedef QSharedPointer<Repository> ptr;
+  typedef QQmlListProperty<arstudio::RepositoryNode> NodeListProperty;
+
   enum NodeRoles
   {
     NameRole = Qt::UserRole + 1,
@@ -93,14 +99,13 @@ public:
 
   QVariant data (const QModelIndex & index, int role = NameRole) const;
   int rowCount (const QModelIndex & parent = QModelIndex ()) const;
-  Q_INVOKABLE arstudio::RepositoryNode * get (int index);
 
   /**
    * Add a sequence to the list by it's Sequence::ptr
    * @param sequence the pointer
    * @param node_name name under which to store the sequence
    */
-  void add_sequence (Sequence::ptr sequence, const QString & node_name);
+  void add_sequence (const Sequence::ptr sequence, const QString & node_name);
   /**
    * Add an item to already stored sequence, or create a sequence for this
    * item if there isn't one yet.
@@ -109,12 +114,18 @@ public:
    * @param type type of the item
    * @param node_name name of the destination sequence
    */
-  void add_item (Item::ptr item, unsigned int frame, Sequence::ItemType type,
+  void add_item (const Item::ptr item, int frame, Sequence::ItemType type,
                  const QString & node_name);
+
+  NodeListProperty nodes ();
 protected:
   QHash<int, QByteArray> roleNames () const;
 private:
+  Q_DISABLE_COPY (Repository)
   QList<RepositoryNode *> m_nodes;
+
+  static int nodelist_count (NodeListProperty *);
+  static arstudio::RepositoryNode * nodelist_at (NodeListProperty *, int);
 
   /*
    * add_item ends up being called from the processing thread,
@@ -122,12 +133,13 @@ private:
    * in the main thread
    */
 signals:
-  void removing_all_nodes (void);
+  void removing_all_nodes ();
   void append_node_signal (RepositoryNode * node);
+  void nodes_changed ();
 private slots:
   void append_node_slot (RepositoryNode * node);
 public slots:
-  void clear (void);
+  void clear ();
 };
 }
 #endif // REPOSITORY_H

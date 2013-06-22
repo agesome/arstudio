@@ -33,7 +33,7 @@ class Sequence : public QObject
                         Q_ENUMS (ItemType)
 public:
   typedef QSharedPointer<Sequence> ptr;
-  typedef std::map <unsigned int, Item::ptr> frame_map;
+  typedef std::map <int, const Item::ptr> frame_map;
   enum ItemType { CAMERA, PCLOUD, POINT3D, BITMAP, INVALID };
 
   Sequence (ItemType, QObject * parent = nullptr);
@@ -41,12 +41,15 @@ public:
 
   static ptr make (ItemType);
 
-  void add_item (unsigned int, Item::ptr);
-  const frame_map & items (void);
-  ItemType type (void);
-  Item::ptr item_for_frame (int);
+  void add_item (int, const Item::ptr);
+  const Item::ptr item_for_frame (int);
+  const frame_map & items ();
+
+  ItemType type ();
 private:
-  ItemType  m_type; //< type of items stored
+  Q_DISABLE_COPY (Sequence)
+
+  const ItemType m_type; //< type of items stored
   frame_map m_items;  //< map of items to frames
 signals:
   void items_changed ();
