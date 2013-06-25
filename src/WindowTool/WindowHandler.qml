@@ -30,7 +30,7 @@ RowLayout {
         width: 450
         height: 450
         onModelChanged: {
-            modelControls.reset(position, rotation)
+            modelControls.reset(position, rotation, scale)
         }
         cameraView: cameraView.checked
     }
@@ -97,10 +97,12 @@ RowLayout {
     ColumnLayout {
         Layout.alignment: Qt.AlignTop
         ModelControls {
+            Layout.fillWidth: true
             id: modelControls
             enabled: windowManager.selected_model
             onPositionChanged: window.selectedModel.position = position
             onRotationChanged: window.selectedModel.rotation = rotation
+            onScaleChanged: window.selectedModel.scale = scale
             Layout.alignment: Qt.AlignTop
         }
 

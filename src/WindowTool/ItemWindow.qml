@@ -20,7 +20,7 @@ Window {
     readonly property IWManager manager: iwmanager
     property alias selectedModel: iwmanager.selected_model
 
-    signal modelChanged(vector3d position, vector3d rotation)
+    signal modelChanged(vector3d position, vector3d rotation, real scale)
 
     flags: Qt.Tool
     Component.onCompleted: show()
@@ -36,7 +36,8 @@ Window {
         shortcut: "Ctrl+M"
         onTriggered: {
             iwmanager.select_next_model()
-            modelChanged(selectedModel.position, selectedModel.rotation)
+            modelChanged(selectedModel.position, selectedModel.rotation,
+                         selectedModel.scale)
         }
     }
 
@@ -48,7 +49,8 @@ Window {
         camera: camera
         camera_view: cameraView
         onSelected_modelChanged: modelChanged(selectedModel.position,
-                                              selectedModel.rotation)
+                                              selectedModel.rotation,
+                                              selectedModel.scale)
     }
 
     // have to contain the Viewport in a rectangle,
