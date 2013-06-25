@@ -23,12 +23,12 @@ public:
   }
 
   const QVector3D
-  position (void)
+  position ()
   {
     return m_position;
   }
   const QVector3D
-  rotation (void)
+  rotation ()
   {
     return m_rotation;
   }

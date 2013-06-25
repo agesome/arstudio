@@ -50,31 +50,31 @@ VideoHelper::go_to_frame (int frame)
 }
 
 bool
-VideoHelper::next_frame (void)
+VideoHelper::next_frame ()
 {
   return m_video_source->next_frame ();
 }
 
 int
-VideoHelper::frame_count (void)
+VideoHelper::frame_count ()
 {
   return m_frame_count;
 }
 
 const cv::Mat
-VideoHelper::image (void)
+VideoHelper::image ()
 {
   return m_video_source->image ();
 }
 
 const cv::Mat
-VideoHelper::depth_map (void)
+VideoHelper::depth_map ()
 {
   return m_video_source->depth_map ();
 }
 
 const QString
-VideoHelper::file_basename (void)
+VideoHelper::file_basename ()
 {
   return m_file_basename;
 }
@@ -95,7 +95,7 @@ VideoHelper::set_source (const QUrl & url)
 }
 
 bool
-VideoHelper::status (void)
+VideoHelper::status ()
 {
   return m_status;
 }

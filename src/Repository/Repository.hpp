@@ -89,7 +89,7 @@ public:
   };
 
   Repository (QObject * parent = nullptr);
-  ~Repository (void);
+  ~Repository ();
 
   static ptr
   make (QObject * parent = nullptr)

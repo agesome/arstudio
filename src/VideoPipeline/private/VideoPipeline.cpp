@@ -13,7 +13,7 @@ VideoPipeline::VideoPipeline (QObject * parent)
 }
 
 bool
-VideoPipeline::running (void)
+VideoPipeline::running ()
 {
   return m_run_processing;
 }
@@ -28,7 +28,7 @@ VideoPipeline::set_running (bool v)
 }
 
 VideoHelper *
-VideoPipeline::video_helper (void)
+VideoPipeline::video_helper ()
 {
   return m_video_helper;
 }
@@ -52,13 +52,13 @@ VideoPipeline::set_config (Config * ptr)
 }
 
 int
-VideoPipeline::start_frame (void)
+VideoPipeline::start_frame ()
 {
   return m_start_frame;
 }
 
 int
-VideoPipeline::end_frame (void)
+VideoPipeline::end_frame ()
 {
   return m_end_frame;
 }
@@ -76,13 +76,13 @@ VideoPipeline::set_end_frame (int v)
 }
 
 float
-VideoPipeline::progress (void)
+VideoPipeline::progress ()
 {
   return m_processing_progress;
 }
 
 void
-VideoPipeline::processing_thread (void)
+VideoPipeline::processing_thread ()
 {
   AlgoPipeline::ptr ap = AlgoPipeline::make (m_config);
 

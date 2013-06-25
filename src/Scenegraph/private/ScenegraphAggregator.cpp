@@ -4,7 +4,7 @@ namespace arstudio {
 ScenegraphAggregator * ScenegraphAggregator::m_instance =
   new ScenegraphAggregator ();
 
-ScenegraphAggregator::ScenegraphAggregator (void)
+ScenegraphAggregator::ScenegraphAggregator ()
   : QObject (nullptr),
   m_min_frame (1),
   m_max_frame (1)
@@ -12,19 +12,19 @@ ScenegraphAggregator::ScenegraphAggregator (void)
 }
 
 int
-ScenegraphAggregator::min_frame (void)
+ScenegraphAggregator::min_frame ()
 {
   return m_min_frame;
 }
 
 int
-ScenegraphAggregator::max_frame (void)
+ScenegraphAggregator::max_frame ()
 {
   return m_max_frame;
 }
 
 void
-ScenegraphAggregator::rebuild_frames (void)
+ScenegraphAggregator::rebuild_frames ()
 {
   m_frames.clear ();
   for (Scenegraph * s : m_scenegraph_list)
@@ -33,7 +33,7 @@ ScenegraphAggregator::rebuild_frames (void)
 }
 
 void
-ScenegraphAggregator::recalculate_limits (void)
+ScenegraphAggregator::recalculate_limits ()
 {
   if (m_frames.empty ())
     {
@@ -73,7 +73,7 @@ ScenegraphAggregator::signal_frame (int frame)
 }
 
 void
-ScenegraphAggregator::repository_clearing (void)
+ScenegraphAggregator::repository_clearing ()
 {
   for (Scenegraph * s : m_scenegraph_list)
     s->clear ();

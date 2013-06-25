@@ -7,7 +7,7 @@ VideoSourceKinvideo::VideoSourceKinvideo (const QString & file)
 }
 
 bool
-VideoSourceKinvideo::init (void)
+VideoSourceKinvideo::init ()
 {
   m_current_frame = 0;
   m_video_capture = QSharedPointer <FileCapture> (
@@ -21,7 +21,7 @@ VideoSourceKinvideo::init (void)
 }
 
 int
-VideoSourceKinvideo::frame_count (void)
+VideoSourceKinvideo::frame_count ()
 {
   return m_frame_count;
 }
@@ -41,19 +41,19 @@ VideoSourceKinvideo::go_to_frame (int frame)
 }
 
 bool
-VideoSourceKinvideo::next_frame (void)
+VideoSourceKinvideo::next_frame ()
 {
   return go_to_frame (++m_current_frame);
 }
 
 const cv::Mat
-VideoSourceKinvideo::image (void)
+VideoSourceKinvideo::image ()
 {
   return m_current_image;
 }
 
 const cv::Mat
-VideoSourceKinvideo::depth_map (void)
+VideoSourceKinvideo::depth_map ()
 {
   return m_current_dmap;
 }

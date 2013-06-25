@@ -26,7 +26,7 @@ CustomModel::CustomModel (QObject * parent)
 }
 
 QVector3D
-CustomModel::rotation (void)
+CustomModel::rotation ()
 {
   return m_rotation;
 }
@@ -41,7 +41,7 @@ CustomModel::set_rotation (const QVector3D & r)
 }
 
 QQuickEffect *
-CustomModel::effect (void)
+CustomModel::effect ()
 {
   return m_effect;
 }
@@ -70,7 +70,7 @@ CustomModel::set_source (const QUrl & s)
 }
 
 QString
-CustomModel::filename (void)
+CustomModel::filename ()
 {
   return m_filename;
 }

@@ -23,7 +23,7 @@ public:
   }
 
   QImage
-  get (void)
+  get ()
   {
     return m_image;
   }

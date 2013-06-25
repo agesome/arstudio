@@ -21,16 +21,16 @@ class CustomModel : public QQuickItem3D
 public:
   CustomModel (QObject * parent = nullptr);
 
-  QVector3D rotation (void);
+  QVector3D rotation ();
   void set_rotation (const QVector3D &);
-  QQuickEffect * effect (void);
+  QQuickEffect * effect ();
   void set_effect (QQuickEffect *);
 
   void set_source (const QUrl &);
 
-  QString filename (void);
+  QString filename ();
 
-  qreal scale (void);
+  qreal scale ();
   void set_scale (qreal);
 private:
   QVector3D             m_rotation;
@@ -42,7 +42,7 @@ private:
   QGraphicsRotation3D * m_rotation_z;
   QString               m_filename;
 signals:
-  void filename_changed (void);
+  void filename_changed ();
 };
 }
 

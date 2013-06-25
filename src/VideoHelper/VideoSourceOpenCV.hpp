@@ -16,12 +16,12 @@ class VideoSourceOpenCV : public IVideoSource
 {
 public:
   VideoSourceOpenCV (const QString &);
-  bool init (void);
-  int frame_count (void);
+  bool init ();
+  int frame_count ();
   bool go_to_frame (int);
-  bool next_frame (void);
-  const cv::Mat image (void);
-  const cv::Mat depth_map (void);
+  bool next_frame ();
+  const cv::Mat image ();
+  const cv::Mat depth_map ();
 private:
   QSharedPointer<cv::VideoCapture> m_video_capture;
   QString                          m_source_file;

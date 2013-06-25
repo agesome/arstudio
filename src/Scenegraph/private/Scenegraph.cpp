@@ -41,19 +41,19 @@ Scenegraph::remove_sequence (Sequence * seq)
 }
 
 const Scenegraph::SequenceList
-Scenegraph::sequences (void)
+Scenegraph::sequences ()
 {
   return m_sequences;
 }
 
 const QSet<int>
-Scenegraph::frames (void)
+Scenegraph::frames ()
 {
   return m_frames;
 }
 
 void
-Scenegraph::rebuild_frames (void)
+Scenegraph::rebuild_frames ()
 {
   m_frames.clear ();
   for (Sequence * s : m_sequences)
@@ -63,7 +63,7 @@ Scenegraph::rebuild_frames (void)
 }
 
 void
-Scenegraph::clear (void)
+Scenegraph::clear ()
 {
   m_sequences.clear ();
   m_frames.clear ();
@@ -71,7 +71,7 @@ Scenegraph::clear (void)
 }
 
 int
-Scenegraph::locked_to (void) const
+Scenegraph::locked_to () const
 {
   return m_locked_to;
 }

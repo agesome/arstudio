@@ -5,7 +5,7 @@ Repository::ptr Logger::m_repository;
 Logger          Logger::m_instance;
 
 Logger &
-Logger::instance (void)
+Logger::instance ()
 {
   return m_instance;
 }
@@ -17,13 +17,13 @@ Logger::set_repository (Repository::ptr r)
 }
 
 void
-Logger::advance_frame (void)
+Logger::advance_frame ()
 {
   m_frame++;
 }
 
 void
-Logger::reset_frame_counter (void)
+Logger::reset_frame_counter ()
 {
   m_frame = 1;
 }

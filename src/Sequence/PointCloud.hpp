@@ -23,7 +23,7 @@ public:
   }
 
   const QList<QVector3D> &
-  points (void)
+  points ()
   {
     return m_points;
   }

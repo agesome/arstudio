@@ -41,20 +41,20 @@ public:
   Q_INVOKABLE void add_sequence (Sequence *);
   Q_INVOKABLE void remove_sequence (Sequence *);
 
-  const SequenceList sequences (void);
-  const QSet<int> frames (void);
-  void clear (void);
+  const SequenceList sequences ();
+  const QSet<int> frames ();
+  void clear ();
 
-  int locked_to (void) const;
+  int locked_to () const;
 private:
   SequenceList m_sequences;
   QSet<int>    m_frames;
   LockType     m_locked_to;
 signals:
-  void sequences_changed (void);
-  void locked_to_changed (void);
+  void sequences_changed ();
+  void locked_to_changed ();
 private slots:
-  void rebuild_frames (void);
+  void rebuild_frames ();
 };
 }
 

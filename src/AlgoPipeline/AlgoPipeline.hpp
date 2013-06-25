@@ -28,14 +28,12 @@ public:
 
   static ptr make (Config *);
   void process_frame (const cv::Mat &, const cv::Mat &);
-  void create_all (void);
+  void create_all ();
 
 private:
   void create_algorithm (IAbstractAlgorithm *);
 
-  std::list <IAbstractAlgorithm *> algo_list;       // < list of all
-                                                    // created
-                                                    // algorithms
+  std::list <IAbstractAlgorithm *> m_algorithm_list;
 };
 }
 

@@ -67,7 +67,7 @@ IWManager::set_viewport (QQuickPaintedItem * viewport)
 }
 
 QGLCamera *
-IWManager::camera (void)
+IWManager::camera ()
 {
   return m_camera;
 }
@@ -79,7 +79,7 @@ IWManager::set_camera (QGLCamera * camera)
 }
 
 bool
-IWManager::camera_view (void)
+IWManager::camera_view ()
 {
   return m_camera_view;
 }
@@ -95,13 +95,13 @@ IWManager::set_camera_view (bool v)
 }
 
 QVector3D
-IWManager::camera_view_position (void)
+IWManager::camera_view_position ()
 {
   return m_camera_view_position;
 }
 
 qreal
-IWManager::camera_view_distance (void)
+IWManager::camera_view_distance ()
 {
   return m_camera_view_distance;
 }
@@ -122,13 +122,13 @@ IWManager::scenegraph (void)
 }
 
 arstudio::CustomModel *
-IWManager::selected_model (void)
+IWManager::selected_model ()
 {
   return m_selected_model;
 }
 
 QQuickWindow *
-IWManager::window (void)
+IWManager::window ()
 {
   return m_window;
 }
@@ -166,7 +166,7 @@ IWManager::add_custom_model (const QUrl & url)
 }
 
 void
-IWManager::select_next_model (void)
+IWManager::select_next_model ()
 {
   if (m_selected_model == m_custom_models.last ())
     m_modellist_iterator = m_custom_models.begin ();
@@ -384,7 +384,7 @@ IWManager::paint_frame (int frame)
 }
 
 void
-IWManager::repaint_frame (void)
+IWManager::repaint_frame ()
 {
   paint_frame (m_current_frame);
 }

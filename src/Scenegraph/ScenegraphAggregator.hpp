@@ -22,7 +22,7 @@ class ScenegraphAggregator : public QObject
   Q_PROPERTY (int min_frame READ min_frame NOTIFY limits_changed)
 public:
   static ScenegraphAggregator *
-  instance (void)
+  instance ()
   {
     return m_instance;
   }
@@ -36,14 +36,14 @@ public:
   Q_INVOKABLE void add_scenegraph (Scenegraph * scenegraph);
   Q_INVOKABLE void remove_scenegraph (Scenegraph * scenegraph);
 
-  int min_frame (void);
-  int max_frame (void);
+  int min_frame ();
+  int max_frame ();
   Q_INVOKABLE void signal_frame (int frame);
 private:
-  ScenegraphAggregator (void);
+  ScenegraphAggregator ();
 
-  void rebuild_frames (void);
-  void recalculate_limits (void);
+  void rebuild_frames ();
+  void recalculate_limits ();
 
   static ScenegraphAggregator * m_instance;
   QList<Scenegraph *>           m_scenegraph_list;
@@ -51,10 +51,10 @@ private:
   int                           m_min_frame;
   int                           m_max_frame;
 signals:
-  void limits_changed (void);
+  void limits_changed ();
   void change_frame (int);
 public slots:
-  void repository_clearing (void);
+  void repository_clearing ();
 };
 }
 #endif // SCENEGRAPH_AGGREGATOR_HPP

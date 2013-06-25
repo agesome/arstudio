@@ -24,7 +24,7 @@ namespace arstudio {
 class Logger
 {
 public:
-  static Logger & instance (void);
+  static Logger & instance ();
   static void set_repository (const Repository::ptr);
 
   void log_image (const cv::Mat &, const std::string &);
@@ -34,8 +34,8 @@ public:
   void log_camera (const cv::Point3d & pos, const cv::Point3d & r,
                    const std::string & name);
   void log_camera (const cv::Point3d & pos, const cv::Point3d & r);
-  void advance_frame (void);
-  void reset_frame_counter (void);
+  void advance_frame ();
+  void reset_frame_counter ();
 private:
   Logger ()                           = default;
   Logger (const Logger &)             = delete;

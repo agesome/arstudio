@@ -65,20 +65,20 @@ class IWManager : public QObject
 public:
   IWManager (QObject * parent = nullptr);
 
-  QQuickPaintedItem * viewport (void);
+  QQuickPaintedItem * viewport ();
   void set_viewport (QQuickPaintedItem * viewport);
-  QGLCamera * camera (void);
+  QGLCamera * camera ();
   void set_camera (QGLCamera *);
-  bool camera_view (void);
+  bool camera_view ();
   void set_camera_view (bool);
 
-  QVector3D camera_view_position (void);
-  qreal camera_view_distance (void);
+  QVector3D camera_view_position ();
+  qreal camera_view_distance ();
   void set_camera_view_distance (qreal);
 
-  arstudio::Scenegraph * scenegraph (void);
+  arstudio::Scenegraph * scenegraph ();
 
-  arstudio::CustomModel * selected_model (void);
+  arstudio::CustomModel * selected_model ();
 
   QQuickWindow * window (void);
   void set_window (QQuickWindow *);
@@ -96,7 +96,7 @@ private:
   void look_from_camera (Camera::ptr);
 
   inline void reset_camera (const Axis axis = Z);
-  inline void paint_bitmap (void);
+  inline void paint_bitmap ();
 
   QQuickPaintedItem * m_viewport;
   QGLCamera         * m_camera;
@@ -119,13 +119,13 @@ private:
   BitmapView * m_bitmap_view;
 public slots:
   void paint_frame (int);
-  void repaint_frame (void);
+  void repaint_frame ();
   void viewport_keypress (const int);
   void add_custom_model (const QUrl &);
-  void select_next_model (void);
+  void select_next_model ();
 signals:
-  void camera_view_position_changed (void);
-  void selected_model_changed (void);
+  void camera_view_position_changed ();
+  void selected_model_changed ();
 };
 }
 

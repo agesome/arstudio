@@ -28,12 +28,12 @@ public:
   }
 
   const QVector3D
-  position (void)
+  position ()
   {
     return m_position;
   }
   const QColor
-  color (void)
+  color ()
   {
     return m_color;
   }

@@ -27,7 +27,7 @@ public:
     this->config = config;
   }
   virtual
-  ~IAbstractAlgorithm (void)
+  ~IAbstractAlgorithm ()
   {
   }
 
@@ -47,7 +47,7 @@ public:
   /**
    *      Returns an identifier string for this algorithm.
    */
-  virtual const std::string id_string (void) = 0;
+  virtual const std::string id_string () = 0;
 
 protected:
   as::Config * config;

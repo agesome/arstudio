@@ -33,17 +33,17 @@ public:
 
   void set_source (const QUrl &);
   bool load_file (const QString &);
-  const QString file_basename (void);
-  const QUrl source_file (void);
+  const QString file_basename ();
+  const QUrl source_file ();
 
   bool go_to_frame (int);
-  bool next_frame (void);
-  int frame_count (void);
+  bool next_frame ();
+  int frame_count ();
 
-  bool status (void);
+  bool status ();
 
-  const cv::Mat image (void);
-  const cv::Mat depth_map (void);
+  const cv::Mat image ();
+  const cv::Mat depth_map ();
 private:
   QSharedPointer<IVideoSource> m_video_source;
   QString                      m_file_basename;
@@ -51,9 +51,9 @@ private:
   bool                         m_status;
   int                          m_frame_count;
 signals:
-  void basename_changed (void);
-  void frame_count_changed (void);
-  void status_changed (void);
+  void basename_changed ();
+  void frame_count_changed ();
+  void status_changed ();
 };
 }
 #endif // VIDEOHELPER_HPP

@@ -31,19 +31,19 @@ class VideoPipeline : public QObject
 public:
   VideoPipeline (QObject * parent = nullptr);
 
-  bool running (void);
+  bool running ();
   void set_running (bool);
-  VideoHelper * video_helper (void);
+  VideoHelper * video_helper ();
   void set_video_helper (VideoHelper *);
-  Config * config (void);
+  Config * config ();
   void set_config (Config *);
-  int start_frame (void);
-  int end_frame (void);
+  int start_frame ();
+  int end_frame ();
   void set_start_frame (int);
   void set_end_frame (int);
-  float progress (void);
+  float progress ();
 private:
-  void processing_thread (void);
+  void processing_thread ();
 
   bool          m_run_processing;
   VideoHelper * m_video_helper;
@@ -52,8 +52,8 @@ private:
   int           m_end_frame;
   float         m_processing_progress;
 signals:
-  void running_changed (void);
-  void progress_changed (void);
+  void running_changed ();
+  void progress_changed ();
 };
 }
 

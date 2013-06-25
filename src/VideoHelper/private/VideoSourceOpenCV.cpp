@@ -7,7 +7,7 @@ VideoSourceOpenCV::VideoSourceOpenCV (const QString & file)
 }
 
 bool
-VideoSourceOpenCV::init (void)
+VideoSourceOpenCV::init ()
 {
   current_frame   = 0;
   m_video_capture = QSharedPointer <cv::VideoCapture> (new cv::VideoCapture ());
@@ -42,7 +42,7 @@ VideoSourceOpenCV::init (void)
 }
 
 int
-VideoSourceOpenCV::frame_count (void)
+VideoSourceOpenCV::frame_count ()
 {
   return m_frame_count;
 }
@@ -60,19 +60,19 @@ VideoSourceOpenCV::go_to_frame (int frame)
 }
 
 bool
-VideoSourceOpenCV::next_frame (void)
+VideoSourceOpenCV::next_frame ()
 {
   return go_to_frame (++current_frame);
 }
 
 const cv::Mat
-VideoSourceOpenCV::image (void)
+VideoSourceOpenCV::image ()
 {
   return m_current_image;
 }
 
 const cv::Mat
-VideoSourceOpenCV::depth_map (void)
+VideoSourceOpenCV::depth_map ()
 {
   return cv::Mat ();
 }
