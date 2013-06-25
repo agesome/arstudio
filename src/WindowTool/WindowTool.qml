@@ -21,8 +21,9 @@ ColumnLayout {
 
     RowLayout {
         Button {
-            Layout.fillWidth: true
-            text: "Add window"
+            Layout.minimumWidth: height
+            tooltip: "Add a Window"
+            iconName: "list-add"
             onClicked: {
                 var title = windowName.text
                 var tab = windowList.addTab(windowName.text,

@@ -2,12 +2,11 @@ import QtQuick 2.1
 import QtQuick.Controls 1.0
 import QtQuick.Layouts 1.0
 import QtQuick.Window 2.1
-import QtQuick.Dialogs 1.0
 
 import arstudio 1.0
 import WindowTool 1.0
 import TimeLine 1.0
-import ProcessingDialog 1.0
+import ProcessingTool 1.0
 import ConfigView 1.0
 
 /**
@@ -29,8 +28,6 @@ ApplicationWindow {
         onShowOpenFile: openFileDialog.visible = true
     }
 
-    toolBar: MainToolBar {}
-
     SystemPalette { id: g_systemPalette }
 
     ColumnLayout {
@@ -51,24 +48,14 @@ ApplicationWindow {
                 title: "Algorithm Settings"
                 ConfigView {}
             }
+            Tab {
+                title: "Processing"
+                ProcessingTool {}
+            }
         }
 
         TimeLine {
             Layout.alignment: Qt.AlignBottom
         }
-    }
-
-    FileDialog {
-        id: openFileDialog
-        title: "Please choose a file"
-        selectMultiple: false
-        selectExisting: true
-        selectFolder: false
-        nameFilters: [ "Kinvideo files(*.kinvideo)", "All files(*.*)" ]
-    }
-
-    ProcessingDialog {
-        id: processing_dialog
-        sourceFile: openFileDialog.fileUrl
     }
 }

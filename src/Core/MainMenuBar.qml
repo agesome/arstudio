@@ -31,7 +31,13 @@ MenuBar {
     }
 
     Menu {
-        title: "View"
+        title: "Tools"
 
+        MenuItem {
+            text: "Clear Repository"
+            shortcut: "Ctrl+Shift+C"
+            iconName: "edit-cut"
+            onTriggered: g_Repository.clear()
+        }
     }
 }

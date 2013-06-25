@@ -52,25 +52,29 @@ ColumnLayout {
 
     RowLayout {
         Button {
-            text: "<"
+            Layout.minimumWidth: height
+            iconName: "media-skip-backward"
             onClicked: {
                 if (slider.value - 1 >= slider.minimumValue)
                     slider.value--
             }
         }
         Button {
-            text: ">"
+            Layout.minimumWidth: height
+            iconName: "media-skip-forward"
             onClicked: {
                 if (slider.value + 1 <= slider.maximumValue)
                     slider.value++
             }
         }
         Button {
-            text: "Play"
+            Layout.minimumWidth: height
+            iconName: "media-playback-start"
             onClicked: timer.start()
         }
         Button {
-            text: "Stop"
+            Layout.minimumWidth: height
+            iconName: "media-playback-stop"
             onClicked: timer.stop()
         }
         SpinBox {
