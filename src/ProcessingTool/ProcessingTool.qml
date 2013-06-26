@@ -20,6 +20,15 @@ Rectangle {
 
         ExclusiveGroup { id: frameChoiceGroup }
 
+        ColumnLayout {
+            Label { text: "Preview" }
+            BitmapView {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                image: videoPipeline.current_image
+            }
+        }
+
         RowLayout {
             Label {
                 Layout.fillWidth: true
@@ -30,6 +39,7 @@ Rectangle {
                 Layout.minimumWidth: height
                 iconName: "document-open"
                 onClicked: openFileDialog.visible = true
+                enabled: !videoPipeline.running
             }
         }
 

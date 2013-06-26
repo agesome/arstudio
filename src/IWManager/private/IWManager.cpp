@@ -326,7 +326,7 @@ IWManager::paint_bitmap ()
   Q_ASSERT (s->type () == Sequence::BITMAP);
   Bitmap::ptr bmp = i.dynamicCast<Bitmap> ();
   Q_ASSERT (bmp);
-  m_bitmap_view->update_image (bmp->get ());
+  m_bitmap_view->set_image (bmp->get ());
 }
 
 void

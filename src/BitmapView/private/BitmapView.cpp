@@ -8,8 +8,10 @@ BitmapView::BitmapView (QQuickItem * parent)
 }
 
 void
-BitmapView::update_image (const QImage & i)
+BitmapView::set_image (const QImage & i)
 {
+  if (i.isNull())
+    return;
   m_image = i;
   setFlag (ItemHasContents, true);
   update ();

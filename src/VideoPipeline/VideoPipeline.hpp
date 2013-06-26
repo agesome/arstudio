@@ -3,6 +3,9 @@
 
 #include <QObject>
 #include <QtConcurrent>
+#include <QImage>
+#include <QMutex>
+#include <QMutexLocker>
 
 #include <AlgoPipeline.hpp>
 #include <Config.hpp>
@@ -28,6 +31,8 @@ class VideoPipeline : public QObject
   Q_PROPERTY (int start_frame READ start_frame WRITE set_start_frame)
   Q_PROPERTY (int end_frame READ end_frame WRITE set_end_frame)
   Q_PROPERTY (float progress READ progress NOTIFY progress_changed)
+  Q_PROPERTY (QImage current_image READ current_image
+              NOTIFY current_image_changed)
 public:
   VideoPipeline (QObject * parent = nullptr);
 
@@ -42,6 +47,8 @@ public:
   void set_start_frame (int);
   void set_end_frame (int);
   float progress ();
+
+  QImage current_image ();
 private:
   void processing_thread ();
 
@@ -51,39 +58,13 @@ private:
   int           m_start_frame;
   int           m_end_frame;
   float         m_processing_progress;
+  QMutex m_image_access_mutex;
+  QImage m_current_image;
 signals:
   void running_changed ();
   void progress_changed ();
+  void current_image_changed ();
 };
 }
 
 #endif // VIDEO_PIPELINE_HPP
-
-
-//#ifndef PIPELINE_HPP
-//#define PIPELINE_HPP
-
-//#include <QObject>
-//#include <QtConcurrent>
-
-//#include <AlgoPipeline.hpp>
-//#include <Config.hpp>
-//#include <VideoHelper.hpp>
-
-//using namespace arstudio;
-
-//class Pipeline : public QObject
-//{
-//  Q_OBJECT
-//public:
-//  explicit
-//  Pipeline (QObject * parent = 0);
-//private:
-//  void process_frames (void);
-//public slots:
-//  void process (void);
-//signals:
-//  void progress (int v, int max);
-//};
-
-//#endif // PIPELINE_HPP

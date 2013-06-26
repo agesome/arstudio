@@ -9,10 +9,12 @@ namespace arstudio {
 class BitmapView : public QQuickItem
 {
   Q_OBJECT
+  Q_PROPERTY(QImage image READ image WRITE set_image)
 public:
   BitmapView (QQuickItem * parent = nullptr);
 
-  void update_image (const QImage &);
+  void set_image (const QImage &);
+  QImage image () { return m_image; }
 
 protected:
   QSGNode * updatePaintNode (QSGNode *, UpdatePaintNodeData *);

@@ -92,8 +92,7 @@ Logger::log_image (const cv::Mat & m, const std::string & name)
 
   cv::cvtColor (m, rgb, CV_BGR2RGB);
 
-  img =
-    QImage (rgb.data, rgb.cols, rgb.rows, rgb.step, QImage::Format_RGB888);
+  img = QImage (rgb.data, rgb.cols, rgb.rows, rgb.step, QImage::Format_RGB888);
   bitmap = Bitmap::make (img);
 
   m_repository->add_item (bitmap, m_frame, Sequence::BITMAP,
