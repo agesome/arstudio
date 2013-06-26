@@ -41,44 +41,43 @@ RowLayout {
         Layout.fillWidth: true
         model: g_Repository
 
-        itemDelegate: CheckBox {
-            anchors.fill: parent
-            text: styleData.value
-            enabled: {
-                if (!scenegraph)
-                    return false
-
-                var type = model.nodes[styleData.row].type
-                if (scenegraph.locked_to === Scenegraph.BITMAP)
-                    return (type === Sequence.BITMAP)
-                            && (styleData.row === exclusiveSequenceIndex)
-                else if (scenegraph.locked_to === Scenegraph.NORMAL)
-                    return type !== Sequence.BITMAP
-
-                return true
-            }
-
-            onCheckedChanged: {
-                var sequence = model.nodes[styleData.row].ptr
-                if (checked)
-                    scenegraph.add_sequence(sequence)
-                else
-                    scenegraph.remove_sequence(sequence)
-
-                if (scenegraph.locked_to === Scenegraph.BITMAP)
-                    exclusiveSequenceIndex = styleData.row
-            }
-
-            MouseArea {
-                anchors.fill: parent
-                onClicked: checked = !checked
-            }
-        }
-
         TableViewColumn {
             role: "name"
             title: "Repository"
             width: tableView.width - 20
+            delegate: CheckBox {
+                anchors.fill: parent
+                text: styleData.value
+                enabled: {
+                    if (!scenegraph || model.nodes.length === 0)
+                        return false
+
+                    var type = model.nodes[styleData.row].type
+                    if (scenegraph.locked_to === Scenegraph.BITMAP)
+                        return (type === Sequence.BITMAP)
+                                && (styleData.row === exclusiveSequenceIndex)
+                    else if (scenegraph.locked_to === Scenegraph.NORMAL)
+                        return type !== Sequence.BITMAP
+
+                    return true
+                }
+
+                onCheckedChanged: {
+                    var sequence = model.nodes[styleData.row].ptr
+                    if (checked)
+                        scenegraph.add_sequence(sequence)
+                    else
+                        scenegraph.remove_sequence(sequence)
+
+                    if (scenegraph.locked_to === Scenegraph.BITMAP)
+                        exclusiveSequenceIndex = styleData.row
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: checked = !checked
+                }
+            }
         }
 
         TableViewColumn {

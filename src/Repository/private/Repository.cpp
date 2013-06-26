@@ -107,9 +107,11 @@ void
 Repository::clear ()
 {
   removing_all_nodes ();
-  beginResetModel ();
-  // Sequence::ptr go out of scope, sequences are freed
+  beginResetModel();
+  for (RepositoryNode * n : m_nodes)
+    delete n;
   m_nodes.clear ();
+  nodes_changed();
   endResetModel ();
 }
 }
