@@ -67,6 +67,7 @@ Scenegraph::clear ()
 {
   m_sequences.clear ();
   m_frames.clear ();
+  m_locked_to = NOT_LOCKED;
   sequences_changed ();
 }
 
