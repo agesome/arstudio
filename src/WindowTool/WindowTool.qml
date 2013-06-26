@@ -17,9 +17,17 @@ ColumnLayout {
         Layout.fillHeight: true
         Layout.fillWidth: true
         onCurrentIndexChanged: currentHandler = getTab(currentIndex).item
+        visible: count != 0
+    }
+
+    Label {
+        visible: windowList.count == 0
+        text: "Click the '+' button to add a window"
+        Layout.alignment: Qt.AlignCenter
     }
 
     RowLayout {
+        Layout.alignment: Qt.AlignBottom
         Button {
             Layout.minimumWidth: height
             tooltip: "Add a Window"
