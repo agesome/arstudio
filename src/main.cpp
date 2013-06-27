@@ -1,3 +1,8 @@
+// enable/disable QML debugging; better done here than via CMake
+#if 0
+#define QT_QML_DEBUG
+#endif
+
 #include <QApplication>
 #include <QQmlEngine>
 #include <QQmlContext>

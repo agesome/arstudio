@@ -2,31 +2,22 @@
 
 namespace arstudio {
 /**
- *      The constructor. During build, CMake inserts code specific to each
- * algorithm
- *      being built.
- *
- *      \param config is passed to every algorithm being instantified
- */
-
-AlgoPipeline::AlgoPipeline (Config * config)
-{
-  @ALGO_CODE@
-}
-
-/**
  *      Convenience function to initialize all algorithms, we do not want
  *      to do that in constructor.
  */
 
 void
-AlgoPipeline::create_all ()
+AlgoPipeline::create_all (Config * config)
 {
+  for (auto f : AlgorithmFactoryInstance().algorithm_creator_list())
+    m_algorithm_list.push_back(f(config));
+
   for (auto algo : m_algorithm_list)
     if (!algo->create ())
       throw std::runtime_error ("failed to create(): " +
                                 algo->id_string ());
 }
+
 
 /**
  *      The destructor, in turn calls destructors for every algorithm.
@@ -46,9 +37,9 @@ AlgoPipeline::~AlgoPipeline ()
  */
 
 AlgoPipeline::ptr
-AlgoPipeline::make (Config * config)
+AlgoPipeline::make ()
 {
-  return std::make_shared<AlgoPipeline> (config);
+  return std::make_shared<AlgoPipeline> ();
 }
 
 /**

@@ -90,11 +90,11 @@ QImage VideoPipeline::current_image()
 void
 VideoPipeline::processing_thread ()
 {
-  AlgoPipeline::ptr ap = AlgoPipeline::make (m_config);
+  AlgoPipeline::ptr ap = AlgoPipeline::make ();
   cv::Mat rgb;
 
 
-  ap->create_all ();
+  ap->create_all (m_config);
   m_video_helper->go_to_frame (m_start_frame);
 
   const float to_process       = m_end_frame - m_start_frame + 1;

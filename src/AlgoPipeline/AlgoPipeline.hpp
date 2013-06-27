@@ -9,8 +9,7 @@
 #include <Logger.hpp>
 #include <Config.hpp>
 #include <AlgoInterface.hpp>
-
-@ALGO_INCLUDES@
+#include <AlgorithmFactory.hpp>
 
 namespace arstudio {
 /**
@@ -20,19 +19,14 @@ namespace arstudio {
 class AlgoPipeline
 {
 public:
-  typedef std::shared_ptr<AlgoPipeline> ptr;       // < a convenience
-                                                   // typedef
+  typedef std::shared_ptr<AlgoPipeline> ptr;
 
-  AlgoPipeline (Config *);
   ~AlgoPipeline ();
 
-  static ptr make (Config *);
+  static ptr make ();
   void process_frame (const cv::Mat &, const cv::Mat &);
-  void create_all ();
-
+  void create_all (Config *);
 private:
-  void create_algorithm (IAbstractAlgorithm *);
-
   std::list <IAbstractAlgorithm *> m_algorithm_list;
 };
 }

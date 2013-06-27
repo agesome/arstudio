@@ -5,10 +5,9 @@ project(arstudio CXX C)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_SKIP_RULE_DEPENDENCY ON)
 set(GLOBAL_LIBS "")
-set(ALGO_INCLUDES "")
-set(ALGO_CODE "")
 
 set(arstudio_sources
+    ${CMAKE_BINARY_DIR}/main.cpp
     Config/private/Config.cpp
     Logger/private/Logger.cpp
     Repository/private/Repository.cpp
@@ -18,8 +17,8 @@ set(arstudio_sources
     VideoHelper/private/VideoHelper.cpp
     VideoHelper/private/VideoSourceOpenCV.cpp
     VideoHelper/private/VideoSourceKinvideo.cpp
-    ${CMAKE_BINARY_DIR}/AlgoPipeline.cpp
-    ${CMAKE_BINARY_DIR}/main.cpp
+    AlgoPipeline/private/AlgoPipeline.cpp
+    AlgoPipeline/private/AlgorithmFactory.cpp
     IWManager/private/IWManager.cpp
     VideoPipeline/private/VideoPipeline.cpp
     CustomModel/private/CustomModel.cpp
@@ -44,6 +43,7 @@ set(arstudio_sources
 
 set(arstudio_headers
     AlgoPipeline/AlgoInterface.hpp
+    AlgoPipeline/AlgoPipeline.hpp
     Config/Config.hpp
     Logger/Logger.hpp
     Sequence/Sequence.hpp
@@ -62,6 +62,7 @@ set(arstudio_headers
     VideoPipeline/VideoPipeline.hpp
     CustomModel/CustomModel.hpp
     BitmapView/BitmapView.hpp
+    AlgoPipeline/AlgorithmFactory.hpp
 )
 
 set(arstudio_moc_headers
@@ -110,9 +111,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Concurrent_EXECUTABLE_COMPILE_FLAGS
 
 if(CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS_DEBUG
-                       "${CMAKE_CXX_FLAGS} -std=c++11 -O0 -ggdb3 -Wall -Wextra -pedantic -DQT_QML_DEBUG")
+      "${CMAKE_CXX_FLAGS} -std=c++11 -O0 -ggdb3 -Wall -Wextra -pedantic")
   set(CMAKE_CXX_FLAGS_RELEASE
-                       "${CMAKE_CXX_FLAGS} -std=c++11 -O3 -march=native -mtune=native -DQT_NO_DEBUG")
+      "${CMAKE_CXX_FLAGS} -std=c++11 -O3 -march=native -mtune=native -DQT_NO_DEBUG")
 endif()
 
 add_subdirectory(../submodules/KinectRecorder/src/
@@ -137,7 +138,6 @@ include_directories(
   ${Qt53DQuick_INCLUDE_DIRS}
   ${Qt5Concurrent_INCLUDE_DIRS}
   ${CMAKE_CURRENT_SOURCE_DIR}
-  ${GLOBAL_INCLUDES}
 )
 
 macro(subdirlist result curdir)
@@ -163,18 +163,8 @@ if(NOT ALGORITHMS STREQUAL "")
   message(STATUS "Will now add algorithms")
   foreach(subdir ${ALGORITHMS})
     message(STATUS "  Adding algorithm "${subdir})
-    include_directories(algorithms/${subdir}/)
-    if (IS_DIRECTORY algorithms/${subdir}/include/)
-      include_directories(algorithms/${subdir}/include/)
-    endif()
-    if (IS_DIRECTORY algorithms/${subdir}/src/)
-      include_directories(algorithms/${subdir}/src/)
-      add_subdirectory(algorithms/${subdir}/src/
-          ${CMAKE_CURRENT_BINARY_DIR}/${subdir} EXCLUDE_FROM_ALL)
-    else()
       add_subdirectory(algorithms/${subdir}/
-          ${CMAKE_CURRENT_BINARY_DIR}/${subdir} EXCLUDE_FROM_ALL)
-    endif()
+          ${CMAKE_CURRENT_BINARY_DIR}/${subdir})
   endforeach()
 endif()
 
@@ -182,12 +172,6 @@ set(CONFIG_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/algorithms/")
 set(QML_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/")
 
 configure_file(main.cpp ${CMAKE_BINARY_DIR}/main.cpp)
-
-configure_file(AlgoPipeline/AlgoPipeline.hpp
-               ${CMAKE_BINARY_DIR}/AlgoPipeline.hpp)
-
-configure_file(AlgoPipeline/private/AlgoPipeline.cpp
-               ${CMAKE_BINARY_DIR}/AlgoPipeline.cpp)
 
 qt5_wrap_cpp(arstudio_moc ${arstudio_moc_headers})
 qt5_add_resources(arstudio_res resources/list.qrc)
@@ -205,8 +189,7 @@ qt5_use_modules(arstudio Quick 3DQuick Concurrent)
 
 target_link_libraries(
   arstudio
-
-  ${GLOBAL_LIBS}
+  kinectCapture
   ${OpenCV_LIBS}
   ${LIBMAGIC}
 )
