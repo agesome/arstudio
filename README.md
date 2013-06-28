@@ -6,16 +6,16 @@ Computer vision algorithm debugging tool.
 Repository structure
 =====
 
-- docs/       -- documentation;
-- git-hooks/  -- useful git hooks to use when working on this project;
-- src/        -- the source three;
-- submodules/ -- contains KinectRecorder, a dependency to support .kinvideo files.
-- releases/   -- contains complete source archives of previous releases
+	- docs/       -- documentation;
+	- git-hooks/  -- useful git hooks to use when working on this project;
+	- src/        -- the source three;
+	- submodules/ -- contains KinectRecorder, a dependency to support .kinvideo files.
+	- releases/   -- contains complete source archives of previous releases
 
 Dependencies
 =====
 
-- Qt 5 (Widgets, OpenGL, Declarative for branch qtquick)
+- Qt 5 (OpenGL, Declarative; Widgets for deprecated 'widgets' branch)
 - OpenCV
 
 To generate documentation, optional:

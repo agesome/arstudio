@@ -164,7 +164,8 @@ if(NOT ALGORITHMS STREQUAL "")
   foreach(subdir ${ALGORITHMS})
     message(STATUS "  Adding algorithm "${subdir})
       add_subdirectory(algorithms/${subdir}/
-          ${CMAKE_CURRENT_BINARY_DIR}/${subdir})
+          ${CMAKE_CURRENT_BINARY_DIR}/${subdir}
+          EXCLUDE_FROM_ALL)
   endforeach()
 endif()
 
@@ -190,6 +191,7 @@ qt5_use_modules(arstudio Quick 3DQuick Concurrent)
 target_link_libraries(
   arstudio
   kinectCapture
+  ${ALGORITHMS}
   ${OpenCV_LIBS}
   ${LIBMAGIC}
 )

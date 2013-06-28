@@ -2,6 +2,8 @@
 
 using namespace cv;
 
+static const AlgorithmRegisterer<ImageAdjusterAlgorithm> registerer;
+
 Mat
 BrightnessAdjuster::adjust (const Mat & image)
 {
@@ -38,7 +40,7 @@ ContrastAdjuster::adjust (const Mat & image)
   return result;
 }
 
-ImageAdjusterAlgorithm::ImageAdjusterAlgorithm (as::Config::ptr config)
+ImageAdjusterAlgorithm::ImageAdjusterAlgorithm (as::Config * config)
   : IAbstractAlgorithm (config)
 {
 }
@@ -51,17 +53,17 @@ ImageAdjusterAlgorithm::~ImageAdjusterAlgorithm ()
 bool
 ImageAdjusterAlgorithm::create ()
 {
-  type = config->get<std::string> ("adjuster.type");
+  type = config->get("adjuster.type").toString().toStdString();
   if (type == "brightness")
     {
       BrightnessAdjuster * v = new BrightnessAdjuster ();
-      v->brightness = config->get<double> ("adjuster.brightness");
+      v->brightness = config->get("adjuster.brightness").toDouble();
       adjuster      = v;
     }
   else if (type == "contrast")
     {
       ContrastAdjuster * v = new ContrastAdjuster ();
-      v->contrast = config->get<double> ("adjuster.contrast");
+      v->contrast = config->get("adjuster.contrast").toDouble();
       adjuster    = v;
     }
   else
@@ -81,14 +83,7 @@ ImageAdjusterAlgorithm::run (const Mat & image, const Mat &)
 
   as::Logger & l = as::Logger::instance ();
 
-  cv::Point3d p0, p1;
-
-  p0.x = p0.y = p0.z = 1;
-  p1.x = p1.y = p1.z = 0;
-
   l.log_image (result, type);
-  l.log_camera (p0, 0, 0, 0, "p0");
-  l.log_camera (p1, 0, 0, 0, "p1");
   return true;
 }
 
