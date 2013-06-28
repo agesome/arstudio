@@ -81,9 +81,11 @@ VideoPipeline::progress ()
   return m_processing_progress;
 }
 
-QImage VideoPipeline::current_image()
+QImage
+VideoPipeline::current_image ()
 {
   QMutexLocker lock (&m_image_access_mutex);
+
   return m_current_image;
 }
 
@@ -91,8 +93,8 @@ void
 VideoPipeline::processing_thread ()
 {
   AlgoPipeline::ptr ap = AlgoPipeline::make ();
-  cv::Mat rgb;
-
+  cv::Mat           rgb;
+  QImage            i;
 
   ap->create_all (m_config);
   m_video_helper->go_to_frame (m_start_frame);
@@ -102,12 +104,16 @@ VideoPipeline::processing_thread ()
 
   do
     {
-      cv::cvtColor(m_video_helper->image(), rgb, CV_BGR2RGB);
-      m_image_access_mutex.lock();
-      m_current_image = QImage (rgb.data, rgb.cols, rgb.rows, rgb.step,
-                                QImage::Format_RGB888);
-      m_image_access_mutex.unlock();
-      current_image_changed();
+      cv::cvtColor (m_video_helper->image (), rgb, CV_BGR2RGB);
+      i = QImage (rgb.data, rgb.cols, rgb.rows, rgb.step,
+                  QImage::Format_RGB888);
+      m_image_access_mutex.lock ();
+      // have to get a copy, i relies on data in rgb which will be gone
+      // when
+      // this function exits
+      m_current_image = i.copy ();
+      m_image_access_mutex.unlock ();
+      current_image_changed ();
 
       ap->process_frame (m_video_helper->image (),
                          m_video_helper->depth_map ());
