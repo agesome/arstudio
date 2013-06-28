@@ -22,14 +22,15 @@
 
 namespace as = arstudio;
 
+static void register_qml_types ();
+
 int
 main (int argc, char * argv[])
 {
   QApplication  application (argc, argv);
-  QQmlEngine    qml_engine;
-  QQmlComponent qml_core (&qml_engine);
+  QQmlEngine    engine;
+  QQmlComponent core (&engine);
 
-  QQmlContext       * root_context = qml_engine.rootContext ();
   as::Repository::ptr repository   = as::Repository::make ();
   as::Config::ptr     config       = as::Config::make ();
 
@@ -40,14 +41,41 @@ main (int argc, char * argv[])
 
   QObject::connect (repository.data (),
                     &as::Repository::removing_all_nodes,
-                    []() {
-                      as::Logger::instance ().reset_frame_counter ();
-                    });
+                    []() { as::Logger::instance ().reset_frame_counter (); });
+
+  as::Logger::set_repository (repository);
+  config->import_directory ("@CONFIG_DIRECTORY@");
 
   QApplication::setApplicationName ("arstudio");
   QApplication::setOrganizationName ("CVTeam");
-  as::Logger::set_repository (repository);
+  register_qml_types();
+  engine.setBaseUrl (QUrl::fromLocalFile ("@QML_ROOT@"));
+  engine.addImportPath ("@QML_ROOT@");
 
+
+  core.loadUrl (QUrl::fromLocalFile ("Core/Core.qml"));
+  engine.rootContext ()->setContextProperty ("g_Repository", repository.data ());
+  engine.rootContext ()->setContextProperty ("g_Config", config.data ());
+
+  QObject * window_object = core.create ();
+  if (window_object != nullptr)
+    {
+      QQuickWindow * window = qobject_cast<QQuickWindow *> (window_object);
+      QObject::connect (&engine, &QQmlEngine::quit,
+                        [&application]() { application.exit (EXIT_SUCCESS); });
+      window->show ();
+      return application.exec ();
+    }
+
+  qWarning () << "Component creation failed with following errors:";
+  for (QQmlError error : core.errors ())
+    qWarning () << error.toString ();
+  return EXIT_FAILURE;
+}
+
+static void
+register_qml_types()
+{
   qmlRegisterType<as::Sequence> ("arstudio", 1, 0, "Sequence");
   qmlRegisterType<as::Scenegraph> ("arstudio", 1, 0, "Scenegraph");
   qmlRegisterType<as::Repository> ("arstudio", 1, 0, "Repository");
@@ -62,31 +90,4 @@ main (int argc, char * argv[])
   qmlRegisterSingletonType<as::ScenegraphAggregator>
     ("arstudio", 1, 0, "SAggregator",
     &as::ScenegraphAggregator::qml_instance);
-
-  config->import_directory ("@CONFIG_DIRECTORY@");
-
-  qml_engine.setBaseUrl (QUrl::fromLocalFile ("@QML_ROOT@"));
-  qml_engine.addImportPath ("@QML_ROOT@");
-  qml_core.loadUrl (QUrl::fromLocalFile ("Core/Core.qml"));
-
-  root_context->setContextProperty ("g_Repository", repository.data ());
-  root_context->setContextProperty ("g_Config", config.data ());
-
-  QObject * window_object = qml_core.create ();
-
-  if (window_object != nullptr)
-    {
-      QQuickWindow * window = qobject_cast<QQuickWindow *> (window_object);
-      QObject::connect (&qml_engine, &QQmlEngine::quit,
-                        [&application]() {
-                          application.exit (EXIT_SUCCESS);
-                        });
-      window->show ();
-      return application.exec ();
-    }
-
-  qWarning () << "Component creation failed with following errors:";
-  for (QQmlError error : qml_core.errors ())
-    qWarning () << error.toString ();
-  return EXIT_FAILURE;
 }
