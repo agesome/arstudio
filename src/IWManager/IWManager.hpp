@@ -54,14 +54,17 @@ class IWManager : public QObject
   Q_PROPERTY (QQuickWindow * window READ window WRITE set_window)
   Q_PROPERTY (arstudio::BitmapView * bitmap_view READ bitmap_view
               WRITE set_bitmap_view)
+
   Q_PROPERTY (qreal camera_view_distance READ camera_view_distance
               WRITE set_camera_view_distance)
-
   Q_PROPERTY (bool camera_view READ camera_view WRITE set_camera_view)
   Q_PROPERTY (QVector3D camera_view_position READ camera_view_position
               NOTIFY camera_view_position_changed)
+
   Q_PROPERTY (arstudio::CustomModel * selected_model READ selected_model
               NOTIFY selected_model_changed)
+  Q_PROPERTY (QQuickItem3D * model_indicator READ model_indicator
+              WRITE set_model_indicator)
 public:
   IWManager (QObject * parent = nullptr);
 
@@ -79,6 +82,8 @@ public:
   arstudio::Scenegraph * scenegraph ();
 
   arstudio::CustomModel * selected_model ();
+  QQuickItem3D * model_indicator ();
+  void set_model_indicator (QQuickItem3D *);
 
   QQuickWindow * window (void);
   void set_window (QQuickWindow *);
@@ -98,6 +103,8 @@ private:
   inline void reset_camera (const Axis axis = Z);
   inline void paint_bitmap ();
 
+  inline void set_selected_model (CustomModel *);
+
   QQuickPaintedItem * m_viewport;
   QGLCamera         * m_camera;
   QQuickWindow      * m_window;
@@ -115,6 +122,7 @@ private:
   QList<CustomModel *>           m_custom_models;
   QList<CustomModel *>::Iterator m_modellist_iterator;
   CustomModel                  * m_selected_model;
+  QQuickItem3D                 * m_model_indicator;
 
   BitmapView * m_bitmap_view;
 public slots:
@@ -123,6 +131,8 @@ public slots:
   void viewport_keypress (const int);
   void add_custom_model (const QUrl &);
   void select_next_model ();
+private slots:
+  void selected_model_moved ();
 signals:
   void camera_view_position_changed ();
   void selected_model_changed ();

@@ -34,11 +34,7 @@ Window {
 
     Action {
         shortcut: "Ctrl+M"
-        onTriggered: {
-            iwmanager.select_next_model()
-            modelChanged(selectedModel.position, selectedModel.rotation,
-                         selectedModel.scale)
-        }
+        onTriggered: iwmanager.select_next_model()
     }
 
     IWManager {
@@ -48,6 +44,7 @@ Window {
         bitmap_view: bitmapView
         camera: camera
         camera_view: cameraView
+        model_indicator: modelIndicator
         onSelected_modelChanged: modelChanged(selectedModel.position,
                                               selectedModel.rotation,
                                               selectedModel.scale)
@@ -86,6 +83,24 @@ Window {
                 id: skybox
                 source: skyboxSource
                 visible: false
+            }
+
+            Sphere {
+                id: modelIndicator
+                radius: 0.04
+                effect: Effect { color: "#11ee11" }
+
+                SequentialAnimation on radius {
+                    loops: Animation.Infinite
+                    NumberAnimation {
+                        to: 0.08
+                    }
+                    NumberAnimation {
+                        to: 0.04
+                    }
+                }
+
+                objectName: "vp_ignore"
             }
         }
     }

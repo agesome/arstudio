@@ -1,5 +1,5 @@
 #include <IWManager.hpp>
-
+#include <QtDebug>
 namespace arstudio {
 IWManager::IWManager (QObject * parent)
   : QObject (parent),
@@ -17,6 +17,7 @@ IWManager::IWManager (QObject * parent)
   m_camera_view_distance (2.0),
   m_modellist_iterator (m_custom_models.begin ()),
   m_selected_model (nullptr),
+  m_model_indicator (nullptr),
   m_bitmap_view (nullptr)
 {
   ScenegraphAggregator * sa = ScenegraphAggregator::instance ();
@@ -127,6 +128,19 @@ IWManager::selected_model ()
   return m_selected_model;
 }
 
+QQuickItem3D *
+IWManager::model_indicator ()
+{
+  return m_model_indicator;
+}
+
+void
+IWManager::set_model_indicator (QQuickItem3D * i)
+{
+  m_model_indicator = i;
+  i->setEnabled (false);
+}
+
 QQuickWindow *
 IWManager::window ()
 {
@@ -161,18 +175,43 @@ IWManager::add_custom_model (const QUrl & url)
   m_viewport->update ();
 
   m_custom_models.append (m);
-  m_selected_model = m;
-  selected_model_changed ();
+  set_selected_model (m);
 }
 
 void
 IWManager::select_next_model ()
 {
+  if (m_custom_models.isEmpty ())
+    return;
   if (m_selected_model == m_custom_models.last ())
     m_modellist_iterator = m_custom_models.begin ();
   else
     m_modellist_iterator++;
-  m_selected_model = *m_modellist_iterator;
+  set_selected_model (*m_modellist_iterator);
+}
+
+void
+IWManager::selected_model_moved ()
+{
+  m_model_indicator->setPosition (m_selected_model->position ());
+}
+
+void
+IWManager::set_selected_model (CustomModel * m)
+{
+  if (m)
+    {
+      m_model_indicator->setPosition (m->position ());
+      if (!m_model_indicator->isEnabled ())
+        m_model_indicator->setEnabled (true);
+
+      if (m_selected_model)
+        m_selected_model->disconnect (this);
+      connect (m, &CustomModel::position3dChanged,
+               this, &IWManager::selected_model_moved);
+    }
+
+  m_selected_model = m;
   selected_model_changed ();
 }
 
