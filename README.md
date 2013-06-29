@@ -16,6 +16,7 @@ Dependencies
 =====
 
 - Qt 5 (OpenGL, Declarative; Widgets for deprecated 'widgets' branch)
+- Qt 3D (forked for this project: https://gitorious.org/~evgeny/qt/qt3d-minor-fixes)
 - OpenCV
 
 To generate documentation, optional:
