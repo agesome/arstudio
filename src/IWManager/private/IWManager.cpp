@@ -138,7 +138,7 @@ void
 IWManager::set_model_indicator (QQuickItem3D * i)
 {
   m_model_indicator = i;
-  i->setEnabled (false);
+  i->setVisible (false);
 }
 
 QQuickWindow *
@@ -202,8 +202,8 @@ IWManager::set_selected_model (CustomModel * m)
   if (m)
     {
       m_model_indicator->setPosition (m->position ());
-      if (!m_model_indicator->isEnabled ())
-        m_model_indicator->setEnabled (true);
+      if (!m_model_indicator->isVisible ())
+        m_model_indicator->setVisible (true);
 
       if (m_selected_model)
         m_selected_model->disconnect (this);

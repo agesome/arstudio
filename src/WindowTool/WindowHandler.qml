@@ -33,6 +33,7 @@ RowLayout {
             modelControls.reset(position, rotation, scale)
         }
         cameraView: cameraView.checked
+        showModelIndicator: showModelIndicator.checked
     }
 
     TableView {
@@ -105,6 +106,12 @@ RowLayout {
             Layout.alignment: Qt.AlignTop
         }
 
+        Rectangle {
+            Layout.fillWidth: true
+            height: 1
+            color: g_systemPalette.dark
+        }
+
         RowLayout {
             Button {
                 text: "Load Skybox"
@@ -115,9 +122,18 @@ RowLayout {
                 onClicked: loadModel()
             }
         }
+        Button {
+            text: "Cycle Model Selection"
+            onClicked: itemWindow.manager.select_next_model()
+        }
         CheckBox {
             id: cameraView
             text: "Camera View"
+            checked: false
+        }
+        CheckBox {
+            id: showModelIndicator
+            text: "Show Model Indicator"
             checked: false
         }
     }

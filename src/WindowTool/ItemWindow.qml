@@ -16,6 +16,7 @@ Window {
 
     property url skyboxSource
     property bool cameraView: false
+    property bool showModelIndicator: false
 
     readonly property IWManager manager: iwmanager
     property alias selectedModel: iwmanager.selected_model
@@ -89,6 +90,7 @@ Window {
                 id: modelIndicator
                 radius: 0.04
                 effect: Effect { color: "#11ee11" }
+                enabled: showModelIndicator && visible
 
                 SequentialAnimation on radius {
                     loops: Animation.Infinite
