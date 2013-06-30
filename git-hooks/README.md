@@ -1,7 +1,7 @@
 Git hooks
 =====
 
-This directory contains usable git hooks for this project. Copy the hook file to .git/hooks/ to enable it.
+This directory contains usable git hooks for this project. Copy the hook file to .git/hooks/ to enable it, or use install-hooks.sh
 
 
 pre-commit formatting

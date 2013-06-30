@@ -1,17 +1,23 @@
-#!/bin/sh
+#!/usr/bin/env bash
 #
 # Hook used to indent all source files before commiting
 #
 # Modified. Originally found at https://gist.github.com/1250603
 
 FMT="$(git config hooks.format)"
-if test ! -x "$FMT"
+if [ ! -x "$FMT" ]
 then
-	echo "Unable to find uncrustify executable on the configuration."
-	echo
-	echo "Please configure it with :"
-	echo "  git config hooks.format /path/to/uncrustify"
-	echo
+	if [ -x `which uncrustify` ]
+	then
+		FMT=`which uncrustify`
+		git config hooks.format $FMT
+	else
+		echo "Unable to find uncrustify executable on the configuration or in path"
+		echo
+		echo "Please configure it with :"
+		echo "  git config hooks.format /path/to/uncrustify"
+		echo
+	fi
 fi
 
 # indent / format file by type
