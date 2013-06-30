@@ -12,7 +12,6 @@ import arstudio 1.0
 */
 
 Rectangle {
-    anchors.fill: parent
     color: g_systemPalette.window
 
     ColumnLayout {

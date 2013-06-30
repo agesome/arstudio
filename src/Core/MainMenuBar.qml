@@ -3,6 +3,7 @@ import QtQuick.Controls 1.0
 
 MenuBar {
     signal showOpenFile()
+    property alias compactMode: compactMode.checked
 
     Menu {
         title: "File"
@@ -38,6 +39,16 @@ MenuBar {
             shortcut: "Ctrl+Shift+C"
             iconName: "edit-cut"
             onTriggered: g_Repository.clear()
+        }
+    }
+
+    Menu {
+        title: "View"
+
+        MenuItem {
+            id: compactMode
+            text: "Compact Mode"
+            checkable: true
         }
     }
 }

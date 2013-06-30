@@ -9,8 +9,6 @@ import QtQuick.Layouts 1.0
 
 TableView {
     id: tableview
-    Layout.fillWidth: true
-    Layout.fillHeight: true
     model: g_Config
 
     TableViewColumn {

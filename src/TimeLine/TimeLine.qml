@@ -5,11 +5,13 @@ import QtQuick.Layouts 1.0
 import arstudio 1.0
 
 /**
-  This component provies player-like controls for navigating Sequence frames
+  This component provides player-like controls for navigating Sequence frames
 */
 
 ColumnLayout {
     Layout.fillHeight: false
+    Layout.minimumHeight: slider.childrenRect.height
+                          + rowlayout.childrenRect.height + 25
 
     Timer {
         id: timer
@@ -22,7 +24,6 @@ ColumnLayout {
                 running = false
         }
     }
-
 
     Binding {
         target: slider
@@ -51,6 +52,9 @@ ColumnLayout {
     }
 
     RowLayout {
+        id: rowlayout
+        Layout.fillHeight: false
+
         Button {
             Layout.minimumWidth: height
             iconName: "media-skip-backward"

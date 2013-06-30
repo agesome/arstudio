@@ -14,13 +14,16 @@ import ConfigView 1.0
   all other components, provides menu and toolbar.
 */
 
-
 ApplicationWindow {
     id: g_rootWindow
 
     title: "CVAR Studio"
-    minimumWidth: 500
-    minimumHeight: 500
+
+    width: layout.implicitWidth
+    height: layout.implicitHeight
+    minimumWidth: layout.Layout.minimumWidth
+    // FIXME: a way to determine menubar height?
+    minimumHeight: layout.Layout.minimumHeight + 35
 
     menuBar: MainMenuBar {
         id: menubar
@@ -31,14 +34,18 @@ ApplicationWindow {
     SystemPalette { id: g_systemPalette }
 
     ColumnLayout {
+        id: layout
         anchors {
             fill: parent
             margins: 5
         }
+        Layout.minimumWidth: 500
 
         TabView {
             Layout.fillHeight: true
             Layout.fillWidth: true
+            Layout.minimumHeight: 400
+            visible: !menubar.compactMode
 
             Tab {
                 title: "Window Management"
