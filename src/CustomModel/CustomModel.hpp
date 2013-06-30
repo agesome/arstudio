@@ -11,6 +11,9 @@
 #include <QFileInfo>
 
 namespace arstudio {
+/**
+ * @brief Simple wrapper class to allow easy model handling
+ */
 class CustomModel : public QQuickItem3D
 {
   Q_OBJECT

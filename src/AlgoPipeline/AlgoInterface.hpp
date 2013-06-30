@@ -7,49 +7,53 @@
 
 #include <Config.hpp>
 
-/**
- *      An interface for all processing algorithms.
- */
-
 namespace as = arstudio;
+
+/**
+ * @brief The IAbstractAlgorithm class is an interface for data processing
+ * algotihms
+ */
 
 class IAbstractAlgorithm
 {
 public:
   /**
-   *      Stores a pointer to Config passed by AlgoPipeline() for this
-   * instance.
-   *
-   *      \param config pointer to an instance of Config
+   * @brief IAbstractAlgorithm
+   * @param config is stored internally and is available to child classes
    */
   IAbstractAlgorithm (as::Config * config)
+    : config (config)
   {
-    this->config = config;
   }
+
   virtual
   ~IAbstractAlgorithm ()
   {
   }
 
   /**
-   *      Must initialize all algorithm-specific structures and
-   *      return true in case of success, false otherwise. Must not throw.
+   * @brief initialize the algorithm; do not throw exceptions!
+   * @return true on success, false otherwise
    */
   virtual bool create () = 0;
+
   /**
-   *      Passes frame data to underlying algorithm.
-   *
-   *      \param image RGB image
-   *      \param dmap depth map
+   * @brief process a single image + depth map frame
+   * @param image RGB888 image
+   * @param dmap depth map
+   * @return true on success, false otherwise
    */
   virtual bool run (const cv::Mat & image, const cv::Mat & dmap) = 0;
 
   /**
-   *      Returns an identifier string for this algorithm.
+   * @return a string identifying this algorithm to the user
    */
   virtual const std::string id_string () = 0;
 
 protected:
+  /**
+   * @brief Config instance for this algorithm
+   */
   as::Config * config;
 };
 

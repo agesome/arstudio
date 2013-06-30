@@ -13,12 +13,10 @@
 
 namespace arstudio {
 /**
- * This singleton class recieves data from algorithms, converts it to
- * a suitable format and stores it in the Repository.
+ * @brief Logger is responsible for storing processing results from algorithms
  *
- * All log_ methods have an overload which specifies a sane default name
- * for
- * the items logged.
+ * This class converts data recieved from algorithms to a format suitable for
+ * Repository and stores it there.
  */
 
 class Logger
@@ -42,8 +40,11 @@ private:
   Logger & operator= (const Logger &) = delete;
 
   static Logger          m_instance;
-  static Repository::ptr m_repository; //< currently used instance
-  unsigned int           m_frame = 1; //< log sequences for this frame
+  static Repository::ptr m_repository;
+  /**
+   * @brief All log_ functions store data for this frame
+   */
+  unsigned int m_current_frame = 1;
 };
 }
 

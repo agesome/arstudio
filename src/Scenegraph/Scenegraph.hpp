@@ -10,14 +10,18 @@
 
 namespace arstudio {
 /**
- * Keeps track of all sequences to be displayed
+ * @brief Keeps track of all sequences to be displayed in a single ItemWindow
  *
- * This class is instantinied by ItemWindow QML component and is
- * responsible
- * of tracking all sequences associated with that window. It also provides
- * to
- * ScenegraphAggregator a QSet of all frames for which associated sequences
- * have items.
+ * This class is instantinied by ItemWindow QML component and is responsible for
+ * tracking all sequences associated with that window. It also provides to
+ * ScenegraphAggregator a QSet of all frames for which associated sequences have
+ * items
+ *
+ * Since an ItemWindow cannot display a bitmaps and 3D items simultaneously, a
+ * "locking" mechanism is in place, providing a hint whether one should add
+ * sequences of a certain type at the moment; For example, when Scenegraph
+ * contains a single Bitmap sequence, it is considered "locked" to BITMAP,
+ * because it's associated ItemWindow will only display one bitmap.
  */
 class Scenegraph : public QObject
 {
@@ -33,10 +37,7 @@ public:
 
   Scenegraph (QObject * parent = nullptr);
   static ptr
-  make (QObject * parent = nullptr)
-  {
-    return ptr (new Scenegraph (parent));
-  }
+  make (QObject * parent = nullptr);
 
   Q_INVOKABLE void add_sequence (Sequence *);
   Q_INVOKABLE void remove_sequence (Sequence *);

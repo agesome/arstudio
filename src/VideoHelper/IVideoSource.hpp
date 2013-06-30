@@ -5,7 +5,10 @@
 
 namespace arstudio {
 /**
- * Unified interface for accessing video files
+ * @brief Unified interface for accessing video files
+ *
+ * This interface allows one to implement and easily add to VideoHelper support
+ * for any file format
  */
 class IVideoSource
 {

@@ -19,13 +19,13 @@ Logger::set_repository (Repository::ptr r)
 void
 Logger::advance_frame ()
 {
-  m_frame++;
+  m_current_frame++;
 }
 
 void
 Logger::reset_frame_counter ()
 {
-  m_frame = 1;
+  m_current_frame = 1;
 }
 
 /**
@@ -41,7 +41,7 @@ Logger::log_point (const cv::Point3d & point, const std::string & name)
   Point3D::ptr p = Point3D::make (QVector3D (point.x, point.y, point.z),
                                   QColor (255, 255, 255));
 
-  m_repository->add_item (p, m_frame, Sequence::POINT3D,
+  m_repository->add_item (p, m_current_frame, Sequence::POINT3D,
                           QString::fromStdString (name));
 }
 
@@ -67,7 +67,7 @@ Logger::log_camera (const cv::Point3d & pos, const cv::Point3d & r,
   Camera::ptr c = Camera::make (QVector3D (pos.x, pos.y, pos.z),
                                 QVector3D (r.x, r.y, r.z));
 
-  m_repository->add_item (c, m_frame, Sequence::CAMERA,
+  m_repository->add_item (c, m_current_frame, Sequence::CAMERA,
                           QString::fromStdString (name));
 }
 
@@ -92,10 +92,11 @@ Logger::log_image (const cv::Mat & m, const std::string & name)
 
   cv::cvtColor (m, rgb, CV_BGR2RGB);
 
-  img = QImage (rgb.data, rgb.cols, rgb.rows, rgb.step, QImage::Format_RGB888);
+  img =
+    QImage (rgb.data, rgb.cols, rgb.rows, rgb.step, QImage::Format_RGB888);
   bitmap = Bitmap::make (img);
 
-  m_repository->add_item (bitmap, m_frame, Sequence::BITMAP,
+  m_repository->add_item (bitmap, m_current_frame, Sequence::BITMAP,
                           QString::fromStdString (name));
 }
 

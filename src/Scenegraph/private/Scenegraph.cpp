@@ -7,6 +7,12 @@ Scenegraph::Scenegraph (QObject * parent)
 {
 }
 
+Scenegraph::ptr
+Scenegraph::make (QObject * parent)
+{
+  return ptr (new Scenegraph (parent));
+}
+
 void
 Scenegraph::add_sequence (Sequence * seq)
 {

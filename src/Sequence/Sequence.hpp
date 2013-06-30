@@ -12,7 +12,7 @@
 
 namespace arstudio {
 /**
- * This is the base class for all data items.
+ * @brief Base class for all item types
  */
 
 class Item
@@ -24,7 +24,7 @@ public:
 };
 
 /**
- * This class manages a frame-ordered sequence of data items.
+ * @brief Manages a frame-ordered sequence of data items
  */
 
 class Sequence : public QObject
@@ -41,8 +41,15 @@ public:
 
   static ptr make (ItemType);
 
-  void add_item (int, const Item::ptr);
-  const Item::ptr item_for_frame (int);
+  /**
+   * @brief Add an item for a specific frame
+   */
+  void add_item (int frame, const Item::ptr item_ptr);
+  /**
+   * @brief Get an item for a specific frame
+   * @return Item::ptr for the item, uninitialized if item was not found
+   */
+  const Item::ptr item_for_frame (int frame);
   const frame_map & items ();
 
   ItemType type ();

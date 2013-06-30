@@ -6,13 +6,13 @@
 
 namespace arstudio {
 /**
- * This Scenegraph aggregator
+ * @brief The Scenegraph aggregator
  *
  * This class is responsible for aggregating frame sets for all existing
- * instances of Scenegraph and providing information for TimeLine, as well
- * as providing centralized control over all Scenegraph instances via
- * signal_frame(), this allowing simultaneous playback for all ItemWindow
- * instances. This class is a singleton.
+ * instances of Scenegraph and providing information for TimeLine, as well as
+ * providing centralized control over all Scenegraph instances via signal_frame,
+ * thus allowing simultaneous playback for all ItemWindow instances.
+ * This class is a singleton.
  */
 
 class ScenegraphAggregator : public QObject

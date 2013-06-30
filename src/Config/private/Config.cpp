@@ -7,6 +7,12 @@ Config::Config (QObject * parent)
 {
 }
 
+Config::ptr
+Config::make (QObject * parent)
+{
+  return ptr (new Config (parent));
+}
+
 QHash<int, QByteArray>
 Config::roleNames () const
 {

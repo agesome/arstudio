@@ -11,8 +11,8 @@
 #include <Sequence.hpp>
 
 namespace arstudio {
-/*
- * This class describes a single item in the Repository model
+/**
+ * @brief This class represents a single item in the Repository model
  */
 
 class RepositoryNode : public QObject
@@ -64,13 +64,12 @@ private:
 };
 
 /**
- * Sequence storage class
+ * @brief Sequence storage class
  *
- * This class serves as storage for all data processed by Logger. At the
- * same
- * time, Repository provieds a QAbstractListModel reflecting it's contents
- * to be viewed by the user. Sequences are stored in RepositoryNodes for
- * convenient access from views.
+ * This class serves as storage for all data processed by Logger. At the same
+ * time, Repository provieds a QAbstractListModel reflecting it's contents to
+ * be viewed by the user. Sequences are stored in RepositoryNode instances to
+ * allow convenient access from views
  */
 
 class Repository : public QAbstractListModel
@@ -101,14 +100,17 @@ public:
   int rowCount (const QModelIndex & parent = QModelIndex ()) const;
 
   /**
-   * Add a sequence to the list by it's Sequence::ptr
+   * @brief Add a sequence to the list by it's Sequence::ptr
    * @param sequence the pointer
    * @param node_name name under which to store the sequence
    */
   void add_sequence (const Sequence::ptr sequence, const QString & node_name);
+
   /**
-   * Add an item to already stored sequence, or create a sequence for this
-   * item if there isn't one yet.
+   * @brief Add an item to already stored sequence
+   *
+   * If specified sequence does not exist, it is created
+   *
    * @param item the item to store
    * @param frame the frame to which this item corresponds
    * @param type type of the item

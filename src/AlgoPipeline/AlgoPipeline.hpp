@@ -13,9 +13,11 @@
 
 namespace arstudio {
 /**
- *      This class handles image processing algorithms.
+ * @brief This class is responsible for running all registered algotihms
+ *
+ * Data passed to process_frame is subsequently passed to an instance of every
+ * registered algorithm
  */
-
 class AlgoPipeline
 {
 public:
@@ -24,11 +26,22 @@ public:
   ~AlgoPipeline ();
 
   static ptr make ();
-  void process_frame (const cv::Mat &, const cv::Mat &);
-  void create_all (Config *);
+
+  /**
+   * @brief Process a single frame; data is passed down to algorithms
+   */
+  void process_frame (const cv::Mat & image, const cv::Mat & dmap);
+
+  /**
+   * @brief Create instances of algorithms registered with AlgorithmFactory
+   * @param config to be passed to algorithm constructors
+   */
+  void create_all (Config * config);
 private:
+  /**
+   * @brief List of algorithm instances to be run
+   */
   std::list <IAbstractAlgorithm *> m_algorithm_list;
 };
 }
-
 #endif // ALGO_PIPELINE_H
