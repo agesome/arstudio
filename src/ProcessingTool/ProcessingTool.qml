@@ -14,6 +14,10 @@ import arstudio 1.0
 Rectangle {
     color: g_systemPalette.window
 
+    function openFD() {
+        openFileDialog.visible = true
+    }
+
     ColumnLayout {
         anchors.fill: parent
 

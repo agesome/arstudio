@@ -4,7 +4,7 @@
 namespace arstudio {
 VideoHelper::VideoHelper (QObject * parent)
   : QObject (parent),
-  m_file_basename ("invalid"),
+  m_file_basename ("none"),
   m_status (false),
   m_frame_count (0)
 {

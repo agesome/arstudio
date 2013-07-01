@@ -29,6 +29,11 @@ ApplicationWindow {
         id: menubar
 
         onShowOpenFile: openFileDialog.visible = true
+        onOpenProcessing: {
+            tabview.currentIndex = 2
+            processingTool.item.openFD()
+
+        }
     }
 
     SystemPalette { id: g_systemPalette }
@@ -42,6 +47,7 @@ ApplicationWindow {
         Layout.minimumWidth: 500
 
         TabView {
+            id: tabview
             Layout.fillHeight: true
             Layout.fillWidth: true
             Layout.minimumHeight: 400
@@ -56,6 +62,7 @@ ApplicationWindow {
                 ConfigView {}
             }
             Tab {
+                id: processingTool
                 title: "Processing"
                 ProcessingTool {}
             }

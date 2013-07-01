@@ -3,6 +3,8 @@ import QtQuick.Controls 1.0
 
 MenuBar {
     signal showOpenFile()
+    signal openProcessing()
+
     property alias compactMode: compactMode.checked
 
     Menu {
@@ -12,7 +14,7 @@ MenuBar {
             text: "Open"
             shortcut: "Ctrl+O"
             iconName: "document-open"
-            onTriggered: showOpenFile()
+            onTriggered: openProcessing()
         }
 
         MenuItem {
