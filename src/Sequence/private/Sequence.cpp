@@ -22,11 +22,11 @@ Sequence::make (ap::Node::Type type)
 void
 Sequence::add_item (int frame, const Item::ptr item_ptr)
 {
-  m_items.insert (std::make_pair (frame, item_ptr));
+  m_items.insert (frame, item_ptr);
   items_changed ();
 }
 
-const Sequence::frame_map &
+const Sequence::FrameMap &
 Sequence::items ()
 {
   return m_items;
@@ -41,10 +41,6 @@ Sequence::type ()
 const Item::ptr
 Sequence::item_for_frame (int frame)
 {
-  auto it = m_items.find (frame);
-
-  if (it == m_items.end ())
-    return Item::ptr ();
-  return it->second;
+  return m_items.value (frame);
 }
 }

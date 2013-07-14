@@ -33,11 +33,11 @@ private:
   {
     ap::Item * i;
 
-    for (auto pair : sequence->items ())
+    for (const Item::ptr & item : sequence->items ())
       {
         i = node->add_items ();
         auto e = i->MutableExtension (id);
-        pair.second.dynamicCast<SEQUENCE_TYPE> ()->serialize (e);
+        item.dynamicCast<SEQUENCE_TYPE> ()->serialize (e);
       }
   }
 

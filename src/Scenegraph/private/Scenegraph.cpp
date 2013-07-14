@@ -17,8 +17,8 @@ void
 Scenegraph::add_sequence (Sequence * seq)
 {
   m_sequences.push_back (seq);
-  for (auto i : seq->items ())
-    m_frames.insert (i.first);
+  for (int frame : seq->items ().keys ())
+    m_frames.insert (frame);
 
   connect (seq, &Sequence::items_changed,
            this, &Scenegraph::rebuild_frames);
@@ -63,8 +63,8 @@ Scenegraph::rebuild_frames ()
 {
   m_frames.clear ();
   for (Sequence * s : m_sequences)
-    for (auto i : s->items ())
-      m_frames.insert (i.first);
+    for (int frame : s->items ().keys ())
+      m_frames.insert (frame);
   sequences_changed ();
 }
 

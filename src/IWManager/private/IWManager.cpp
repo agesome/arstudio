@@ -247,10 +247,9 @@ IWManager::add_camera_path (Sequence * s)
   QList<QVector3D> points;
   QVector3D        p;
 
-  for (auto ip : s->items ())
+  for (const Item::ptr & ip : s->items ())
     {
-      Item::ptr   i = ip.second;
-      Camera::ptr c = i.dynamicCast<Camera> ();
+      Camera::ptr c = ip.dynamicCast<Camera> ();
 
       p = c->position ();
       points << p;

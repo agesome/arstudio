@@ -3,12 +3,7 @@
 
 #include <QObject>
 #include <QSharedPointer>
-#include <QQmlListProperty>
-#include <QList>
-
-#include <map>
-#include <string>
-#include <utility>
+#include <QMap>
 
 #include <repository.pb.h>
 
@@ -37,7 +32,7 @@ class Sequence : public QObject
                         Q_ENUMS (ItemTypes)
 public:
   typedef QSharedPointer<Sequence> ptr;
-  typedef std::map <int, const Item::ptr> frame_map;
+  typedef QMap<int, Item::ptr> FrameMap;
   /*
    * This MUST mirror the Node::Type struct from repository.proto !
    * Since we cannot properly expose the Node_Type struct to QML,
@@ -60,14 +55,14 @@ public:
    * @return Item::ptr for the item, uninitialized if item was not found
    */
   const Item::ptr item_for_frame (int frame);
-  const frame_map & items ();
+  const FrameMap & items ();
 
   ap::Node::Type type ();
 private:
   Q_DISABLE_COPY (Sequence)
 
   const ap::Node::Type m_type; //< type of items stored
-  frame_map m_items;  //< map of items to frames
+  FrameMap m_items;  //< map of items to frames
 signals:
   void items_changed ();
 };
