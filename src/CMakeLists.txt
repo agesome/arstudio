@@ -23,6 +23,7 @@ set(arstudio_sources
     CustomModel/private/CustomModel.cpp
     BitmapView/private/BitmapView.cpp
     RepositoryIO/private/RepositoryIO.cpp
+    Sequence/private/ItemImplementations.cpp
 
     Core/Core.qml
     Core/MainMenuBar.qml
