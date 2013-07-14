@@ -1,10 +1,9 @@
 cmake_minimum_required(VERSION 2.8.9 FATAL_ERROR)
 
-project(arstudio CXX C)
+project(arstudio CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_SKIP_RULE_DEPENDENCY ON)
-set(GLOBAL_LIBS "")
 
 set(arstudio_sources
     ${CMAKE_BINARY_DIR}/main.cpp
@@ -23,6 +22,7 @@ set(arstudio_sources
     VideoPipeline/private/VideoPipeline.cpp
     CustomModel/private/CustomModel.cpp
     BitmapView/private/BitmapView.cpp
+    RepositoryIO/private/RepositoryIO.cpp
 
     Core/Core.qml
     Core/MainMenuBar.qml
@@ -34,6 +34,13 @@ set(arstudio_sources
     WindowTool/ModelControls.qml
     ProcessingTool/ProcessingTool.qml
     ConfigView/ConfigView.qml
+
+    protobuf/repository.proto
+)
+
+set(protobuf_files
+
+    protobuf/repository.proto
 )
 
 # this is somewhat tricky. we want a separate list of all headers so that they
@@ -52,6 +59,7 @@ set(arstudio_headers
     Sequence/Camera.hpp
     Sequence/Point3D.hpp
     Repository/Repository.hpp
+    Repository/RepositoryNode.hpp
     Scenegraph/Scenegraph.hpp
     Scenegraph/ScenegraphAggregator.hpp
     VideoHelper/VideoHelper.hpp
@@ -63,6 +71,7 @@ set(arstudio_headers
     CustomModel/CustomModel.hpp
     BitmapView/BitmapView.hpp
     AlgoPipeline/AlgorithmFactory.hpp
+    RepositoryIO/RepositoryIO.hpp
 )
 
 set(arstudio_moc_headers
@@ -76,6 +85,7 @@ set(arstudio_moc_headers
     Config/Config.hpp
     CustomModel/CustomModel.hpp
     BitmapView/BitmapView.hpp
+    Repository/RepositoryNode.hpp
 )
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -87,19 +97,20 @@ find_package(Qt5Quick REQUIRED)
 find_package(Qt5Concurrent REQUIRED)
 find_package(Qt53DQuick REQUIRED)
 find_package(OpenCV REQUIRED)
+find_package(Protobuf REQUIRED)
 
 find_library(MAGIC magic)
 
+message(STATUS "Qt version: ${Qt5Core_VERSION_STRING}")
+message(STATUS "OpenCV version: ${OpenCV_VERSION}")
+
 if(MAGIC STREQUAL "LIBMAGIC-NOTFOUND")
-    message(STATUS "libmagic not found")
+    message(STATUS "Use libmagic: NO")
 else()
-    message(STATUS "libmagic found")
+    message(STATUS "Use libmagic: YES")
     add_definitions(-DHAVE_LIBMAGIC)
     set(LIBMAGIC ${MAGIC})
 endif()
-
-message(STATUS "Qt version: ${Qt5Core_VERSION_STRING}")
-message(STATUS "OpenCV version: ${OpenCV_VERSION}")
 
 add_definitions(${Qt5Quick_DEFINITIONS})
 add_definitions(${Qt53DQuick_DEFINITIONS})
@@ -132,12 +143,15 @@ include_directories(
   VideoPipeline
   CustomModel
   BitmapView
+  RepositoryIO
   ../submodules/KinectRecorder/src/
   ${OpenCV_INCLUDE_DIRS}
   ${Qt5Quick_INCLUDE_DIRS}
   ${Qt53DQuick_INCLUDE_DIRS}
   ${Qt5Concurrent_INCLUDE_DIRS}
+  ${PROTOBUF_INCLUDE_DIRS}
   ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 macro(subdirlist result curdir)
@@ -177,6 +191,8 @@ configure_file(main.cpp ${CMAKE_BINARY_DIR}/main.cpp)
 qt5_wrap_cpp(arstudio_moc ${arstudio_moc_headers})
 qt5_add_resources(arstudio_res resources/list.qrc)
 
+protobuf_generate_cpp(protobuf_sources protobuf_headers ${protobuf_files})
+
 message(STATUS "Build type is: ${CMAKE_BUILD_TYPE}")
 
 add_executable(arstudio
@@ -184,6 +200,9 @@ add_executable(arstudio
                ${arstudio_headers}
                ${arstudio_moc}
                ${arstudio_res}
+               ${protobuf_sources}
+               ${protobuf_headers}
+               ${protobuf_files}
 )
 
 qt5_use_modules(arstudio Quick 3DQuick Concurrent)
@@ -193,5 +212,6 @@ target_link_libraries(
   kinectCapture
   ${ALGORITHMS}
   ${OpenCV_LIBS}
+  ${PROTOBUF_LIBRARIES}
   ${LIBMAGIC}
 )

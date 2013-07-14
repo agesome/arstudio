@@ -55,10 +55,10 @@ RowLayout {
 
                     var type = model.nodes[styleData.row].type
                     if (scenegraph.locked_to === Scenegraph.BITMAP)
-                        return (type === Sequence.BITMAP)
+                        return (type === Sequence.Bitmap)
                                 && (styleData.row === exclusiveSequenceIndex)
                     else if (scenegraph.locked_to === Scenegraph.NORMAL)
-                        return type !== Sequence.BITMAP
+                        return type !== Sequence.Bitmap
 
                     return true
                 }
@@ -87,8 +87,8 @@ RowLayout {
             delegate: Image {
                 fillMode: Image.Pad
                 source: switch (styleData.value) {
-                        case Sequence.CAMERA: return "qrc:camera-photo.png"
-                        case Sequence.BITMAP: return "qrc:emblem-photos.png"
+                        case Sequence.Camera: return "qrc:camera-photo.png"
+                        case Sequence.Bitmap: return "qrc:emblem-photos.png"
                         }
             }
         }

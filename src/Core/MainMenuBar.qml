@@ -42,6 +42,16 @@ MenuBar {
             iconName: "edit-cut"
             onTriggered: g_Repository.clear()
         }
+
+        MenuItem {
+            text: "Dump Repository As Text"
+            onTriggered: g_Repository.dump_contents("test.asr")
+        }
+
+        MenuItem {
+            text: "restore"
+            onTriggered: g_Repository.populate_from_file ("test.asr");
+        }
     }
 
     Menu {

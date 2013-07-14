@@ -8,61 +8,10 @@
 #include <QQmlEngine>
 #include <QQmlListProperty>
 
-#include <Sequence.hpp>
+#include <RepositoryNode.hpp>
+#include <RepositoryIO.hpp>
 
 namespace arstudio {
-/**
- * @brief This class represents a single item in the Repository model
- */
-
-class RepositoryNode : public QObject
-{
-  Q_OBJECT
-  Q_PROPERTY (arstudio::Sequence::ItemType type READ type CONSTANT)
-  Q_PROPERTY (arstudio::Sequence * ptr READ ptr CONSTANT)
-public:
-  RepositoryNode (const QString & name,
-                  Sequence::ptr data,
-                  QObject * parent = nullptr)
-    :
-    QObject (parent),
-    m_name (name),
-    m_data (data)
-  {
-  }
-
-  RepositoryNode () = default;
-
-  arstudio::Sequence *
-  ptr ()
-  {
-    return m_data.data ();
-  }
-
-  Sequence::ptr
-  shared_ptr ()
-  {
-    return m_data;
-  }
-
-  const QString
-  name ()
-  {
-    return m_name;
-  }
-
-  arstudio::Sequence::ItemType
-  type ()
-  {
-    return m_data->type ();
-  }
-
-private:
-  Q_DISABLE_COPY (RepositoryNode)
-  const QString m_name;
-  Sequence::ptr m_data;
-};
-
 /**
  * @brief Sequence storage class
  *
@@ -116,7 +65,7 @@ public:
    * @param type type of the item
    * @param node_name name of the destination sequence
    */
-  void add_item (const Item::ptr item, int frame, Sequence::ItemType type,
+  void add_item (const Item::ptr item, int frame, ap::Node::Type type,
                  const QString & node_name);
 
   NodeListProperty nodes ();
@@ -142,6 +91,8 @@ private slots:
   void append_node_slot (RepositoryNode * node);
 public slots:
   void clear ();
+  void dump_contents (const QString & filename);
+  void populate_from_file (const QString & filename);
 };
 }
 #endif // REPOSITORY_H

@@ -10,6 +10,10 @@
 #include <string>
 #include <utility>
 
+#include <repository.pb.h>
+
+namespace ap = arstudio_protobuf;
+
 namespace arstudio {
 /**
  * @brief Base class for all item types
@@ -30,16 +34,22 @@ public:
 class Sequence : public QObject
 {
   Q_OBJECT
-                        Q_ENUMS (ItemType)
+                        Q_ENUMS (ItemTypes)
 public:
   typedef QSharedPointer<Sequence> ptr;
   typedef std::map <int, const Item::ptr> frame_map;
-  enum ItemType { CAMERA, PCLOUD, POINT3D, BITMAP, INVALID };
+  /*
+   * This MUST mirror the Node::Type struct from repository.proto !
+   * Since we cannot properly expose the Node_Type struct to QML,
+   * because it is in protobuf-generated non-Qt code
+   */
+  enum ItemTypes { Invalid = 0, Bitmap, Camera, Point, PointCloud };
 
-  Sequence (ItemType, QObject * parent = nullptr);
+
+  Sequence (ap::Node::Type, QObject * parent = nullptr);
   Sequence (QObject * parent = nullptr);
 
-  static ptr make (ItemType);
+  static ptr make (ap::Node::Type);
 
   /**
    * @brief Add an item for a specific frame
@@ -52,11 +62,11 @@ public:
   const Item::ptr item_for_frame (int frame);
   const frame_map & items ();
 
-  ItemType type ();
+  ap::Node::Type type ();
 private:
   Q_DISABLE_COPY (Sequence)
 
-  const ItemType m_type; //< type of items stored
+  const ap::Node::Type m_type; //< type of items stored
   frame_map m_items;  //< map of items to frames
 signals:
   void items_changed ();

@@ -23,7 +23,7 @@ Scenegraph::add_sequence (Sequence * seq)
   connect (seq, &Sequence::items_changed,
            this, &Scenegraph::rebuild_frames);
 
-  if (seq->type () == Sequence::BITMAP)
+  if (seq->type () == ap::Node::Bitmap)
     m_locked_to = BITMAP;
   else
     m_locked_to = NORMAL;

@@ -64,7 +64,7 @@ Repository::rowCount (const QModelIndex &) const
 
 void
 Repository::add_item (const Item::ptr item, int frame,
-                      Sequence::ItemType type,
+                      ap::Node::Type type,
                       const QString & node_name)
 {
   Sequence::ptr s;
@@ -107,11 +107,23 @@ void
 Repository::clear ()
 {
   removing_all_nodes ();
-  beginResetModel();
+  beginResetModel ();
   for (RepositoryNode * n : m_nodes)
     delete n;
   m_nodes.clear ();
-  nodes_changed();
+  nodes_changed ();
   endResetModel ();
+}
+
+void
+Repository::dump_contents (const QString & filename)
+{
+  RepositoryIO::serialize_to_file (filename, m_nodes);
+}
+
+void
+Repository::populate_from_file (const QString &filename)
+{
+  RepositoryIO::deserialize_from_file (filename, m_nodes);
 }
 }

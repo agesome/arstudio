@@ -20,6 +20,8 @@
 #include <CustomModel.hpp>
 #include <BitmapView.hpp>
 
+#include <repository.pb.h>
+
 namespace as = arstudio;
 
 static void register_qml_types ();
@@ -27,12 +29,14 @@ static void register_qml_types ();
 int
 main (int argc, char * argv[])
 {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
   QApplication  application (argc, argv);
   QQmlEngine    engine;
   QQmlComponent core (&engine);
 
-  as::Repository::ptr repository   = as::Repository::make ();
-  as::Config::ptr     config       = as::Config::make ();
+  as::Repository::ptr repository = as::Repository::make ();
+  as::Config::ptr     config     = as::Config::make ();
 
   QObject::connect (repository.data (),
                     &as::Repository::removing_all_nodes,
@@ -48,13 +52,14 @@ main (int argc, char * argv[])
 
   QApplication::setApplicationName ("arstudio");
   QApplication::setOrganizationName ("CVTeam");
-  register_qml_types();
+  register_qml_types ();
   engine.setBaseUrl (QUrl::fromLocalFile ("@QML_ROOT@"));
   engine.addImportPath ("@QML_ROOT@");
 
 
   core.loadUrl (QUrl::fromLocalFile ("Core/Core.qml"));
-  engine.rootContext ()->setContextProperty ("g_Repository", repository.data ());
+  engine.rootContext ()->setContextProperty ("g_Repository",
+                                             repository.data ());
   engine.rootContext ()->setContextProperty ("g_Config", config.data ());
 
   QObject * window_object = core.create ();
@@ -74,7 +79,7 @@ main (int argc, char * argv[])
 }
 
 static void
-register_qml_types()
+register_qml_types ()
 {
   qmlRegisterType<as::Sequence> ("arstudio", 1, 0, "Sequence");
   qmlRegisterType<as::Scenegraph> ("arstudio", 1, 0, "Scenegraph");

@@ -362,7 +362,7 @@ IWManager::paint_bitmap ()
   Sequence * s = m_scenegraph->sequences ().first ();
   Item::ptr  i = s->item_for_frame (m_current_frame);
 
-  Q_ASSERT (s->type () == Sequence::BITMAP);
+  Q_ASSERT (s->type () == ap::Node::Bitmap);
   Bitmap::ptr bmp = i.dynamicCast<Bitmap> ();
   Q_ASSERT (bmp);
   m_bitmap_view->set_image (bmp->get ());
@@ -401,7 +401,7 @@ IWManager::paint_frame (int frame)
         continue;
       switch (s->type ())
         {
-        case Sequence::CAMERA:
+        case ap::Node::Camera:
           eye_camera = p.dynamicCast<Camera> ();
           add_camera (eye_camera);
           add_camera_path (s);
