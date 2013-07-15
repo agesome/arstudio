@@ -19,6 +19,7 @@ ApplicationWindow {
 
     title: "CVAR Studio"
 
+    visible: true
     width: layout.implicitWidth
     height: layout.implicitHeight
     minimumWidth: layout.Layout.minimumWidth

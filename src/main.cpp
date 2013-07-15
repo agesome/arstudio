@@ -4,10 +4,8 @@
 #endif
 
 #include <QApplication>
-#include <QQmlEngine>
+#include <QQmlApplicationEngine>
 #include <QQmlContext>
-#include <QQmlComponent>
-#include <QQuickWindow>
 
 #include <IWManager.hpp>
 #include <Logger.hpp>
@@ -31,9 +29,8 @@ main (int argc, char * argv[])
 {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-  QApplication  application (argc, argv);
-  QQmlEngine    engine;
-  QQmlComponent core (&engine);
+  QApplication          application (argc, argv);
+  QQmlApplicationEngine engine;
 
   as::Repository::ptr repository = as::Repository::make ();
   as::Config::ptr     config     = as::Config::make ();
@@ -52,30 +49,15 @@ main (int argc, char * argv[])
 
   QApplication::setApplicationName ("arstudio");
   QApplication::setOrganizationName ("CVTeam");
+
   register_qml_types ();
   engine.setBaseUrl (QUrl::fromLocalFile ("@QML_ROOT@"));
   engine.addImportPath ("@QML_ROOT@");
-
-
-  core.loadUrl (QUrl::fromLocalFile ("Core/Core.qml"));
   engine.rootContext ()->setContextProperty ("g_Repository",
                                              repository.data ());
   engine.rootContext ()->setContextProperty ("g_Config", config.data ());
-
-  QObject * window_object = core.create ();
-  if (window_object != nullptr)
-    {
-      QQuickWindow * window = qobject_cast<QQuickWindow *> (window_object);
-      QObject::connect (&engine, &QQmlEngine::quit,
-                        [&application]() { application.exit (EXIT_SUCCESS); });
-      window->show ();
-      return application.exec ();
-    }
-
-  qWarning () << "Component creation failed with following errors:";
-  for (QQmlError error : core.errors ())
-    qWarning () << error.toString ();
-  return EXIT_FAILURE;
+  engine.load ("Core/Core.qml");
+  return application.exec ();
 }
 
 static void
