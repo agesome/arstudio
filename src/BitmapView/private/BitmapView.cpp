@@ -10,7 +10,7 @@ BitmapView::BitmapView (QQuickItem * parent)
 void
 BitmapView::set_image (const QImage & i)
 {
-  if (i.isNull())
+  if (i.isNull ())
     return;
   m_image = i;
   setFlag (ItemHasContents, true);
@@ -47,6 +47,9 @@ BitmapView::updatePaintNode (QSGNode * node, UpdatePaintNodeData *)
 void
 BitmapView::window_set (QQuickWindow * w)
 {
+  // at exit, something calls this with w = null; why? is that normal?
+  if (!w)
+    return;
   connect (w, &QQuickWindow::widthChanged, this, &BitmapView::update);
   connect (w, &QQuickWindow::heightChanged, this, &BitmapView::update);
 }
