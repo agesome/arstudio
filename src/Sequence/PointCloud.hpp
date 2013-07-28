@@ -27,13 +27,6 @@ public:
 
   void
   append_point (const QVector3D & p, const QColor & c = QColor (Qt::white));
-
-  void
-  serialize (ap::PointCloud * pc);
-
-  static Item::ptr
-  deserialize (const ap::Item & i);
-
 private:
   QVector<QVector3D> m_points;
   QVector<QColor>    m_colors;

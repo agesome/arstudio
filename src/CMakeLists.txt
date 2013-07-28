@@ -35,13 +35,6 @@ set(arstudio_sources
     WindowTool/ModelControls.qml
     ProcessingTool/ProcessingTool.qml
     ConfigView/ConfigView.qml
-
-    protobuf/repository.proto
-)
-
-set(protobuf_files
-
-    protobuf/repository.proto
 )
 
 # this is somewhat tricky. we want a separate list of all headers so that they
@@ -98,7 +91,6 @@ find_package(Qt5Quick REQUIRED)
 find_package(Qt5Concurrent REQUIRED)
 find_package(Qt53DQuick REQUIRED)
 find_package(OpenCV REQUIRED)
-find_package(Protobuf REQUIRED)
 
 find_library(MAGIC magic)
 
@@ -150,7 +142,6 @@ include_directories(
   ${Qt5Quick_INCLUDE_DIRS}
   ${Qt53DQuick_INCLUDE_DIRS}
   ${Qt5Concurrent_INCLUDE_DIRS}
-  ${PROTOBUF_INCLUDE_DIRS}
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
 )
@@ -192,8 +183,6 @@ configure_file(main.cpp ${CMAKE_BINARY_DIR}/main.cpp)
 qt5_wrap_cpp(arstudio_moc ${arstudio_moc_headers})
 qt5_add_resources(arstudio_res resources/list.qrc)
 
-protobuf_generate_cpp(protobuf_sources protobuf_headers ${protobuf_files})
-
 message(STATUS "Build type is: ${CMAKE_BUILD_TYPE}")
 
 add_executable(arstudio
@@ -201,9 +190,6 @@ add_executable(arstudio
                ${arstudio_headers}
                ${arstudio_moc}
                ${arstudio_res}
-               ${protobuf_sources}
-               ${protobuf_headers}
-               ${protobuf_files}
 )
 
 qt5_use_modules(arstudio Quick 3DQuick Concurrent)
@@ -213,6 +199,5 @@ target_link_libraries(
   kinectCapture
   ${ALGORITHMS}
   ${OpenCV_LIBS}
-  ${PROTOBUF_LIBRARIES}
   ${LIBMAGIC}
 )

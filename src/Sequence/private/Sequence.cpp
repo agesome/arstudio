@@ -1,7 +1,7 @@
 #include <Sequence.hpp>
 
 namespace arstudio {
-Sequence::Sequence (ap::Node::Type type, QObject * parent)
+Sequence::Sequence (ItemType type, QObject * parent)
   : QObject (parent),
   m_type (type)
 {
@@ -9,12 +9,12 @@ Sequence::Sequence (ap::Node::Type type, QObject * parent)
 
 Sequence::Sequence (QObject * parent)
   : QObject (parent),
-  m_type (ap::Node::Invalid)
+  m_type (Sequence::Invalid)
 {
 }
 
 Sequence::ptr
-Sequence::make (ap::Node::Type type)
+Sequence::make (Sequence::ItemType type)
 {
   return QSharedPointer<Sequence> (new Sequence (type));
 }
@@ -32,7 +32,7 @@ Sequence::items ()
   return m_items;
 }
 
-ap::Node::Type
+Sequence::ItemType
 Sequence::type ()
 {
   return m_type;

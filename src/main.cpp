@@ -18,8 +18,6 @@
 #include <CustomModel.hpp>
 #include <BitmapView.hpp>
 
-#include <repository.pb.h>
-
 namespace as = arstudio;
 
 static void register_qml_types ();
@@ -27,8 +25,6 @@ static void register_qml_types ();
 int
 main (int argc, char * argv[])
 {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
   QApplication          application (argc, argv);
   QQmlApplicationEngine engine;
 
@@ -45,6 +41,7 @@ main (int argc, char * argv[])
                     []() { as::Logger::instance ().reset_frame_counter (); });
 
   as::Logger::set_repository (repository);
+
   config->import_directory ("@CONFIG_DIRECTORY@");
 
   QApplication::setApplicationName ("arstudio");

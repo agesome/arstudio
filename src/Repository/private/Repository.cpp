@@ -64,7 +64,7 @@ Repository::rowCount (const QModelIndex &) const
 
 void
 Repository::add_item (const Item::ptr item, int frame,
-                      ap::Node::Type type,
+                      Sequence::ItemType type,
                       const QString & node_name)
 {
   Sequence::ptr s;

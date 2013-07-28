@@ -65,7 +65,7 @@ public:
    * @param type type of the item
    * @param node_name name of the destination sequence
    */
-  void add_item (const Item::ptr item, int frame, ap::Node::Type type,
+  void add_item (const Item::ptr item, int frame, Sequence::ItemType type,
                  const QString & node_name);
 
   NodeListProperty nodes ();

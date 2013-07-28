@@ -23,14 +23,6 @@ public:
 
   const QColor
   color ();
-
-  void
-  serialize (ap::Point * p);
-
-  static Item::ptr
-  deserialize (const ap::Item & i);
-
-
 private:
   QVector3D m_position;
   QColor    m_color;

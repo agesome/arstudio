@@ -20,13 +20,6 @@ public:
   position ();
   const QVector3D
   rotation ();
-
-  void
-  serialize (ap::Camera * c);
-
-  static Item::ptr
-  deserialize (const ap::Item & i);
-
 private:
   QVector3D m_position;
   QVector3D m_rotation;
