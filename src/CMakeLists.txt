@@ -82,6 +82,11 @@ set(arstudio_moc_headers
     Repository/RepositoryNode.hpp
 )
 
+set(resource_files
+    resources/list.qrc
+    qml-files.qrc
+)
+
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Debug CACHE STRING
   "Choose the type of build: Debug/Release" FORCE)
@@ -176,12 +181,11 @@ if(NOT ALGORITHMS STREQUAL "")
 endif()
 
 set(CONFIG_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/algorithms/")
-set(QML_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/")
 
 configure_file(main.cpp ${CMAKE_BINARY_DIR}/main.cpp)
 
 qt5_wrap_cpp(arstudio_moc ${arstudio_moc_headers})
-qt5_add_resources(arstudio_res resources/list.qrc)
+qt5_add_resources(arstudio_res ${resource_files})
 
 message(STATUS "Build type is: ${CMAKE_BUILD_TYPE}")
 

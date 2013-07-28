@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/">
+        <file>ConfigView/ConfigView.qml</file>
+        <file>ConfigView/qmldir</file>
+        <file>Core/Core.qml</file>
+        <file>Core/MainMenuBar.qml</file>
+        <file>ProcessingTool/ProcessingTool.qml</file>
+        <file>ProcessingTool/qmldir</file>
+        <file>TimeLine/qmldir</file>
+        <file>TimeLine/TimeLine.qml</file>
+        <file>WindowTool/Axis.qml</file>
+        <file>WindowTool/ItemWindow.qml</file>
+        <file>WindowTool/ModelControls.qml</file>
+        <file>WindowTool/qmldir</file>
+        <file>WindowTool/WindowHandler.qml</file>
+        <file>WindowTool/WindowTool.qml</file>
+    </qresource>
+</RCC>

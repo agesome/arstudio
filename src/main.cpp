@@ -48,12 +48,12 @@ main (int argc, char * argv[])
   QApplication::setOrganizationName ("CVTeam");
 
   register_qml_types ();
-  engine.setBaseUrl (QUrl::fromLocalFile ("@QML_ROOT@"));
-  engine.addImportPath ("@QML_ROOT@");
+  engine.setBaseUrl (QUrl ("qrc:///"));
+  engine.addImportPath ("qrc:/");
   engine.rootContext ()->setContextProperty ("g_Repository",
                                              repository.data ());
   engine.rootContext ()->setContextProperty ("g_Config", config.data ());
-  engine.load ("Core/Core.qml");
+  engine.load (QUrl ("qrc:///Core/Core.qml"));
   return application.exec ();
 }
 
