@@ -118,12 +118,12 @@ Repository::clear ()
 void
 Repository::dump_contents (const QString & filename)
 {
-  RepositoryIO::serialize_to_file (filename, m_nodes);
+  io::serialize_to_file (filename, m_nodes);
 }
 
 void
 Repository::populate_from_file (const QString &filename)
 {
-  RepositoryIO::deserialize_from_file (filename, m_nodes);
+  io::deserialize_from_file (filename, m_nodes);
 }
 }

@@ -45,10 +45,10 @@ public:
    * @brief Get an item for a specific frame
    * @return Item::ptr for the item, uninitialized if item was not found
    */
-  const Item::ptr item_for_frame (int frame);
-  const FrameMap & items ();
+  const Item::ptr item_for_frame (int frame) const;
+  const FrameMap & items () const;
 
-  ItemType type ();
+  ItemType type () const;
 private:
   Q_DISABLE_COPY (Sequence)
 

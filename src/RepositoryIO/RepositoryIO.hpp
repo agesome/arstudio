@@ -1,7 +1,8 @@
-#ifndef REPOSITORY_SERIALIZER_HPP
-#define REPOSITORY_SERIALIZER_HPP
+#ifndef REPOSITORY_IO_HPP
+#define REPOSITORY_IO_HPP
 
 #include <QFile>
+#include <QDataStream>
 #include <QString>
 #include <QList>
 #include <QtDebug>
@@ -13,13 +14,14 @@
 #include <PointCloud.hpp>
 
 namespace arstudio {
-class RepositoryIO
-{
-public:
-  static bool serialize_to_file (const QString & path,
-                                 QList<RepositoryNode *> & nodes);
-  static bool deserialize_from_file (const QString & path,
-                                     QList<RepositoryNode *> & nodes);
-};
+namespace io {
+bool
+serialize_to_file (const QString & path,
+                   QList<RepositoryNode *> & nodes);
+bool
+deserialize_from_file (const QString & path,
+                       QList<RepositoryNode *> & nodes);
 }
-#endif
+}
+
+#endif // REPOSITORY_IO_HPP

@@ -27,19 +27,19 @@ Sequence::add_item (int frame, const Item::ptr item_ptr)
 }
 
 const Sequence::FrameMap &
-Sequence::items ()
+Sequence::items () const
 {
   return m_items;
 }
 
 Sequence::ItemType
-Sequence::type ()
+Sequence::type () const
 {
   return m_type;
 }
 
 const Item::ptr
-Sequence::item_for_frame (int frame)
+Sequence::item_for_frame (int frame) const
 {
   return m_items.value (frame);
 }

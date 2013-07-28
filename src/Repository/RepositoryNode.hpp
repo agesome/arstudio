@@ -34,20 +34,20 @@ public:
     return m_data.data ();
   }
 
-  Sequence::ptr
-  shared_ptr ()
+  const Sequence::ptr
+  shared_ptr () const
   {
     return m_data;
   }
 
   const QString
-  name ()
+  name () const
   {
     return m_name;
   }
 
   int
-  type ()
+  type () const
   {
     return m_data->type ();
   }

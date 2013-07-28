@@ -81,10 +81,24 @@ Point3D::color ()
  * PointCloud
  */
 
+PointCloud::PointCloud (const QVector<QVector3D> &points,
+                        const QVector<QColor> &colors)
+  : m_points (points)
+  , m_colors (colors)
+{
+}
+
 PointCloud::ptr
 PointCloud::make ()
 {
   return ptr (new PointCloud ());
+}
+
+PointCloud::ptr
+PointCloud::make (const QVector<QVector3D> &points,
+                  const QVector<QColor> &colors)
+{
+  return ptr (new PointCloud (points, colors));
 }
 
 int
@@ -93,22 +107,15 @@ PointCloud::point_count ()
   return m_points.size ();
 }
 
-inline QVector3D
-PointCloud::point_at (int i)
+QVector<QVector3D>
+PointCloud::points ()
 {
-  return m_points.at (i);
+  return m_points;
 }
 
-inline QColor
-PointCloud::point_color_at (int i)
+QVector<QColor>
+PointCloud::colors ()
 {
-  return m_colors.at (i);
-}
-
-inline void
-PointCloud::append_point (const QVector3D &p, const QColor &c)
-{
-  m_points.append (p);
-  m_colors.append (c);
+  return m_colors;
 }
 }
