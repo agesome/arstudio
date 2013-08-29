@@ -7,9 +7,6 @@
 #include <QSet>
 
 #include <Sequence.hpp>
-#include <repository.pb.h>
-
-namespace ap = arstudio_protobuf;
 
 namespace arstudio {
 /**

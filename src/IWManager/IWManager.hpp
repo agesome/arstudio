@@ -32,9 +32,6 @@
 #include <CustomModel.hpp>
 #include <Bitmap.hpp>
 #include <BitmapView.hpp>
-#include <repository.pb.h>
-
-namespace ap = arstudio_protobuf;
 
 namespace arstudio {
 /**
