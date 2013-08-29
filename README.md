@@ -15,7 +15,7 @@ Repository structure
 Dependencies
 =====
 
-- Qt 5 (OpenGL, Declarative; Widgets for deprecated 'widgets' branch)
+- Qt 5.1 (OpenGL, Quick; Widgets for deprecated 'widgets' branch)
 - Qt 3D (forked for this project: https://gitorious.org/~evgeny/qt/qt3d-minor-fixes)
 - OpenCV
 
@@ -25,7 +25,8 @@ To generate documentation, optional:
 - Graphviz
 
 This project is built with CMake. Features from C++11 are used here and there,
-so you'll need a compiler that supports it.
+so you'll need a compiler that supports it; arstudio has been built at least
+with GCC 4.8.1 and Clang 3.3.
 
 Cloning & Compiling
 =====

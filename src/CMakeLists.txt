@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.9 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8.11 FATAL_ERROR)
 
 project(arstudio CXX)
 
@@ -92,9 +92,7 @@ if(NOT CMAKE_BUILD_TYPE)
   "Choose the type of build: Debug/Release" FORCE)
 endif()
 
-find_package(Qt5Quick REQUIRED)
-find_package(Qt5Concurrent REQUIRED)
-find_package(Qt53DQuick REQUIRED)
+find_package(Qt5 REQUIRED Quick 3DQuick Concurrent)
 find_package(OpenCV REQUIRED)
 
 find_library(MAGIC magic)
@@ -110,19 +108,13 @@ else()
     set(LIBMAGIC ${MAGIC})
 endif()
 
-add_definitions(${Qt5Quick_DEFINITIONS})
-add_definitions(${Qt53DQuick_DEFINITIONS})
-add_definitions(${Qt5Concurrent_DEFINITIONS})
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Quick_EXECUTABLE_COMPILE_FLAGS}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt53DQuick_EXECUTABLE_COMPILE_FLAGS}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Concurrent_EXECUTABLE_COMPILE_FLAGS}")
-
-if(CMAKE_COMPILER_IS_GNUCXX)
+if(UNIX)
   set(CMAKE_CXX_FLAGS_DEBUG
-      "${CMAKE_CXX_FLAGS} -std=c++11 -O0 -ggdb3 -Wall -Wextra -pedantic")
+      "${CMAKE_CXX_FLAGS} -std=c++11 -g -O0 e-Wall -Wextra -pedantic")
   set(CMAKE_CXX_FLAGS_RELEASE
-      "${CMAKE_CXX_FLAGS} -std=c++11 -O3 -march=native -mtune=native -DQT_NO_DEBUG")
+      "${CMAKE_CXX_FLAGS} -std=c++11 -Ofast -march=native -mtune=native -DQT_NO_DEBUG")
+else()
+  message(FATAL_ERROR "There is no support for building on non-unix systems (yet).")
 endif()
 
 add_subdirectory(../submodules/KinectRecorder/src/
@@ -153,28 +145,27 @@ include_directories(
 
 macro(subdirlist result curdir)
   file(GLOB children RELATIVE ${curdir} ${curdir}/*)
-  set(dirlist "")
   foreach(child ${children})
   if(IS_DIRECTORY ${curdir}/${child})
-    set(dirlist ${dirlist} ${child})
+    list(APPEND dirlist ${child})
   endif()
   endforeach()
   set(${result} ${dirlist})
 endmacro()
 
 if(NOT ALGORITHMS)
-  subdirlist(subdirs algorithms/)
+  subdirlist(subdirs ${CMAKE_SOURCE_DIR}/algorithms/)
     set(ALGORITHMS ${subdirs} CACHE STRING
     "List algorithms to build" FORCE)
 endif()
 
-message(STATUS "Algorithms to build: " ${ALGORITHMS})
+message(STATUS "Algorithms to build: ${subdirs}")
 
 if(NOT ALGORITHMS STREQUAL "")
   message(STATUS "Will now add algorithms")
   foreach(subdir ${ALGORITHMS})
     message(STATUS "  Adding algorithm "${subdir})
-      add_subdirectory(algorithms/${subdir}/
+      add_subdirectory(${CMAKE_SOURCE_DIR}/algorithms/${subdir}/
           ${CMAKE_CURRENT_BINARY_DIR}/${subdir}
           EXCLUDE_FROM_ALL)
   endforeach()
@@ -196,12 +187,13 @@ add_executable(arstudio
                ${arstudio_res}
 )
 
-qt5_use_modules(arstudio Quick 3DQuick Concurrent)
-
 target_link_libraries(
   arstudio
   kinectCapture
   ${ALGORITHMS}
   ${OpenCV_LIBS}
   ${LIBMAGIC}
+  Qt5::Quick
+  Qt5::3DQuick
+  Qt5::Concurrent
 )
