@@ -50,6 +50,7 @@ main (int argc, char * argv[])
   register_qml_types ();
   engine.setBaseUrl (QUrl ("qrc:///"));
   engine.addImportPath ("qrc:/");
+  engine.addImportPath ("@QT3D_IMPORT_PATH@");
   engine.rootContext ()->setContextProperty ("g_Repository",
                                              repository.data ());
   engine.rootContext ()->setContextProperty ("g_Config", config.data ());

@@ -92,23 +92,29 @@ if(NOT CMAKE_BUILD_TYPE)
   "Choose the type of build: Debug/Release" FORCE)
 endif()
 
-
 include(ExternalProject)
 ExternalProject_Add(
-	Qt3D
-	GIT_REPOSITORY http://git.gitorious.org/qt/qt3d-minor-fixes.git
-	GIT_TAG master
-	CONFIGURE_COMMAND qmake <SOURCE_DIR>
-	BUILD_COMMAND make
-	INSTALL_COMMAND INSTALL_ROOT=<INSTALL_DIR> make install
+  Qt3D
+  GIT_REPOSITORY http://git.gitorious.org/qt/qt3d-minor-fixes.git
+  GIT_TAG master
+  CONFIGURE_COMMAND qmake <SOURCE_DIR>
+  BUILD_COMMAND make
+  INSTALL_COMMAND INSTALL_ROOT=<INSTALL_DIR> make install
 )
 
 ExternalProject_Get_Property(Qt3D INSTALL_DIR)
-
 set(CMAKE_PREFIX_PATH "${INSTALL_DIR}/usr/lib/cmake/")
+find_package(Qt53DQuick QUIET)
+
+if(NOT ${Qt53DQuick_FOUND})
+  message(STATUS "First build. Rescanning")
+  add_custom_target(Rescan ${CMAKE_COMMAND} ${CMAKE_SOURCE_DIR} DEPENDS Qt3D)
+else()
+  add_custom_target(Rescan)
+endif()
+
 find_package(Qt5OpenGL REQUIRED)
 find_package(Qt5Quick REQUIRED)
-find_package(Qt53DQuick REQUIRED)
 find_package(Qt5Concurrent REQUIRED)
 find_package(OpenCV REQUIRED)
 
@@ -166,7 +172,6 @@ include_directories(
   ${OpenCV_INCLUDE_DIRS}
   ${Qt5OpenGL_INCLUDE_DIRS}
   ${Qt5Quick_INCLUDE_DIRS}
-  ${Qt53DQuick_INCLUDE_DIRS}
   ${Qt5Concurrent_INCLUDE_DIRS}
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
@@ -202,7 +207,7 @@ if(NOT ALGORITHMS STREQUAL "")
 endif()
 
 set(CONFIG_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/algorithms/")
-
+set(QT3D_IMPORT_PATH "${INSTALL_DIR}/usr/lib/qt/qml/")
 configure_file(main.cpp ${CMAKE_BINARY_DIR}/main.cpp)
 
 qt5_wrap_cpp(arstudio_moc ${arstudio_moc_headers})
@@ -217,7 +222,14 @@ add_executable(arstudio
                ${arstudio_res}
 )
 
-qt5_use_modules(arstudio OpenGL Quick 3DQuick Concurrent)
+if(${Qt53DQuick_FOUND})
+  qt5_use_modules(arstudio 3DQuick)
+  include_directories(${Qt53DQuick_INCLUDE_DIRS})
+endif()
+
+add_dependencies(arstudio Rescan)
+
+qt5_use_modules(arstudio OpenGL Quick Concurrent)
 
 target_link_libraries(
   arstudio
