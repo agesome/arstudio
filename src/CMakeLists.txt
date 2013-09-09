@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.11 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8.9 FATAL_ERROR)
 
 project(arstudio CXX)
 
@@ -92,7 +92,24 @@ if(NOT CMAKE_BUILD_TYPE)
   "Choose the type of build: Debug/Release" FORCE)
 endif()
 
-find_package(Qt5 REQUIRED Quick 3DQuick Concurrent)
+
+include(ExternalProject)
+ExternalProject_Add(
+	Qt3D
+	GIT_REPOSITORY http://git.gitorious.org/qt/qt3d-minor-fixes.git
+	GIT_TAG master
+	CONFIGURE_COMMAND qmake <SOURCE_DIR>
+	BUILD_COMMAND make
+	INSTALL_COMMAND INSTALL_ROOT=<INSTALL_DIR> make install
+)
+
+ExternalProject_Get_Property(Qt3D INSTALL_DIR)
+
+set(CMAKE_PREFIX_PATH "${INSTALL_DIR}/usr/lib/cmake/")
+find_package(Qt5OpenGL REQUIRED)
+find_package(Qt5Quick REQUIRED)
+find_package(Qt53DQuick REQUIRED)
+find_package(Qt5Concurrent REQUIRED)
 find_package(OpenCV REQUIRED)
 
 find_library(MAGIC magic)
@@ -108,9 +125,20 @@ else()
     set(LIBMAGIC ${MAGIC})
 endif()
 
+add_definitions(${Qt5OpenGL_DEFINITIONS})
+add_definitions(${Qt5Quick_DEFINITIONS})
+add_definitions(${Qt53DQuick_DEFINITIONS})
+add_definitions(${Qt5Concurrent_DEFINITIONS})
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5OpenGL_EXECUTABLE_COMPILE_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Quick_EXECUTABLE_COMPILE_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt53DQuick_EXECUTABLE_COMPILE_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Concurrent_EXECUTABLE_COMPILE_FLAGS}")
+
+
 if(UNIX)
   set(CMAKE_CXX_FLAGS_DEBUG
-      "${CMAKE_CXX_FLAGS} -std=c++11 -g -O0 e-Wall -Wextra -pedantic")
+      "${CMAKE_CXX_FLAGS} -std=c++11 -g -O0 -Wall -Wextra -pedantic")
   set(CMAKE_CXX_FLAGS_RELEASE
       "${CMAKE_CXX_FLAGS} -std=c++11 -Ofast -march=native -mtune=native -DQT_NO_DEBUG")
 else()
@@ -136,6 +164,7 @@ include_directories(
   RepositoryIO
   ../submodules/KinectRecorder/src/
   ${OpenCV_INCLUDE_DIRS}
+  ${Qt5OpenGL_INCLUDE_DIRS}
   ${Qt5Quick_INCLUDE_DIRS}
   ${Qt53DQuick_INCLUDE_DIRS}
   ${Qt5Concurrent_INCLUDE_DIRS}
@@ -147,7 +176,8 @@ macro(subdirlist result curdir)
   file(GLOB children RELATIVE ${curdir} ${curdir}/*)
   foreach(child ${children})
   if(IS_DIRECTORY ${curdir}/${child})
-    list(APPEND dirlist ${child})
+    string(REPLACE "/" "" child_ ${child})
+    list(APPEND dirlist ${child_})
   endif()
   endforeach()
   set(${result} ${dirlist})
@@ -165,7 +195,7 @@ if(NOT ALGORITHMS STREQUAL "")
   message(STATUS "Will now add algorithms")
   foreach(subdir ${ALGORITHMS})
     message(STATUS "  Adding algorithm "${subdir})
-      add_subdirectory(${CMAKE_SOURCE_DIR}/algorithms/${subdir}/
+      add_subdirectory(${CMAKE_SOURCE_DIR}/algorithms/${subdir}
           ${CMAKE_CURRENT_BINARY_DIR}/${subdir}
           EXCLUDE_FROM_ALL)
   endforeach()
@@ -187,13 +217,12 @@ add_executable(arstudio
                ${arstudio_res}
 )
 
+qt5_use_modules(arstudio OpenGL Quick 3DQuick Concurrent)
+
 target_link_libraries(
   arstudio
   kinectCapture
   ${ALGORITHMS}
   ${OpenCV_LIBS}
   ${LIBMAGIC}
-  Qt5::Quick
-  Qt5::3DQuick
-  Qt5::Concurrent
 )
