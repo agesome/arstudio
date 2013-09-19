@@ -109,14 +109,14 @@ VideoPipeline::processing_thread ()
                   QImage::Format_RGB888);
       m_image_access_mutex.lock ();
       // have to get a copy, i relies on data in rgb which will be gone
-      // when
-      // this function exits
+      // when this function exits
       m_current_image = i.copy ();
       m_image_access_mutex.unlock ();
       current_image_changed ();
 
       ap->process_frame (m_video_helper->image (),
-                         m_video_helper->depth_map ());
+                         m_video_helper->depth_map (),
+                         frames_processed);
 
       frames_processed++;
       m_processing_progress = frames_processed / to_process;

@@ -30,7 +30,8 @@ public:
   /**
    * @brief Process a single frame; data is passed down to algorithms
    */
-  void process_frame (const cv::Mat & image, const cv::Mat & dmap);
+  void process_frame (const cv::Mat & image, const cv::Mat & dmap,
+                      int frame_index);
 
   /**
    * @brief Create instances of algorithms registered with AlgorithmFactory
