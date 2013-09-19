@@ -47,7 +47,7 @@ public:
   ~ImageAdjusterAlgorithm ();
 
   bool create (void);
-  bool run (const Mat &, const Mat &);
+  bool run (const Mat &, const Mat &, int);
   const std::string id_string (void);
 
   std::string type;

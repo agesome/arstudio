@@ -41,7 +41,7 @@ public:
    * @brief process a single image + depth map frame
    * @param image RGB888 image
    * @param dmap depth map
-   * @param frame_index number of the frame in image and dmap, starting at zero
+   * @param frame_index number of the frame in image and dmap, starting at one
    * @return true on success, false otherwise
    */
   virtual bool run (const cv::Mat & image, const cv::Mat & dmap,

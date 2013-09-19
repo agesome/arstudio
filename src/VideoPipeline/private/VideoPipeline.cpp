@@ -24,7 +24,14 @@ VideoPipeline::set_running (bool v)
   m_run_processing = v;
   running_changed ();
   if (v)
-    QtConcurrent::run (this, &VideoPipeline::processing_thread);
+    {
+      float to_process = m_end_frame - m_start_frame + 1;
+      // this way, all algorithms can optionally find out how many frames there are
+      // this should not be a parameter of process_frame(), because some algorithms
+      // may not want this
+      m_config->set ("internal.total_frames", to_process);
+      QtConcurrent::run (this, &VideoPipeline::processing_thread, to_process);
+    }
 }
 
 VideoHelper *
@@ -90,7 +97,7 @@ VideoPipeline::current_image ()
 }
 
 void
-VideoPipeline::processing_thread ()
+VideoPipeline::processing_thread (float frames_to_process)
 {
   AlgoPipeline::ptr ap = AlgoPipeline::make ();
   cv::Mat           rgb;
@@ -99,8 +106,7 @@ VideoPipeline::processing_thread ()
   ap->create_all (m_config);
   m_video_helper->go_to_frame (m_start_frame);
 
-  const float to_process       = m_end_frame - m_start_frame + 1;
-  int         frames_processed = 0;
+  int frames_processed = 0;
 
   do
     {
@@ -116,13 +122,13 @@ VideoPipeline::processing_thread ()
 
       ap->process_frame (m_video_helper->image (),
                          m_video_helper->depth_map (),
-                         frames_processed);
+                         frames_processed + 1);
 
       frames_processed++;
-      m_processing_progress = frames_processed / to_process;
+      m_processing_progress = frames_processed / frames_to_process;
       progress_changed ();
 
-      if (frames_processed == to_process)
+      if (frames_processed == frames_to_process)
         break;
     } while (m_run_processing && m_video_helper->next_frame ());
   set_running (false);
