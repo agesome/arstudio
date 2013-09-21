@@ -25,10 +25,11 @@ AlgoPipeline::make ()
 }
 
 void
-AlgoPipeline::process_frame (const cv::Mat & image, const cv::Mat & dmap)
+AlgoPipeline::process_frame (const cv::Mat & image, const cv::Mat & dmap,
+                             int frame_index)
 {
   for (auto algo : m_algorithm_list)
-    algo->run (image, dmap);
+    algo->run (image, dmap, frame_index);
   Logger::instance ().advance_frame ();
 }
 }

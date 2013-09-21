@@ -64,6 +64,14 @@ public:
    * This method is called from QML TableView when user edits a setting
    */
   Q_INVOKABLE void set (int row, const QVariant & value);
+
+  /**
+   * @brief set a setting, to be used internally
+   * @param key the key to assign
+   * @param value desired value
+   */
+  void set (const QString & key, const QVariant & value);
+
 protected:
   QHash<int, QByteArray> roleNames () const;
 private:

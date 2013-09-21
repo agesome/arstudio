@@ -73,7 +73,7 @@ public:
   int end_frame ();
 
 private:
-  void processing_thread ();
+  void processing_thread (float frames_to_process);
 
   bool          m_run_processing;
   VideoHelper * m_video_helper;

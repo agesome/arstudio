@@ -101,4 +101,16 @@ Config::set (int row, const QVariant & value)
 {
   m_settings[m_settings.keys ().at (row)] = value;
 }
+
+void
+Config::set (const QString &key, const QVariant &value)
+{
+  bool is_new = !m_settings.contains (key);
+
+  if (is_new)
+    beginInsertRows (QModelIndex (), rowCount (), rowCount ());
+  m_settings[key] = value;
+  if (is_new)
+    endInsertRows ();
+}
 }
