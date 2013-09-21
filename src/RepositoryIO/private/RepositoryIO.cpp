@@ -193,7 +193,7 @@ serialize_sequence (QDataStream & stream,
 
     case Sequence::PointCloud: serializer = &serialize_cloud; break;
 
-    case Sequence::Invalid:
+    default:
       qFatal ("io: attempt to serialize an invalid sequence");
       break;
     }
@@ -224,7 +224,7 @@ deserialize_sequence (QDataStream &stream, const Sequence::ptr &s,
 
     case Sequence::PointCloud: deserializer = &deserialize_cloud; break;
 
-    case Sequence::Invalid:
+    default:
       qFatal ("io: attempt to deserialize an invalid sequence");
       break;
     }

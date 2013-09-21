@@ -144,7 +144,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Concurrent_EXECUTABLE_COMPILE_FLAGS
 
 if(UNIX)
   set(CMAKE_CXX_FLAGS_DEBUG
-      "${CMAKE_CXX_FLAGS} -std=c++11 -g -O0 -Wall -Wextra -pedantic")
+      "${CMAKE_CXX_FLAGS} -std=c++11 -g -O1 -Wall -Wextra -pedantic")
   set(CMAKE_CXX_FLAGS_RELEASE
       "${CMAKE_CXX_FLAGS} -std=c++11 -Ofast -march=native -mtune=native -DQT_NO_DEBUG")
 else()
