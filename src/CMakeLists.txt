@@ -92,20 +92,18 @@ if(NOT CMAKE_BUILD_TYPE)
   "Choose the type of build: Debug/Release" FORCE)
 endif()
 
-if(NOT DEFINED Qt53DQuick_FOUND)
-  include(ExternalProject)
-  ExternalProject_Add(
-    Qt3D
-    GIT_REPOSITORY http://git.gitorious.org/qt/qt3d-minor-fixes.git
-    GIT_TAG master
-    CONFIGURE_COMMAND qmake <SOURCE_DIR>
-    BUILD_COMMAND make
-    INSTALL_COMMAND INSTALL_ROOT=<INSTALL_DIR> make install
-  )
+include(ExternalProject)
+ExternalProject_Add(
+  Qt3D
+  URL ${CMAKE_SOURCE_DIR}/../3rdparty/qt3d.tar.bz2
+  URL_MD5 90b8d6d2e03977cdfadc6431b7985201
+  CONFIGURE_COMMAND qmake <SOURCE_DIR>
+  BUILD_COMMAND make -j2
+  INSTALL_COMMAND INSTALL_ROOT=<INSTALL_DIR> make install
+)
 
-  ExternalProject_Get_Property(Qt3D INSTALL_DIR)
-  set(CMAKE_PREFIX_PATH "${INSTALL_DIR}/usr/lib/cmake/")
-endif()
+ExternalProject_Get_Property(Qt3D INSTALL_DIR)
+set(CMAKE_PREFIX_PATH "${INSTALL_DIR}/usr/lib/cmake/")
 
 find_package(Qt53DQuick QUIET)
 
