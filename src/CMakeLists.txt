@@ -92,7 +92,7 @@ if(NOT CMAKE_BUILD_TYPE)
   "Choose the type of build: Debug/Release" FORCE)
 endif()
 
-if(NOT ${Qt53DQuick_FOUND})
+if(NOT DEFINED Qt53DQuick_FOUND)
   include(ExternalProject)
   ExternalProject_Add(
     Qt3D
