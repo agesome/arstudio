@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.9 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8.7 FATAL_ERROR)
 
 project(arstudio CXX)
 
@@ -142,14 +142,25 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Quick_EXECUTABLE_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt53DQuick_EXECUTABLE_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Concurrent_EXECUTABLE_COMPILE_FLAGS}")
 
-
-if(UNIX)
-  set(CMAKE_CXX_FLAGS_DEBUG
-      "${CMAKE_CXX_FLAGS} -std=c++11 -g -O1 -Wall -Wextra -pedantic")
-  set(CMAKE_CXX_FLAGS_RELEASE
-      "${CMAKE_CXX_FLAGS} -std=c++11 -Ofast -march=native -mtune=native -DQT_NO_DEBUG")
-else()
-  message(FATAL_ERROR "There is no support for building on non-unix systems (yet).")
+include(CheckCXXCompilerFlag)
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+  CHECK_CXX_COMPILER_FLAG("-std=c++11" STDCPP11_SUPPORTED)
+  if(STDCPP11_SUPPORTED)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+  else()
+    CHECK_CXX_COMPILER_FLAG("-std=c++0x" STDCPP0X_SUPPORTED)
+    if(STDCPP0X_SUPPORTED)
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+    else()
+      message(FATAL_ERROR "Compiler doesn't appear to support C++11 or at least C++0x")
+    endif()
+  endif()
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -O0 -ggdb3 -Wall -Wextra -pedantic")
+  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O2")
+elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+  message(STATUS "Warning: building on Windows is experimental")
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} /Od")
+  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} /O2")
 endif()
 
 add_subdirectory(../submodules/KinectRecorder/src/
@@ -200,7 +211,7 @@ message(STATUS "Algorithms to build: ${subdirs}")
 if(NOT ALGORITHMS STREQUAL "")
   message(STATUS "Will now add algorithms")
   foreach(subdir ${ALGORITHMS})
-    message(STATUS "  Adding algorithm "${subdir})
+    message(STATUS "  Adding algorithm " ${subdir})
       add_subdirectory(${CMAKE_SOURCE_DIR}/algorithms/${subdir}
           ${CMAKE_CURRENT_BINARY_DIR}/${subdir}
           EXCLUDE_FROM_ALL)
@@ -224,13 +235,10 @@ add_executable(arstudio
 )
 
 if(${Qt53DQuick_FOUND})
-  qt5_use_modules(arstudio 3DQuick)
   include_directories(${Qt53DQuick_INCLUDE_DIRS})
 endif()
 
 add_dependencies(arstudio Rescan)
-
-qt5_use_modules(arstudio OpenGL Quick Concurrent)
 
 target_link_libraries(
   arstudio
@@ -238,4 +246,7 @@ target_link_libraries(
   ${ALGORITHMS}
   ${OpenCV_LIBS}
   ${LIBMAGIC}
+  ${Qt5Quick_LIBRARIES}
+  ${Qt53DQuick_LIBRARIES}
+  ${Qt5Concurrent_LIBRARIES}
 )
