@@ -96,7 +96,7 @@ include(ExternalProject)
 ExternalProject_Add(
   Qt3D
   URL ${CMAKE_SOURCE_DIR}/../3rdparty/qt3d.tar.bz2
-  URL_MD5 132921140c099de80c25727f5af499db
+  URL_MD5 d3e11949a1aa65f922f506adcc6c583c
   CONFIGURE_COMMAND qmake <SOURCE_DIR>
   BUILD_COMMAND make -j2
   INSTALL_COMMAND INSTALL_ROOT=<INSTALL_DIR> make install
