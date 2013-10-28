@@ -103,7 +103,7 @@ ExternalProject_Add(
 )
 
 ExternalProject_Get_Property(Qt3D INSTALL_DIR)
-set(CMAKE_PREFIX_PATH "${INSTALL_DIR}/usr/lib/cmake/")
+set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};${INSTALL_DIR}/usr/lib/cmake/")
 
 find_package(Qt53DQuick QUIET)
 
