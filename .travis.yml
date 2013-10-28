@@ -10,7 +10,7 @@ install:
 before_script:
   - source /opt/qt51/bin/qt51-env.sh
   - cd src
-  - export CMAKE_PREFIX_PATH=`pwd`/Qt3D-prefix/opt/qt511/lib/cmake/
+  - export CMAKE_PREFIX_PATH=`pwd`/Qt3D-prefix/opt/qt51/lib/cmake/
   - cmake -DALGORITHMS='adjuster' .
 script:
   - make
