@@ -3,6 +3,7 @@
 
 #include <list>
 #include <memory>
+#include <stdexcept>
 
 #include <opencv2/highgui/highgui.hpp>
 

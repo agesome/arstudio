@@ -28,6 +28,8 @@ This project is built with CMake. Features from C++11 are used here and there,
 so you'll need a compiler that supports it; arstudio has been built at least
 with GCC 4.8.1 and Clang 3.3.
 
+Build status: [![Build Status](https://travis-ci.org/age/arstudio.png?branch=master)](https://travis-ci.org/age/arstudio)
+
 Cloning & Compiling
 =====
 
