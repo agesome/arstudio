@@ -77,7 +77,7 @@ Scenegraph::clear ()
   sequences_changed ();
 }
 
-int
+Scenegraph::LockType
 Scenegraph::locked_to () const
 {
   return m_locked_to;

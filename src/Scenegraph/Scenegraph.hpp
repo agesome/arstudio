@@ -27,8 +27,7 @@ class Scenegraph : public QObject
 {
   Q_OBJECT
   Q_ENUMS (LockType)
-  // FIXME: segfault when setting type to LockType
-  Q_PROPERTY (int locked_to READ locked_to
+  Q_PROPERTY (LockType locked_to READ locked_to
               NOTIFY locked_to_changed)
 public:
   enum LockType { NORMAL, BITMAP, NOT_LOCKED };
@@ -46,7 +45,7 @@ public:
   const QSet<int> frames ();
   void clear ();
 
-  int locked_to () const;
+  LockType locked_to () const;
 private:
   SequenceList m_sequences;
   QSet<int>    m_frames;
