@@ -4,9 +4,6 @@ namespace arstudio {
 Repository::Repository (QObject * parent)
   : QAbstractListModel (parent)
 {
-  connect (this, &Repository::append_node_signal,
-           this, &Repository::append_node_slot,
-           Qt::QueuedConnection);
 }
 
 Repository::~Repository ()
@@ -75,32 +72,30 @@ Repository::add_item (const Item::ptr item, int frame,
         s = m->shared_ptr ();
         break;
       }
+
+  /*
+   * ATTN: this assumes that only one thread (this method is called from the
+   * processing thread) writes to m_nodes at a time; QList is not thread-safe.
+   */
   if (!s)
     {
       s = Sequence::make (type);
-      append_node_signal (new RepositoryNode (node_name, s));
+      const int position = rowCount ();
+
+      beginInsertRows (QModelIndex (), position, position);
+      m_nodes << new RepositoryNode (node_name, s);
+      endInsertRows ();
+      nodes_changed ();
     }
+
   s->add_item (frame, item);
 }
 
 Repository::NodeListProperty
 Repository::nodes ()
 {
-  return NodeListProperty (this,
-                           nullptr,
-                           this->nodelist_count,
+  return NodeListProperty (this, nullptr, this->nodelist_count,
                            this->nodelist_at);
-}
-
-void
-Repository::append_node_slot (RepositoryNode * node)
-{
-  int position = rowCount ();
-
-  beginInsertRows (QModelIndex (), position, position);
-  m_nodes << node;
-  endInsertRows ();
-  nodes_changed ();
 }
 
 void
