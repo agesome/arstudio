@@ -14,8 +14,7 @@ class Item
 {
 public:
   typedef QSharedPointer<Item> ptr;
-  virtual
-  ~Item () = default;
+  virtual ~Item ();
 };
 
 /**

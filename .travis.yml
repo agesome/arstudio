@@ -1,6 +1,7 @@
 language: cpp
 compiler:
   - clang
+  - gcc
 before_install:
   - sudo add-apt-repository --yes ppa:beineri/opt-qt511
   - sudo add-apt-repository --yes ppa:limparissoft/opencv-ppa
@@ -14,5 +15,3 @@ before_script:
   - cmake -DALGORITHMS='adjuster' .
 script:
   - make
-after_script:
-  - ls -R

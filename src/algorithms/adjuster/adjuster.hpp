@@ -21,7 +21,7 @@ public:
   virtual
   ~ImageAdjuster ()
   {
-  };
+  }
 };
 
 class BrightnessAdjuster : public ImageAdjuster
@@ -52,7 +52,7 @@ public:
 
   std::string type;
 private:
-  ImageAdjuster * adjuster = nullptr;
+  ImageAdjuster * adjuster;
 };
 
 #endif // ADJUSTER_HPP

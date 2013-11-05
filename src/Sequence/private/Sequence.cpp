@@ -1,6 +1,9 @@
 #include <Sequence.hpp>
 
 namespace arstudio {
+
+Item::~Item() {}
+
 Sequence::Sequence (ItemType type, QObject * parent)
   : QObject (parent),
   m_type (type)

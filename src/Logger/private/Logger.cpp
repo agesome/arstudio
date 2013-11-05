@@ -4,6 +4,10 @@ namespace arstudio {
 Repository::ptr Logger::m_repository;
 Logger          Logger::m_instance;
 
+Logger::Logger() : m_current_frame(1)
+{
+}
+
 Logger &
 Logger::instance ()
 {

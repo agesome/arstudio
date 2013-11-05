@@ -35,7 +35,6 @@ public:
   void advance_frame ();
   void reset_frame_counter ();
 private:
-  Logger ()                           = default;
   Logger (const Logger &)             = delete;
   Logger & operator= (const Logger &) = delete;
 
@@ -44,7 +43,7 @@ private:
   /**
    * @brief All log_ functions store data for this frame
    */
-  unsigned int m_current_frame = 1;
+  unsigned int m_current_frame;
 };
 }
 

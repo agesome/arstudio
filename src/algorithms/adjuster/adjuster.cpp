@@ -42,6 +42,7 @@ ContrastAdjuster::adjust (const Mat & image)
 
 ImageAdjusterAlgorithm::ImageAdjusterAlgorithm (as::Config * config)
   : IAbstractAlgorithm (config)
+  , adjuster(nullptr)
 {
 }
 
