@@ -35,6 +35,7 @@ public:
   void advance_frame ();
   void reset_frame_counter ();
 private:
+  Logger ();
   Logger (const Logger &)             = delete;
   Logger & operator= (const Logger &) = delete;
 
