@@ -10,7 +10,7 @@ before_install:
 install:
   - sudo apt-get install cmake qt51base qt51quickcontrols opencv libmagic1 libmagic-dev g++-4.8
 before_script:
-  - update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50
   - source /opt/qt51/bin/qt51-env.sh
   - cd src
   - export CMAKE_PREFIX_PATH=`pwd`/Qt3D-prefix/opt/qt51/lib/cmake/
