@@ -37,7 +37,9 @@ main (int argc, char * argv[])
 
   QObject::connect (repository.data (),
                     &as::Repository::removing_all_nodes,
-                    []() { as::Logger::instance ().reset_frame_counter (); });
+                    []() {
+                      as::Logger::instance ().reset_frame_counter ();
+                    });
 
   as::Logger::set_repository (repository);
 
@@ -49,7 +51,6 @@ main (int argc, char * argv[])
   register_qml_types ();
   engine.setBaseUrl (QUrl ("qrc:///"));
   engine.addImportPath ("qrc:/");
-  engine.addImportPath ("@QT3D_IMPORT_PATH@");
   engine.rootContext ()->setContextProperty ("g_Repository",
                                              repository.data ());
   engine.rootContext ()->setContextProperty ("g_Config", config.data ());

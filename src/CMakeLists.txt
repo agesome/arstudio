@@ -197,7 +197,6 @@ if(NOT ALGORITHMS STREQUAL "")
 endif()
 
 set(CONFIG_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/algorithms/")
-set(QT3D_IMPORT_PATH "${INSTALL_DIR}/usr/lib/qt/qml/")
 configure_file(main.cpp ${CMAKE_BINARY_DIR}/main.cpp)
 
 qt5_wrap_cpp(arstudio_moc ${arstudio_moc_headers})
