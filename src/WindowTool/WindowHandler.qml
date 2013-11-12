@@ -16,8 +16,6 @@ RowLayout {
     property int exclusiveSequenceIndex
 
     readonly property ItemWindow window: itemWindow
-    property Scenegraph scenegraph: itemWindow.manager.scenegraph
-    property alias windowManager: itemWindow.manager
     property alias title: itemWindow.title
 
     property alias skyboxSource: itemWindow.skyboxSource
@@ -99,7 +97,7 @@ RowLayout {
         ModelControls {
             Layout.fillWidth: true
             id: modelControls
-            enabled: windowManager.selected_model
+            enabled: false
             onPositionChanged: window.selectedModel.position = position
             onRotationChanged: window.selectedModel.rotation = rotation
             onScaleChanged: window.selectedModel.scale = scale

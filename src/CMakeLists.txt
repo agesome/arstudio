@@ -18,9 +18,8 @@ set(arstudio_sources
     VideoHelper/private/VideoSourceKinvideo.cpp
     AlgoPipeline/private/AlgoPipeline.cpp
     AlgoPipeline/private/AlgorithmFactory.cpp
-    IWManager/private/IWManager.cpp
+    ItemView/private/ItemView.cpp
     VideoPipeline/private/VideoPipeline.cpp
-    CustomModel/private/CustomModel.cpp
     BitmapView/private/BitmapView.cpp
     RepositoryIO/private/RepositoryIO.cpp
     Sequence/private/ItemImplementations.cpp
@@ -60,9 +59,8 @@ set(arstudio_headers
     VideoHelper/IVideoSource.hpp
     VideoHelper/VideoSourceOpenCV.hpp
     VideoHelper/VideoSourceKinvideo.hpp
-    IWManager/IWManager.hpp
+    ItemView/ItemView.hpp
     VideoPipeline/VideoPipeline.hpp
-    CustomModel/CustomModel.hpp
     BitmapView/BitmapView.hpp
     AlgoPipeline/AlgorithmFactory.hpp
     RepositoryIO/RepositoryIO.hpp
@@ -73,11 +71,10 @@ set(arstudio_moc_headers
     Scenegraph/ScenegraphAggregator.hpp
     Sequence/Sequence.hpp
     Repository/Repository.hpp
-    IWManager/IWManager.hpp
+    ItemView/ItemView.hpp
     VideoPipeline/VideoPipeline.hpp
     VideoHelper/VideoHelper.hpp
     Config/Config.hpp
-    CustomModel/CustomModel.hpp
     BitmapView/BitmapView.hpp
     Repository/RepositoryNode.hpp
 )
@@ -92,30 +89,12 @@ if(NOT CMAKE_BUILD_TYPE)
   "Choose the type of build: Debug/Release" FORCE)
 endif()
 
-include(ExternalProject)
-ExternalProject_Add(
-  Qt3D
-  URL ${CMAKE_SOURCE_DIR}/../3rdparty/qt3d.tar.bz2
-  URL_MD5 d3e11949a1aa65f922f506adcc6c583c
-  CONFIGURE_COMMAND qmake <SOURCE_DIR>
-  BUILD_COMMAND make -j2
-  INSTALL_COMMAND INSTALL_ROOT=<INSTALL_DIR> make install
-)
-
-ExternalProject_Get_Property(Qt3D INSTALL_DIR)
-set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};${INSTALL_DIR}/usr/lib/cmake/")
-
-find_package(Qt53DQuick QUIET)
-
-if(NOT ${Qt53DQuick_FOUND})
-  message(STATUS "First build. Rescanning")
-  add_custom_target(Rescan ${CMAKE_COMMAND} ${CMAKE_SOURCE_DIR} DEPENDS Qt3D)
-else()
-  add_custom_target(Rescan)
-endif()
+include(FindPkgConfig)
+pkg_check_modules(OSG REQUIRED openscenegraph)
 
 find_package(Qt5OpenGL REQUIRED)
 find_package(Qt5Quick REQUIRED)
+find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Concurrent REQUIRED)
 find_package(OpenCV REQUIRED)
 
@@ -134,12 +113,12 @@ endif()
 
 add_definitions(${Qt5OpenGL_DEFINITIONS})
 add_definitions(${Qt5Quick_DEFINITIONS})
-add_definitions(${Qt53DQuick_DEFINITIONS})
+add_definitions(${Qt5Widgets_DEFINITIONS})
 add_definitions(${Qt5Concurrent_DEFINITIONS})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5OpenGL_EXECUTABLE_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Quick_EXECUTABLE_COMPILE_FLAGS}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt53DQuick_EXECUTABLE_COMPILE_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Concurrent_EXECUTABLE_COMPILE_FLAGS}")
 
 include(CheckCXXCompilerFlag)
@@ -157,10 +136,8 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_CXX_COMPILER_ID}" STREQ
   endif()
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -O0 -pipe -ggdb3 -Wall -Wextra -pedantic")
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -Os -pipe")
-elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-  message(STATUS "Warning: building on Windows is experimental")
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} /Od")
-  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} /O2")
+else()
+  message(FATAL_ERROR "Unsupported compiler")
 endif()
 
 add_subdirectory(../submodules/KinectRecorder/src/
@@ -175,9 +152,8 @@ include_directories(
   Scenegraph
   Sequence
   VideoHelper
-  IWManager
+  ItemView
   VideoPipeline
-  CustomModel
   BitmapView
   RepositoryIO
   ../submodules/KinectRecorder/src/
@@ -185,6 +161,8 @@ include_directories(
   ${Qt5OpenGL_INCLUDE_DIRS}
   ${Qt5Quick_INCLUDE_DIRS}
   ${Qt5Concurrent_INCLUDE_DIRS}
+  ${Qt5Widgets_INCLUDE_DIRS}
+  ${OSG_INCLUDE_DIRS}
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
 )
@@ -234,19 +212,15 @@ add_executable(arstudio
                ${arstudio_res}
 )
 
-if(${Qt53DQuick_FOUND})
-  include_directories(${Qt53DQuick_INCLUDE_DIRS})
-endif()
-
-add_dependencies(arstudio Rescan)
-
 target_link_libraries(
   arstudio
   kinectCapture
   ${ALGORITHMS}
   ${OpenCV_LIBS}
   ${LIBMAGIC}
+  ${OSG_LIBRARIES}
   ${Qt5Quick_LIBRARIES}
-  ${Qt53DQuick_LIBRARIES}
+  ${Qt5OpenGL_LIBRARIES}
   ${Qt5Concurrent_LIBRARIES}
+  ${Qt5Widgets_LIBRARIES}
 )

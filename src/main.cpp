@@ -7,7 +7,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
-#include <IWManager.hpp>
+#include <ItemView.hpp>
 #include <Logger.hpp>
 #include <Repository.hpp>
 #include <ScenegraphAggregator.hpp>
@@ -15,7 +15,6 @@
 #include <VideoHelper.hpp>
 #include <VideoPipeline.hpp>
 #include <Config.hpp>
-#include <CustomModel.hpp>
 #include <BitmapView.hpp>
 
 namespace as = arstudio;
@@ -65,11 +64,10 @@ register_qml_types ()
   qmlRegisterType<as::Scenegraph> ("arstudio", 1, 0, "Scenegraph");
   qmlRegisterType<as::Repository> ("arstudio", 1, 0, "Repository");
   qmlRegisterType<as::RepositoryNode> ("arstudio", 1, 0, "RepositoryNode");
-  qmlRegisterType<as::IWManager> ("arstudio", 1, 0, "IWManager");
+  qmlRegisterType<as::ItemView> ("arstudio", 1, 0, "ItemView");
   qmlRegisterType<as::VideoHelper> ("arstudio", 1, 0, "VideoHelper");
   qmlRegisterType<as::VideoPipeline> ("arstudio", 1, 0, "VideoPipeline");
   qmlRegisterType<as::Config> ("arstudio", 1, 0, "Config");
-  qmlRegisterType<as::CustomModel> ("arstudio", 1, 0, "CustomModel");
   qmlRegisterType<as::BitmapView> ("arstudio", 1, 0, "BitmapView");
 
   qmlRegisterSingletonType<as::ScenegraphAggregator>

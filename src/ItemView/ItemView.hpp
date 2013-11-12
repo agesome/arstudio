@@ -1,0 +1,61 @@
+#ifndef ITEMVIEW_HPP
+#define ITEMVIEW_HPP
+
+#include <QElapsedTimer>
+#include <QQuickItem>
+#include <QQuickWindow>
+#include <QOpenGLContext>
+#include <QSGTextureMaterial>
+#include <QSGOpaqueTextureMaterial>
+#include <QSGSimpleTextureNode>
+
+#include <osgViewer/Viewer>
+#include <osgViewer/Renderer>
+#include <osg/Texture2D>
+#include <osg/ShapeDrawable>
+#include <osgGA/OrbitManipulator>
+
+namespace arstudio {
+
+class ItemView : public QQuickItem
+{
+  Q_OBJECT
+public:
+  ItemView (QQuickItem * parent = nullptr);
+protected:
+  QSGNode * updatePaintNode (QSGNode *, UpdatePaintNodeData *);
+  void wheelEvent (QWheelEvent * event);
+  void mouseMoveEvent(QMouseEvent *event);
+  void mousePressEvent(QMouseEvent *event);
+  void mouseReleaseEvent(QMouseEvent *event);
+  void geometryChanged(const QRectF &ng, const QRectF &og);
+private:
+  void init();
+  void paint();
+  void initialize_texture(const QRectF & size);
+
+  QOpenGLContext * m_qt_opengl_ctx;
+  QOpenGLContext * m_osg_opengl_ctx;
+
+  QSGGeometryNode m_geometry_node;
+  QSGTexture * m_qt_texture;
+  QSGTextureMaterial m_qt_tex_material;
+  QSGOpaqueTextureMaterial m_qt_opaque_material;
+  QSGGeometry m_qt_geometry;
+
+  osg::ref_ptr<osgViewer::Viewer> m_osg_viewer;
+  osg::ref_ptr<osg::Texture2D> m_osg_texture;
+  osg::ref_ptr<osgGA::OrbitManipulator> m_osg_orbit;
+  osg::ref_ptr<osg::Group> m_osg_scene;
+  osg::Texture::TextureObject * m_osg_texture_object;
+
+  bool m_size_valid;
+  bool m_osg_initialized;
+
+  Qt::MouseButtons m_mouse_buttons;
+  QPoint m_mouse_pos;
+};
+
+}
+
+#endif // ITEMVIEW_HPP
