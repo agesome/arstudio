@@ -15,12 +15,22 @@ RowLayout {
     id: root
     property int exclusiveSequenceIndex
 
-    property alias title: window.title
+    property alias title: item_window.title
     property alias scenegraph: itemView.scenegraph
+    property alias window: item_window
 
     Window {
-        id: window
+        id: item_window
         visible: true
+
+        onVisibleChanged: {
+            if (visible) return;
+            for (var i = 0; i < windowList.count; i++)
+            {
+                if (windowList.getTab(i).item.window === window)
+                    windowList.removeTab(i)
+            }
+        }
 
         ItemView {
             id: itemView

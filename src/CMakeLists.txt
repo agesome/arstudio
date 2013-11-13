@@ -28,7 +28,6 @@ set(arstudio_sources
     Core/MainMenuBar.qml
     TimeLine/TimeLine.qml
     WindowTool/Axis.qml
-    WindowTool/ItemWindow.qml
     WindowTool/WindowHandler.qml
     WindowTool/WindowTool.qml
     WindowTool/ModelControls.qml
