@@ -1,8 +1,22 @@
 #include <ItemView.hpp>
 
 namespace arstudio {
+// anonymous namespace with utility functions
+namespace {
+inline osg::Vec3
+qvec2osg (const QVector3D & v)
+{
+  return osg::Vec3 (v.x (), v.y (), v.z ());
+}
+}
+
+
 ItemView::ItemView (QQuickItem * parent)
   : QQuickItem (parent)
+  , m_scenegraph (Scenegraph::make ())
+  , m_sequence_node (nullptr)
+  , m_current_frame (1)
+  , m_show_camera_path (true)
   , m_qt_opengl_ctx (nullptr)
   , m_osg_opengl_ctx (nullptr)
   , m_qt_texture (nullptr)
@@ -18,6 +32,35 @@ ItemView::ItemView (QQuickItem * parent)
   setFlag (ItemHasContents);
   setAntialiasing (true);
   setAcceptedMouseButtons (Qt::MouseButton::LeftButton);
+
+  // we want to redraw when: a) there may be new sequences for current frame
+  // and b) when the frame index changes
+  connect (m_scenegraph.data (), &Scenegraph::sequences_changed,
+           this, &ItemView::update_scene);
+  connect (
+    ScenegraphAggregator::instance (), &ScenegraphAggregator::change_frame,
+    this, &ItemView::change_frame);
+  ScenegraphAggregator::instance ()->add_scenegraph (m_scenegraph.data ());
+}
+
+Scenegraph *
+ItemView::scenegraph ()
+{
+  return m_scenegraph.data ();
+}
+
+bool
+ItemView::show_camera_path ()
+{
+  return m_show_camera_path;
+}
+
+void
+ItemView::set_show_camera_path (bool v)
+{
+  m_show_camera_path = v;
+  show_camera_path_changed ();
+  update ();
 }
 
 void
@@ -91,7 +134,99 @@ ItemView::paint ()
       m_size_valid = true;
     }
 
-  qDebug ("paint() done in %ld us", call_timer.nsecsElapsed () / 1000);
+  qDebug ("paint() done in %lld us", call_timer.nsecsElapsed () / 1000);
+}
+
+void
+ItemView::update_scene ()
+{
+  static QElapsedTimer call_timer;
+
+  call_timer.restart ();
+
+  if (m_sequence_node)
+    m_osg_scene->removeChild (m_sequence_node);
+  m_sequence_node = new osg::Geode;
+  m_osg_scene->addChild (m_sequence_node);
+
+  for (const Sequence * seq : m_scenegraph->sequences ())
+    {
+      Item::ptr item = seq->item_for_frame (m_current_frame);
+      switch (seq->type ())
+        {
+        case Sequence::Camera:
+          add_camera (item.dynamicCast<Camera> ());
+          if (m_show_camera_path)
+            add_camera_path (seq);
+          break;
+        }
+    }
+
+  qDebug ("update_scene() done in %lld us", call_timer.nsecsElapsed () / 1000);
+
+  // initiate redraw
+  update ();
+}
+
+void
+ItemView::add_camera (const Camera::ptr camera)
+{
+  osg::ShapeDrawable * s;
+  osg::Cone          * c;
+  osg::Quat            r;
+
+  c = new osg::Cone (qvec2osg (camera->position ()), 0.03, 0.06);
+
+  //  FIXME: rotation conversion is probably wrong
+  r = osg::Quat (camera->rotation ().x (), osg::Vec3f (1, 0, 0)) +
+      osg::Quat (camera->rotation ().y (), osg::Vec3f (0, 1, 0)) +
+      osg::Quat (camera->rotation ().z (), osg::Vec3f (0, 0, 1));
+
+  c->setRotation (r);
+
+  s = new osg::ShapeDrawable (c);
+  s->setColor (osg::Vec4 (1, 0, 0, 1));
+  m_sequence_node->addDrawable (s);
+}
+
+void
+ItemView::add_camera_path (const Sequence * sequence)
+{
+  Q_ASSERT (sequence->type () == Sequence::Camera);
+
+  Camera::ptr      c, prev;
+  osg::Geometry  * geometry = new osg::Geometry;
+  osg::Vec3Array * points   = new osg::Vec3Array;
+  osg::Vec4Array * color    = new osg::Vec4Array;
+  osg::LineWidth * lw       = new osg::LineWidth (0.2);
+
+  color->push_back (osg::Vec4 (0, 1, 0, 1));
+
+  for (auto p : sequence->items ())
+    {
+      c = p.dynamicCast<Camera> ();
+      if (prev)
+        {
+          points->push_back (qvec2osg (prev->position ()));
+          points->push_back (qvec2osg (c->position ()));
+        }
+      prev = c;
+    }
+
+  geometry->setVertexArray (points);
+  geometry->setColorArray (color);
+  geometry->setColorBinding (osg::Geometry::BIND_PER_PRIMITIVE_SET);
+  geometry->addPrimitiveSet (new osg::DrawArrays (GL_LINES, 0,
+                                                  points->size ()));
+  geometry->getOrCreateStateSet ()->setAttributeAndModes (lw);
+  m_sequence_node->addDrawable (geometry);
+}
+
+void
+ItemView::change_frame (int frame)
+{
+  m_current_frame = frame;
+  update_scene ();
 }
 
 void
@@ -107,7 +242,7 @@ ItemView::init ()
   osg::Camera * camera = m_osg_viewer->getCamera ();
   camera->setRenderTargetImplementation (osg::Camera::FRAME_BUFFER_OBJECT);
   // background color for whatever is rendered with OSG
-  camera->setClearColor (osg::Vec4 (.9, .9, .9, 1.0));
+  camera->setClearColor (osg::Vec4 (.05, .05, .05, 1.0));
 
   m_osg_texture = new osg::Texture2D;
   m_osg_texture->setInternalFormat (GL_RGBA);
@@ -140,7 +275,7 @@ ItemView::init ()
   axis->addDrawable (s);
   cone = new osg::Cone (osg::Vec3 (0, 0, 1), 2 * cr, ch);
   s    = new osg::ShapeDrawable (cone);
-  s->setColor (osg::Vec4 (0, 0, 0.5, 1.0));
+  s->setColor (osg::Vec4 (0, 0, 1, 1.0));
   axis->addDrawable (s);
 
   // X arrow
@@ -151,7 +286,7 @@ ItemView::init ()
   cone = new osg::Cone (osg::Vec3 (1, 0, 0), 2 * cr, ch);
   s    = new osg::ShapeDrawable (cone);
   cone->setRotation (osg::Quat (M_PI_2, osg::Vec3 (0, 1, 0)));
-  s->setColor (osg::Vec4 (0, 0.5, 0, 1.0));
+  s->setColor (osg::Vec4 (0, 1, 0, 1.0));
   axis->addDrawable (s);
 
   // Y arrow
@@ -162,7 +297,7 @@ ItemView::init ()
   cone = new osg::Cone (osg::Vec3 (0, 1, 0), 2 * cr, ch);
   s    = new osg::ShapeDrawable (cone);
   cone->setRotation (osg::Quat (-M_PI_2, osg::Vec3 (1, 0, 0)));
-  s->setColor (osg::Vec4 (0.5, 0, 0, 1.0));
+  s->setColor (osg::Vec4 (1, 0, 0, 1.0));
   axis->addDrawable (s);
 
   m_osg_scene->addChild (axis);

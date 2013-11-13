@@ -1,9 +1,9 @@
 import QtQuick 2.1
 import QtQuick.Controls 1.0
 import QtQuick.Layouts 1.0
+import QtQuick.Window 2.1
 
 import arstudio 1.0
-import WindowTool 1.0
 
 /**
   This component is responsible for displaying a list of sequences
@@ -15,23 +15,17 @@ RowLayout {
     id: root
     property int exclusiveSequenceIndex
 
-    readonly property ItemWindow window: itemWindow
-    property alias title: itemWindow.title
+    property alias title: window.title
+    property alias scenegraph: itemView.scenegraph
 
-    property alias skyboxSource: itemWindow.skyboxSource
+    Window {
+        id: window
+        visible: true
 
-    signal loadSkybox(Item handler)
-    signal loadModel()
-
-    ItemWindow {
-        id: itemWindow
-        width: 450
-        height: 450
-        onModelChanged: {
-            modelControls.reset(position, rotation, scale)
+        ItemView {
+            id: itemView
+            anchors.fill: parent
         }
-        cameraView: cameraView.checked
-        showModelIndicator: showModelIndicator.checked
     }
 
     TableView {
@@ -89,50 +83,6 @@ RowLayout {
                         case Sequence.Bitmap: return "qrc:emblem-photos.png"
                         }
             }
-        }
-    }
-
-    ColumnLayout {
-        Layout.alignment: Qt.AlignTop
-        ModelControls {
-            Layout.fillWidth: true
-            id: modelControls
-            enabled: false
-            onPositionChanged: window.selectedModel.position = position
-            onRotationChanged: window.selectedModel.rotation = rotation
-            onScaleChanged: window.selectedModel.scale = scale
-            Layout.alignment: Qt.AlignTop
-        }
-
-        Rectangle {
-            Layout.fillWidth: true
-            height: 1
-            color: g_systemPalette.dark
-        }
-
-        RowLayout {
-            Button {
-                text: "Load Skybox"
-                onClicked: loadSkybox(root)
-            }
-            Button {
-                text: "Load Model"
-                onClicked: loadModel()
-            }
-        }
-        Button {
-            text: "Cycle Model Selection"
-            onClicked: itemWindow.manager.select_next_model()
-        }
-        CheckBox {
-            id: cameraView
-            text: "Camera View"
-            checked: false
-        }
-        CheckBox {
-            id: showModelIndicator
-            text: "Show Model Indicator"
-            checked: false
         }
     }
 }

@@ -43,10 +43,7 @@ ColumnLayout {
             }
             Component {
                 id: windowHandler
-                WindowHandler {
-                    onLoadSkybox: skyboxSelector.visible = true
-                    onLoadModel: modelSelector.visible = true
-                }
+                WindowHandler {}
             }
         }
         TextField {

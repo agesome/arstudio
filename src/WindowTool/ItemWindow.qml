@@ -13,26 +13,12 @@ import arstudio 1.0
 
 Window {
     id: window
+    visible: true
 
-    property url skyboxSource
-    property bool cameraView: false
-    property bool showModelIndicator: false
+    property alias view: itemView
 
-    signal modelChanged(vector3d position, vector3d rotation, real scale)
-
-    flags: Qt.Tool
-    Component.onCompleted: show()
-
-    onSkyboxSourceChanged: skybox.visible = true
-    // have to contain the Viewport in a rectangle,
-    // or navigation does not work
-    Rectangle {
+    ItemView {
+        id: itemView
         anchors.fill: parent
-        color: "#00000000"
-
-        ItemView {
-            anchors.fill: parent
-        }
-
     }
 }
