@@ -36,12 +36,12 @@ ItemView::ItemView (QQuickItem * parent)
 
   // we want to redraw when: a) there may be new sequences for current frame
   // and b) when the frame index changes
+  ScenegraphAggregator::instance ()->add_scenegraph (m_scenegraph.data ());
   connect (m_scenegraph.data (), &Scenegraph::sequences_changed,
            this, &ItemView::update_scene);
-  connect (
-    ScenegraphAggregator::instance (), &ScenegraphAggregator::change_frame,
-    this, &ItemView::change_frame);
-  ScenegraphAggregator::instance ()->add_scenegraph (m_scenegraph.data ());
+  connect (ScenegraphAggregator::instance (),
+           &ScenegraphAggregator::change_frame,
+           this, &ItemView::change_frame);
 
   // prevent the Qt Scenegraph from trying to delete our node
   m_geometry_node.setFlag (QSGGeometryNode::OwnedByParent, false);

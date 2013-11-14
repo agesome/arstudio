@@ -5,6 +5,7 @@
 #include <QQmlListProperty>
 #include <QList>
 #include <QSet>
+#include <QMutex>
 
 #include <Sequence.hpp>
 
@@ -49,6 +50,7 @@ public:
 private:
   SequenceList m_sequences;
   QSet<int>    m_frames;
+  QMutex       m_frameset_lock;
   LockType     m_locked_to;
 signals:
   void sequences_changed ();
