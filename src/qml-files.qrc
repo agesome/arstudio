@@ -8,8 +8,6 @@
         <file>ProcessingTool/qmldir</file>
         <file>TimeLine/qmldir</file>
         <file>TimeLine/TimeLine.qml</file>
-        <file>WindowTool/Axis.qml</file>
-        <file>WindowTool/ModelControls.qml</file>
         <file>WindowTool/qmldir</file>
         <file>WindowTool/WindowHandler.qml</file>
         <file>WindowTool/WindowTool.qml</file>

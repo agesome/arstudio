@@ -1,5 +1,7 @@
 #include <ItemView.hpp>
 
+#define DEBUG_RENDERING 0
+
 namespace arstudio {
 // anonymous namespace with utility functions
 namespace {
@@ -9,7 +11,6 @@ qvec2osg (const QVector3D & v)
   return osg::Vec3 (v.x (), v.y (), v.z ());
 }
 }
-
 
 ItemView::ItemView (QQuickItem * parent)
   : QQuickItem (parent)
@@ -66,9 +67,10 @@ ItemView::set_show_camera_path (bool v)
 void
 ItemView::paint ()
 {
+#if DEBUG_RENDERING
   static QElapsedTimer call_timer;
-
   call_timer.restart ();
+#endif
 
   // create the initial OSG objects and the axis arrows
   if (!m_osg_initialized)
@@ -133,16 +135,18 @@ ItemView::paint ()
 
       m_size_valid = true;
     }
-
+#if DEBUG_RENDERING
   qDebug ("paint() done in %lld us", call_timer.nsecsElapsed () / 1000);
+#endif
 }
 
 void
 ItemView::update_scene ()
 {
+#if DEBUG_RENDERING
   static QElapsedTimer call_timer;
-
   call_timer.restart ();
+#endif
 
   if (m_sequence_node)
     m_osg_scene->removeChild (m_sequence_node);
@@ -162,7 +166,9 @@ ItemView::update_scene ()
         }
     }
 
+#if DEBUG_RENDERING
   qDebug ("update_scene() done in %lld us", call_timer.nsecsElapsed () / 1000);
+#endif
 
   // initiate redraw
   update ();
