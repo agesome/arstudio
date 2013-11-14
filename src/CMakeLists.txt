@@ -27,10 +27,8 @@ set(arstudio_sources
     Core/Core.qml
     Core/MainMenuBar.qml
     TimeLine/TimeLine.qml
-    WindowTool/Axis.qml
     WindowTool/WindowHandler.qml
     WindowTool/WindowTool.qml
-    WindowTool/ModelControls.qml
     ProcessingTool/ProcessingTool.qml
     ConfigView/ConfigView.qml
 )
