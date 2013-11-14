@@ -47,6 +47,9 @@ ItemView::ItemView (QQuickItem * parent)
 Scenegraph *
 ItemView::scenegraph ()
 {
+  QQmlEngine::setObjectOwnership (m_scenegraph.data (),
+                                  QQmlEngine::CppOwnership);
+
   return m_scenegraph.data ();
 }
 
