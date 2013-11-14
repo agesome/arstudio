@@ -42,6 +42,9 @@ ItemView::ItemView (QQuickItem * parent)
     ScenegraphAggregator::instance (), &ScenegraphAggregator::change_frame,
     this, &ItemView::change_frame);
   ScenegraphAggregator::instance ()->add_scenegraph (m_scenegraph.data ());
+
+  // prevent the Qt Scenegraph from trying to delete our node
+  m_geometry_node.setFlag (QSGGeometryNode::OwnedByParent, false);
 }
 
 Scenegraph *
