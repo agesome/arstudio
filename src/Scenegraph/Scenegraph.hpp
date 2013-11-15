@@ -36,6 +36,7 @@ public:
   typedef QList<Sequence *> SequenceList;
 
   Scenegraph (QObject * parent = nullptr);
+
   static ptr
   make (QObject * parent = nullptr);
 

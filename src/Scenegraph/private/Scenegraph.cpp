@@ -44,6 +44,8 @@ Scenegraph::remove_sequence (Sequence * seq)
       locked_to_changed ();
     }
 
+  disconnect (seq, &Sequence::items_changed,
+              this, &Scenegraph::rebuild_frames);
   m_sequences.removeOne (seq);
   rebuild_frames ();
   sequences_changed ();
@@ -76,8 +78,6 @@ Scenegraph::rebuild_frames ()
     for (int frame : s->items ().keys ())
       m_frames.insert (frame);
   m_frameset_lock.unlock ();
-
-  sequences_changed ();
 }
 
 void

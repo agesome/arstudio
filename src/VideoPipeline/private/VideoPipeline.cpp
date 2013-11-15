@@ -1,6 +1,8 @@
 #include <VideoPipeline.hpp>
 
 namespace arstudio {
+QWaitCondition VideoPipeline::processing_wait_condition;
+
 VideoPipeline::VideoPipeline (QObject * parent)
   : QObject (parent),
   m_run_processing (false),
@@ -10,6 +12,7 @@ VideoPipeline::VideoPipeline (QObject * parent)
   m_end_frame (1),
   m_processing_progress (0)
 {
+  connect (qApp, &QApplication::aboutToQuit, [this]() { set_running (false); });
 }
 
 bool
@@ -131,6 +134,7 @@ VideoPipeline::processing_thread (float frames_to_process)
       if (frames_processed == frames_to_process)
         break;
     } while (m_run_processing && m_video_helper->next_frame ());
+  processing_wait_condition.wakeAll ();
   set_running (false);
 }
 }

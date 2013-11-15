@@ -6,6 +6,7 @@
 #include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QMutex>
 
 #include <ItemView.hpp>
 #include <Logger.hpp>
@@ -21,14 +22,18 @@ namespace as = arstudio;
 
 static void register_qml_types ();
 
+as::Repository::ptr repository;
+as::Config::ptr     config;
+
 int
 main (int argc, char * argv[])
 {
   QApplication          application (argc, argv);
   QQmlApplicationEngine engine;
+  QMutex                processing_mutex;
 
-  as::Repository::ptr repository = as::Repository::make ();
-  as::Config::ptr     config     = as::Config::make ();
+  repository = as::Repository::make ();
+  config     = as::Config::make ();
 
   QObject::connect (repository.data (),
                     &as::Repository::removing_all_nodes,
@@ -55,7 +60,13 @@ main (int argc, char * argv[])
                                              repository.data ());
   engine.rootContext ()->setContextProperty ("g_Config", config.data ());
   engine.load (QUrl ("qrc:///Core/Core.qml"));
-  return application.exec ();
+
+  int rv = application.exec ();
+  processing_mutex.lock ();
+  qDebug ("Waiting for processing thread to finish");
+  as::VideoPipeline::processing_wait_condition.wait (&processing_mutex);
+  processing_mutex.unlock ();
+  return rv;
 }
 
 static void

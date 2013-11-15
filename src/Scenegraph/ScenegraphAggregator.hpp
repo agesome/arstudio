@@ -21,6 +21,8 @@ class ScenegraphAggregator : public QObject
   Q_PROPERTY (int max_frame READ max_frame NOTIFY limits_changed)
   Q_PROPERTY (int min_frame READ min_frame NOTIFY limits_changed)
 public:
+  ~ScenegraphAggregator ();
+
   static ScenegraphAggregator *
   instance ()
   {

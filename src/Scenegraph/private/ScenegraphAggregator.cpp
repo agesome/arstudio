@@ -1,6 +1,7 @@
 #include <ScenegraphAggregator.hpp>
 
 namespace arstudio {
+// QQmlengine owns singletons and will delete them even if CppOwnership is set
 ScenegraphAggregator * ScenegraphAggregator::m_instance =
   new ScenegraphAggregator ();
 
@@ -50,6 +51,11 @@ ScenegraphAggregator::recalculate_limits ()
   limits_changed ();
 }
 
+ScenegraphAggregator::~ScenegraphAggregator ()
+{
+  m_instance = nullptr;
+}
+
 void
 ScenegraphAggregator::add_scenegraph (Scenegraph * scenegraph)
 {
@@ -61,6 +67,8 @@ ScenegraphAggregator::add_scenegraph (Scenegraph * scenegraph)
 void
 ScenegraphAggregator::remove_scenegraph (Scenegraph * scenegraph)
 {
+  disconnect (scenegraph, &Scenegraph::sequences_changed,
+              this, &ScenegraphAggregator::rebuild_frames);
   m_scenegraph_list.removeOne (scenegraph);
   rebuild_frames ();
 }

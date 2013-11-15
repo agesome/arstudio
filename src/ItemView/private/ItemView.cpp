@@ -47,6 +47,13 @@ ItemView::ItemView (QQuickItem * parent)
   m_geometry_node.setFlag (QSGGeometryNode::OwnedByParent, false);
 }
 
+ItemView::~ItemView ()
+{
+  if (ScenegraphAggregator::instance ())
+    ScenegraphAggregator::instance ()->remove_scenegraph (m_scenegraph.data ());
+
+}
+
 Scenegraph *
 ItemView::scenegraph ()
 {

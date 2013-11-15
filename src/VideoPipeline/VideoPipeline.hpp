@@ -2,6 +2,8 @@
 #define VIDEO_PIPELINE_HPP
 
 #include <QObject>
+#include <QWaitCondition>
+#include <QApplication>
 #include <QtConcurrent>
 #include <QImage>
 #include <QMutex>
@@ -72,6 +74,7 @@ public:
   int start_frame ();
   int end_frame ();
 
+  static QWaitCondition processing_wait_condition;
 private:
   void processing_thread (float frames_to_process);
 

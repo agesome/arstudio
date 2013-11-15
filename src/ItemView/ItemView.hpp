@@ -32,6 +32,7 @@ class ItemView : public QQuickItem
               NOTIFY show_camera_path_changed)
 public:
   ItemView (QQuickItem * parent = nullptr);
+  ~ItemView ();
 
   arstudio::Scenegraph * scenegraph ();
 
