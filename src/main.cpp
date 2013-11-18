@@ -30,7 +30,6 @@ main (int argc, char * argv[])
 {
   QApplication          application (argc, argv);
   QQmlApplicationEngine engine;
-  QMutex                processing_mutex;
 
   repository = as::Repository::make ();
   config     = as::Config::make ();
@@ -61,12 +60,7 @@ main (int argc, char * argv[])
   engine.rootContext ()->setContextProperty ("g_Config", config.data ());
   engine.load (QUrl ("qrc:///Core/Core.qml"));
 
-  int rv = application.exec ();
-  processing_mutex.lock ();
-  qDebug ("Waiting for processing thread to finish");
-  as::VideoPipeline::processing_wait_condition.wait (&processing_mutex);
-  processing_mutex.unlock ();
-  return rv;
+  return application.exec ();
 }
 
 static void

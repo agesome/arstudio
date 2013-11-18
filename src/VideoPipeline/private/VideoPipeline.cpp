@@ -1,8 +1,6 @@
 #include <VideoPipeline.hpp>
 
 namespace arstudio {
-QWaitCondition VideoPipeline::processing_wait_condition;
-
 VideoPipeline::VideoPipeline (QObject * parent)
   : QObject (parent),
   m_run_processing (false),
@@ -12,7 +10,9 @@ VideoPipeline::VideoPipeline (QObject * parent)
   m_end_frame (1),
   m_processing_progress (0)
 {
-  connect (qApp, &QApplication::aboutToQuit, [this]() { set_running (false); });
+  connect (qApp, &QApplication::aboutToQuit, [this]() {
+             m_run_processing = false;
+           });
 }
 
 bool
@@ -129,12 +129,22 @@ VideoPipeline::processing_thread (float frames_to_process)
 
       frames_processed++;
       m_processing_progress = frames_processed / frames_to_process;
-      progress_changed ();
+
+      /*
+       * m_run_processing may be manually set to false on
+       * QApplication::aboutToQuit; that indicates that user has closed the
+       * main window, QML objects have been destroyed and calling
+       * progress_changed will cause a segfault; so we don't
+       */
+      if (m_run_processing)
+        progress_changed ();
 
       if (frames_processed == frames_to_process)
         break;
     } while (m_run_processing && m_video_helper->next_frame ());
-  processing_wait_condition.wakeAll ();
-  set_running (false);
+
+  // check if aboutToQuit() has fired; see comment above
+  if (m_run_processing)
+    set_running (false);
 }
 }
