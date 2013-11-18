@@ -85,7 +85,10 @@ private:
    */
 signals:
   void removing_all_nodes ();
+  void append_node_signal (RepositoryNode * node);
   void nodes_changed ();
+private slots:
+  void append_node_slot (RepositoryNode * node);
 public slots:
   void clear ();
   void dump_contents (const QString & filename);
