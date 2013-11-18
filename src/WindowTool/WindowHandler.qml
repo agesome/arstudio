@@ -75,11 +75,6 @@ RowLayout {
                     if (scenegraph.locked_to === Scenegraph.BITMAP)
                         exclusiveSequenceIndex = styleData.row
                 }
-
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: checked = !checked
-                }
             }
         }
 
