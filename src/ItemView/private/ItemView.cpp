@@ -213,17 +213,23 @@ ItemView::add_camera_path (const Sequence * sequence)
 {
   Q_ASSERT (sequence->type () == Sequence::Camera);
 
-  Camera::ptr      c, prev;
-  osg::Geometry  * geometry = new osg::Geometry;
-  osg::Vec3Array * points   = new osg::Vec3Array;
-  osg::Vec4Array * color    = new osg::Vec4Array;
-  osg::LineWidth * lw       = new osg::LineWidth (0.2);
+  Camera::ptr          c, prev;
+  osg::Geometry      * geometry = new osg::Geometry;
+  osg::Vec3Array     * points   = new osg::Vec3Array;
+  osg::Vec4Array     * color    = new osg::Vec4Array;
+  osg::LineWidth     * lw       = new osg::LineWidth (2);
+  osg::Sphere        * sphere;
+  osg::ShapeDrawable * sphere_drawable;
 
   color->push_back (osg::Vec4 (0, 1, 0, 1));
 
   for (auto p : sequence->items ())
     {
       c = p.dynamicCast<Camera> ();
+
+      sphere          = new osg::Sphere (qvec2osg (c->position ()), .01);
+      sphere_drawable = new osg::ShapeDrawable (sphere);
+      m_sequence_node->addDrawable (sphere_drawable);
       if (prev)
         {
           points->push_back (qvec2osg (prev->position ()));
@@ -257,6 +263,9 @@ ItemView::init ()
   Q_ASSERT (m_osg_opengl_ctx->create ());
 
   m_osg_viewer = new osgViewer::Viewer;
+
+  osg::Light * light = m_osg_viewer->getLight ();
+  light->setAmbient (osg::Vec4 (.2, .2, .2, .2));
 
   osg::Camera * camera = m_osg_viewer->getCamera ();
   camera->setRenderTargetImplementation (osg::Camera::FRAME_BUFFER_OBJECT);
