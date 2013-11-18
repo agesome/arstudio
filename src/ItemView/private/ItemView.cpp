@@ -38,7 +38,7 @@ ItemView::ItemView (QQuickItem * parent)
   // and b) when the frame index changes
   ScenegraphAggregator::instance ()->add_scenegraph (m_scenegraph.data ());
   connect (m_scenegraph.data (), &Scenegraph::sequences_changed,
-           this, &ItemView::update_scene);
+           this, &ItemView::update);
   connect (ScenegraphAggregator::instance (),
            &ScenegraphAggregator::change_frame,
            this, &ItemView::change_frame);
@@ -85,13 +85,6 @@ ItemView::paint ()
   call_timer.restart ();
 #endif
 
-  // create the initial OSG objects and the axis arrows
-  if (!m_osg_initialized)
-    {
-      init ();
-      m_osg_initialized = true;
-    }
-
   // viewer/camera setup on item resize
   if (!m_size_valid)
     {
@@ -123,31 +116,6 @@ ItemView::paint ()
   m_osg_opengl_ctx->doneCurrent ();
   m_qt_opengl_ctx->makeCurrent (window ());
 
-  // this is done on first run to create a texture of correct size and also
-  // on eash resize of this item to re-create the texture
-  if (!m_size_valid)
-    {
-      QSGGeometry::updateTexturedRectGeometry (&m_qt_geometry,
-                                               QRectF (0, 0, width (),
-                                                       height ()),
-                                               QRectF (0, 1, 1, -1));
-
-      unsigned int ctx_id = m_osg_viewer->getCamera ()->getGraphicsContext ()
-                            ->getState ()->getContextID ();
-      m_osg_texture_object = m_osg_texture->getTextureObject (ctx_id);
-      Q_ASSERT (m_osg_texture_object);
-
-      if (m_qt_texture)
-        delete m_qt_texture;
-      m_qt_texture = window ()->createTextureFromId (
-        m_osg_texture_object->id (),
-        QSize (width (),
-               height ()));
-      m_qt_tex_material.setTexture (m_qt_texture);
-      m_qt_opaque_material.setTexture (m_qt_texture);
-
-      m_size_valid = true;
-    }
 #if DEBUG_RENDERING
   qDebug ("paint() done in %lld us", call_timer.nsecsElapsed () / 1000);
 #endif
@@ -182,9 +150,6 @@ ItemView::update_scene ()
 #if DEBUG_RENDERING
   qDebug ("update_scene() done in %lld us", call_timer.nsecsElapsed () / 1000);
 #endif
-
-  // initiate redraw
-  update ();
 }
 
 void
@@ -251,7 +216,8 @@ void
 ItemView::change_frame (int frame)
 {
   m_current_frame = frame;
-  update_scene ();
+  m_size_valid    = false;
+  update ();
 }
 
 void
@@ -334,8 +300,78 @@ ItemView::init ()
 QSGNode *
 ItemView::updatePaintNode (QSGNode *, QQuickItem::UpdatePaintNodeData *)
 {
-  paint ();
+  QSGTexture * bitmap_texture = nullptr;
+
+  // "normal" 3D items
+  if (m_scenegraph->locked_to () != Scenegraph::BITMAP)
+    {
+      // create the initial OSG objects and the axis arrows
+      if (!m_osg_initialized)
+        {
+          init ();
+          m_osg_initialized = true;
+        }
+
+      update_scene ();
+      paint ();
+      QSGGeometry::updateTexturedRectGeometry (&m_qt_geometry,
+                                               QRectF (0, 0, width (),
+                                                       height ()),
+                                               QRectF (0, 1, 1, -1));
+      m_size_valid = false;
+    }
+  else
+    {
+      Sequence * s = m_scenegraph->sequences ().at (0);
+      Item::ptr  i = s->item_for_frame (m_current_frame);
+      if (i)
+        {
+          Bitmap::ptr bitmap = i.dynamicCast<Bitmap> ();
+          Q_ASSERT (bitmap);
+          QImage scaled = bitmap->get ().scaled (width (), height (),
+                                                 Qt::KeepAspectRatio,
+                                                 Qt::SmoothTransformation);
+          bitmap_texture = window ()->createTextureFromImage (scaled);
+          QSGGeometry::updateTexturedRectGeometry (&m_qt_geometry,
+                                                   QRectF (0, 0,
+                                                           scaled.width (),
+                                                           scaled.height ()),
+                                                   QRectF (0, 0, 1, 1));
+          m_size_valid = false;
+        }
+    }
+
+  // this is done on first run to create a texture of correct size and also
+  // on eash resize of this item to re-create the texture
+  if (!m_size_valid)
+    {
+      if (m_qt_texture)
+        delete m_qt_texture;
+
+      if (bitmap_texture == nullptr)
+        {
+          unsigned int ctx_id =
+            m_osg_viewer->getCamera ()->getGraphicsContext ()
+            ->getState ()->getContextID ();
+          m_osg_texture_object = m_osg_texture->getTextureObject (ctx_id);
+          Q_ASSERT (m_osg_texture_object);
+
+          m_qt_texture = window ()->createTextureFromId (
+            m_osg_texture_object->id (),
+            QSize (width (),
+                   height ()));
+        }
+      else
+        m_qt_texture = bitmap_texture;
+
+      m_qt_tex_material.setTexture (m_qt_texture);
+      m_qt_opaque_material.setTexture (m_qt_texture);
+      m_size_valid = true;
+    }
+
+
   m_geometry_node.markDirty (QSGGeometryNode::DirtyMaterial);
+
   return &m_geometry_node;
 }
 

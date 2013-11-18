@@ -21,6 +21,7 @@
 #include <ScenegraphAggregator.hpp>
 #include <Sequence.hpp>
 #include <Camera.hpp>
+#include <Bitmap.hpp>
 
 namespace arstudio {
 class ItemView : public QQuickItem

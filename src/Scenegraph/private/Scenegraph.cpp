@@ -78,6 +78,7 @@ Scenegraph::rebuild_frames ()
     for (int frame : s->items ().keys ())
       m_frames.insert (frame);
   m_frameset_lock.unlock ();
+  sequences_changed ();
 }
 
 void
