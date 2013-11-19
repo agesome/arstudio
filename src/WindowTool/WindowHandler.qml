@@ -26,8 +26,8 @@ RowLayout {
         height: 400;
         Component.onCompleted:
         {
-            if((Screen.width - g_rootWindow.x - g_rootWindow.width) < 400)
-                x = g_rootWindow.x - 400
+            if((Screen.width - g_rootWindow.x - g_rootWindow.width) < width)
+                x = g_rootWindow.x - width
             else
                 x = g_rootWindow.x + g_rootWindow.width
             y = g_rootWindow.y;
