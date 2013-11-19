@@ -144,6 +144,10 @@ ItemView::update_scene ()
           if (m_show_camera_path)
             add_camera_path (seq);
           break;
+
+        default:
+          qDebug () << "Wrong sequence type!";
+          break;
         }
     }
 

@@ -22,6 +22,10 @@ RowLayout {
     Window {
         id: item_window
         visible: true
+        width: 400;
+        height: 400;
+        x: g_rootWindow.x + g_rootWindow.width
+        y: g_rootWindow.y
 
         onVisibleChanged: {
             if (visible) return;
