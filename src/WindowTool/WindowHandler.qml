@@ -24,8 +24,14 @@ RowLayout {
         visible: true
         width: 400;
         height: 400;
-        x: g_rootWindow.x + g_rootWindow.width
-        y: g_rootWindow.y
+        Component.onCompleted:
+        {
+            if((Screen.width - g_rootWindow.x - g_rootWindow.width) < 400)
+                x = g_rootWindow.x - 400
+            else
+                x = g_rootWindow.x + g_rootWindow.width
+            y = g_rootWindow.y;
+        }
 
         onVisibleChanged: {
             if (visible) return;
