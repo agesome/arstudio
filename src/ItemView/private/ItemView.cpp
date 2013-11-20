@@ -78,7 +78,7 @@ ItemView::set_show_camera_path (bool v)
 }
 
 void
-ItemView::paint ()
+ItemView::osg_paint ()
 {
 #if DEBUG_RENDERING
   static QElapsedTimer call_timer;
@@ -116,6 +116,11 @@ ItemView::paint ()
   m_osg_opengl_ctx->doneCurrent ();
   m_qt_opengl_ctx->makeCurrent (window ());
 
+  if (!m_size_valid)
+    QSGGeometry::updateTexturedRectGeometry (&m_qt_geometry,
+                                             QRectF (0, 0, width (),
+                                                     height ()),
+                                             QRectF (0, 1, 1, -1));
 #if DEBUG_RENDERING
   qDebug ("paint() done in %lld us", call_timer.nsecsElapsed () / 1000);
 #endif
@@ -145,8 +150,12 @@ ItemView::update_scene ()
             add_camera_path (seq);
           break;
 
+        case Sequence::Bitmap:
+          show_bitmap (item.dynamicCast<Bitmap> ());
+          break;
+
         default:
-          qDebug () << "Wrong sequence type!";
+          qWarning ("ItemView: Unhandled sequence type!");
           break;
         }
     }
@@ -217,47 +226,22 @@ ItemView::add_camera_path (const Sequence * sequence)
 }
 
 void
-ItemView::change_frame (int frame)
+ItemView::show_bitmap (const Bitmap::ptr bitmap)
 {
-  m_current_frame = frame;
-  m_size_valid    = false;
-  update ();
+  m_current_bitmap = bitmap->get ().scaled (width (), height (),
+                                            Qt::KeepAspectRatio,
+                                            Qt::SmoothTransformation);
+  QSGGeometry::updateTexturedRectGeometry (&m_qt_geometry,
+                                           QRectF (0, 0,
+                                                   m_current_bitmap.width (),
+                                                   m_current_bitmap.height ()),
+                                           QRectF (0, 0, 1, 1));
+  m_size_valid = false;
 }
 
 void
-ItemView::init ()
+ItemView::create_axis ()
 {
-  // create a separate OpenGL context for OSG
-  m_osg_opengl_ctx = new QOpenGLContext;
-  m_osg_opengl_ctx->setShareContext (QOpenGLContext::currentContext ());
-  Q_ASSERT (m_osg_opengl_ctx->create ());
-
-  m_osg_viewer = new osgViewer::Viewer;
-
-  osg::Light * light = m_osg_viewer->getLight ();
-  light->setAmbient (osg::Vec4 (.2, .2, .2, .2));
-
-  osg::Camera * camera = m_osg_viewer->getCamera ();
-  camera->setRenderTargetImplementation (osg::Camera::FRAME_BUFFER_OBJECT);
-  // background color for whatever is rendered with OSG
-  camera->setClearColor (osg::Vec4 (.05, .05, .05, 1.0));
-
-  m_osg_texture = new osg::Texture2D;
-  m_osg_texture->setInternalFormat (GL_RGBA);
-  m_osg_texture->setFilter (osg::Texture2D::MIN_FILTER, osg::Texture2D::LINEAR);
-  m_osg_texture->setFilter (osg::Texture2D::MAG_FILTER, osg::Texture2D::LINEAR);
-
-  camera->attach (osg::Camera::COLOR_BUFFER, m_osg_texture.get ());
-
-  m_osg_orbit = new osgGA::OrbitManipulator;
-  m_osg_viewer->setCameraManipulator (m_osg_orbit.get ());
-  m_osg_orbit->setHomePosition (osg::Vec3 (3, 0, 3), osg::Vec3 (0, 0, 0),
-                                osg::Vec3 (0, 0, 1));
-  m_osg_viewer->home ();
-
-  m_osg_scene = new osg::Group;
-  m_osg_viewer->setSceneData (m_osg_scene.get ());
-
   osg::Geode         * axis = new osg::Geode;
   osg::ShapeDrawable * s;
   osg::Cylinder      * cyl;
@@ -301,48 +285,72 @@ ItemView::init ()
   m_osg_scene->addChild (axis);
 }
 
+void
+ItemView::change_frame (int frame)
+{
+  m_current_frame = frame;
+  m_size_valid    = false;
+  update ();
+}
+
+void
+ItemView::osg_init ()
+{
+  // create a separate OpenGL context for OSG
+  m_osg_opengl_ctx = new QOpenGLContext;
+  m_osg_opengl_ctx->setShareContext (QOpenGLContext::currentContext ());
+  Q_ASSERT (m_osg_opengl_ctx->create ());
+
+  m_osg_viewer = new osgViewer::Viewer;
+
+  osg::Light * light = m_osg_viewer->getLight ();
+  light->setAmbient (osg::Vec4 (.2, .2, .2, .2));
+
+  osg::Camera * camera = m_osg_viewer->getCamera ();
+  camera->setRenderTargetImplementation (osg::Camera::FRAME_BUFFER_OBJECT);
+  // background color for whatever is rendered with OSG
+  camera->setClearColor (osg::Vec4 (.05, .05, .05, 1.0));
+
+  m_osg_texture = new osg::Texture2D;
+  m_osg_texture->setInternalFormat (GL_RGBA);
+  m_osg_texture->setFilter (osg::Texture2D::MIN_FILTER, osg::Texture2D::LINEAR);
+  m_osg_texture->setFilter (osg::Texture2D::MAG_FILTER, osg::Texture2D::LINEAR);
+
+  camera->attach (osg::Camera::COLOR_BUFFER, m_osg_texture.get ());
+
+  m_osg_orbit = new osgGA::OrbitManipulator;
+  m_osg_viewer->setCameraManipulator (m_osg_orbit.get ());
+  m_osg_orbit->setHomePosition (osg::Vec3 (3, 0, 3), osg::Vec3 (0, 0, 0),
+                                osg::Vec3 (0, 0, 1));
+  m_osg_viewer->home ();
+
+  m_osg_scene = new osg::Group;
+  m_osg_viewer->setSceneData (m_osg_scene.get ());
+
+  create_axis ();
+}
+
 QSGNode *
 ItemView::updatePaintNode (QSGNode *, QQuickItem::UpdatePaintNodeData *)
 {
-  QSGTexture * bitmap_texture = nullptr;
+  if (!m_osg_initialized)
+    {
+      osg_init ();
+      m_osg_initialized = true;
+    }
 
-  // "normal" 3D items
+  update_scene ();
+
   if (m_scenegraph->locked_to () != Scenegraph::BITMAP)
     {
-      // create the initial OSG objects and the axis arrows
-      if (!m_osg_initialized)
+      if (!m_current_bitmap.isNull ())
         {
-          init ();
-          m_osg_initialized = true;
+          // nullify
+          m_current_bitmap = QImage ();
+          m_size_valid     = false;
         }
 
-      update_scene ();
-      paint ();
-      QSGGeometry::updateTexturedRectGeometry (&m_qt_geometry,
-                                               QRectF (0, 0, width (),
-                                                       height ()),
-                                               QRectF (0, 1, 1, -1));
-      m_size_valid = false;
-    }
-  else
-    {
-      Sequence * s = m_scenegraph->sequences ().at (0);
-      Item::ptr  i = s->item_for_frame (m_current_frame);
-      if (i)
-        {
-          Bitmap::ptr bitmap = i.dynamicCast<Bitmap> ();
-          Q_ASSERT (bitmap);
-          QImage scaled = bitmap->get ().scaled (width (), height (),
-                                                 Qt::KeepAspectRatio,
-                                                 Qt::SmoothTransformation);
-          bitmap_texture = window ()->createTextureFromImage (scaled);
-          QSGGeometry::updateTexturedRectGeometry (&m_qt_geometry,
-                                                   QRectF (0, 0,
-                                                           scaled.width (),
-                                                           scaled.height ()),
-                                                   QRectF (0, 0, 1, 1));
-          m_size_valid = false;
-        }
+      osg_paint ();
     }
 
   // this is done on first run to create a texture of correct size and also
@@ -352,7 +360,9 @@ ItemView::updatePaintNode (QSGNode *, QQuickItem::UpdatePaintNodeData *)
       if (m_qt_texture)
         delete m_qt_texture;
 
-      if (bitmap_texture == nullptr)
+      if (m_scenegraph->locked_to () == Scenegraph::BITMAP)
+        m_qt_texture = window ()->createTextureFromImage (m_current_bitmap);
+      else
         {
           unsigned int ctx_id =
             m_osg_viewer->getCamera ()->getGraphicsContext ()
@@ -365,17 +375,13 @@ ItemView::updatePaintNode (QSGNode *, QQuickItem::UpdatePaintNodeData *)
             QSize (width (),
                    height ()));
         }
-      else
-        m_qt_texture = bitmap_texture;
 
       m_qt_tex_material.setTexture (m_qt_texture);
       m_qt_opaque_material.setTexture (m_qt_texture);
       m_size_valid = true;
     }
 
-
   m_geometry_node.markDirty (QSGGeometryNode::DirtyMaterial);
-
   return &m_geometry_node;
 }
 

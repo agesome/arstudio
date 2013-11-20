@@ -11,9 +11,9 @@
 
 #include <osgViewer/Viewer>
 #include <osgViewer/Renderer>
+#include <osgGA/OrbitManipulator>
 #include <osg/Texture2D>
 #include <osg/ShapeDrawable>
-#include <osgGA/OrbitManipulator>
 #include <osg/Geometry>
 #include <osg/LineWidth>
 
@@ -51,16 +51,21 @@ protected:
   void mouseReleaseEvent (QMouseEvent * event);
   void geometryChanged (const QRectF &ng, const QRectF &og);
 private:
-  void init ();
-  void paint ();
+  void osg_init ();
+  void osg_paint ();
   void update_scene ();
+
   void add_camera (const Camera::ptr camera);
   void add_camera_path (const Sequence * sequence);
+  void show_bitmap (const Bitmap::ptr bitmap);
+
+  void create_axis ();
 
   Scenegraph::ptr m_scenegraph;
   osg::Geode    * m_sequence_node;
   int             m_current_frame;
   bool            m_show_camera_path;
+  QImage          m_current_bitmap;
 
   QOpenGLContext * m_qt_opengl_ctx;
   QOpenGLContext * m_osg_opengl_ctx;
