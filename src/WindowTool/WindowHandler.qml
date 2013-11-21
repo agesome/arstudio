@@ -45,6 +45,22 @@ RowLayout {
         ItemView {
             id: itemView
             anchors.fill: parent
+            show_camera_path: cameraPathCheckbox.checked
+            show_item_positions: itemPositionsCheckbox.checked
+        }
+
+        ColumnLayout {
+            CheckBox {
+                id: cameraPathCheckbox
+                text: "Show Camera Path"
+                checked: true
+            }
+
+            CheckBox {
+                id: itemPositionsCheckbox
+                text: "Show Item Positions"
+                checked: true
+            }
         }
     }
 
