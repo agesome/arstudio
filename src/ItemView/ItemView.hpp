@@ -16,6 +16,7 @@
 #include <osg/ShapeDrawable>
 #include <osg/Geometry>
 #include <osg/LineWidth>
+#include <osgText/Text>
 
 #include <Scenegraph.hpp>
 #include <ScenegraphAggregator.hpp>
@@ -31,17 +32,44 @@ class ItemView : public QQuickItem
   Q_PROPERTY (bool show_camera_path READ show_camera_path
               WRITE set_show_camera_path
               NOTIFY show_camera_path_changed)
+  Q_PROPERTY (bool show_item_positions READ show_item_positions
+              WRITE set_show_item_positions
+              NOTIFY show_item_positions_changed)
 public:
   ItemView (QQuickItem * parent = nullptr);
   ~ItemView ();
 
   arstudio::Scenegraph * scenegraph ();
 
-  bool show_camera_path ();
-  void set_show_camera_path (bool v);
+  inline bool
+  show_camera_path ()
+  {
+    return m_show_camera_path;
+  }
+  inline void
+  set_show_camera_path (bool v)
+  {
+    m_show_camera_path = v;
+    show_camera_path_changed ();
+    update ();
+  }
+
+  inline bool
+  show_item_positions ()
+  {
+    return m_show_item_positions;
+  }
+  inline void
+  set_show_item_positions (bool v)
+  {
+    m_show_item_positions = v;
+    show_item_positions_changed ();
+    update ();
+  }
 
 signals:
   void show_camera_path_changed ();
+  void show_item_positions_changed ();
 
 protected:
   QSGNode * updatePaintNode (QSGNode *, UpdatePaintNodeData *);
@@ -59,12 +87,26 @@ private:
   void add_camera_path (const Sequence * sequence);
   void show_bitmap (const Bitmap::ptr bitmap);
 
+  inline osgText::Text *
+  show_text (const osg::Vec3 & pos, const QString & text)
+  {
+    osgText::Text * p = new osgText::Text;
+
+    p->setText (text.toStdString ());
+    p->setPosition (pos);
+    p->setCharacterSize (0.06);
+    p->setAutoRotateToScreen (true);
+    p->setColor (osg::Vec4 (0, 1, 0, 1));
+    return p;
+  }
+
   void create_axis ();
 
   Scenegraph::ptr m_scenegraph;
   osg::Geode    * m_sequence_node;
   int             m_current_frame;
   bool            m_show_camera_path;
+  bool            m_show_item_positions;
   QImage          m_current_bitmap;
 
   QOpenGLContext * m_qt_opengl_ctx;

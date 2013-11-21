@@ -18,6 +18,7 @@ ItemView::ItemView (QQuickItem * parent)
   , m_sequence_node (nullptr)
   , m_current_frame (1)
   , m_show_camera_path (true)
+  , m_show_item_positions (true)
   , m_qt_opengl_ctx (nullptr)
   , m_osg_opengl_ctx (nullptr)
   , m_qt_texture (nullptr)
@@ -61,20 +62,6 @@ ItemView::scenegraph ()
                                   QQmlEngine::CppOwnership);
 
   return m_scenegraph.data ();
-}
-
-bool
-ItemView::show_camera_path ()
-{
-  return m_show_camera_path;
-}
-
-void
-ItemView::set_show_camera_path (bool v)
-{
-  m_show_camera_path = v;
-  show_camera_path_changed ();
-  update ();
 }
 
 void
@@ -174,6 +161,19 @@ ItemView::add_camera (const Camera::ptr camera)
 
   c = new osg::Cone (qvec2osg (camera->position ()), 0.03, 0.06);
 
+  if (m_show_item_positions)
+    {
+      const double x = camera->position ().x (), y = camera->position ().y (),
+                   z = camera->position ().z ();
+      QString p      =
+        QString ("%1;%2;%3").arg (x, 0, 'g', 2).arg (y, 0, 'g', 2);
+      p = p.arg (z, 0, 'g', 2);
+
+      auto ptr = show_text (qvec2osg (camera->position ()
+                                      + QVector3D (.03, .03, .03)), p);
+      m_sequence_node->addDrawable (ptr);
+    }
+
   //  FIXME: rotation conversion is probably wrong
   r = osg::Quat (camera->rotation ().x (), osg::Vec3f (1, 0, 0)) +
       osg::Quat (camera->rotation ().y (), osg::Vec3f (0, 1, 0)) +
@@ -199,7 +199,7 @@ ItemView::add_camera_path (const Sequence * sequence)
   osg::Sphere        * sphere;
   osg::ShapeDrawable * sphere_drawable;
 
-  color->push_back (osg::Vec4 (0, 1, 0, 1));
+  color->push_back (osg::Vec4 (1, 1, 0, 1));
 
   for (auto p : sequence->items ())
     {
@@ -257,8 +257,9 @@ ItemView::create_axis ()
   axis->addDrawable (s);
   cone = new osg::Cone (osg::Vec3 (0, 0, 1), 2 * cr, ch);
   s    = new osg::ShapeDrawable (cone);
-  s->setColor (osg::Vec4 (0, 0, 1, 1.0));
+  s->setColor (osg::Vec4 (0, 0, .9, 1.0));
   axis->addDrawable (s);
+  axis->addDrawable (show_text (osg::Vec3 (0, 0, 1.1), "Z"));
 
   // X arrow
   cyl = new osg::Cylinder (osg::Vec3 (0.5, 0, 0), cr, 1);
@@ -268,8 +269,9 @@ ItemView::create_axis ()
   cone = new osg::Cone (osg::Vec3 (1, 0, 0), 2 * cr, ch);
   s    = new osg::ShapeDrawable (cone);
   cone->setRotation (osg::Quat (M_PI_2, osg::Vec3 (0, 1, 0)));
-  s->setColor (osg::Vec4 (0, 1, 0, 1.0));
+  s->setColor (osg::Vec4 (.9, .9, 0, 1.0));
   axis->addDrawable (s);
+  axis->addDrawable (show_text (osg::Vec3 (1.1, 0, 0), "X"));
 
   // Y arrow
   cyl = new osg::Cylinder (osg::Vec3 (0, 0.5, 0), cr, 1);
@@ -279,8 +281,9 @@ ItemView::create_axis ()
   cone = new osg::Cone (osg::Vec3 (0, 1, 0), 2 * cr, ch);
   s    = new osg::ShapeDrawable (cone);
   cone->setRotation (osg::Quat (-M_PI_2, osg::Vec3 (1, 0, 0)));
-  s->setColor (osg::Vec4 (1, 0, 0, 1.0));
+  s->setColor (osg::Vec4 (.9, 0, 0, 1.0));
   axis->addDrawable (s);
+  axis->addDrawable (show_text (osg::Vec3 (0, 1.1, 0), "Y"));
 
   m_osg_scene->addChild (axis);
 }
