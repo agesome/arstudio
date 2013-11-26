@@ -123,6 +123,7 @@ private:
   osg::ref_ptr<osgGA::OrbitManipulator> m_osg_orbit;
   osg::ref_ptr<osg::Group>              m_osg_scene;
   osg::Texture::TextureObject         * m_osg_texture_object;
+  osgViewer::GraphicsWindowEmbedded   * m_osg_window_handle;
 
   bool m_size_valid;
   bool m_osg_initialized;

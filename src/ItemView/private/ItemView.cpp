@@ -24,6 +24,7 @@ ItemView::ItemView (QQuickItem * parent)
   , m_qt_texture (nullptr)
   , m_qt_geometry (QSGGeometry::defaultAttributes_TexturedPoint2D (), 4)
   , m_osg_texture_object (nullptr)
+  , m_osg_window_handle (nullptr)
   , m_size_valid (false)
   , m_osg_initialized (false)
 {
@@ -75,17 +76,24 @@ ItemView::osg_paint ()
   // viewer/camera setup on item resize
   if (!m_size_valid)
     {
-      m_osg_viewer->setUpViewerAsEmbeddedInWindow (0, 0, width (), height ());
+      m_osg_window_handle->resized (0, 0, width (), height ());
       m_osg_texture->setTextureSize (width (), height ());
       m_osg_texture->dirtyTextureObject ();
-      m_osg_viewer->getCamera ()->setRenderingCache (nullptr);
-      m_osg_viewer->getCamera ()->setViewport (0, 0, width (), height ());
 
-      osgViewer::Renderer * renderer
-        = (osgViewer::Renderer *) m_osg_viewer->getCamera ()->getRenderer ();
-      renderer->getSceneView (0)->getRenderStage ()->setFrameBufferObject (NULL);
-      renderer->getSceneView (0)->getRenderStage ()->setCameraRequiresSetUp (
-        true);
+      osg::Camera * c = m_osg_viewer->getCamera ();
+
+      c->setRenderingCache (nullptr);
+      c->setViewport (0, 0, width (), height ());
+      c->setProjectionMatrixAsPerspective (30.0f,
+                                           width () / height (), 1.0f,
+                                           10000.0f);
+
+      auto r =
+        static_cast<osgViewer::Renderer *> (c->getRenderer ());
+      osgUtil::RenderStage * rs = r->getSceneView (0)->getRenderStage ();
+
+      rs->setCameraRequiresSetUp (true);
+      rs->setFrameBufferObject (NULL);
     }
 
   // save Qt context, make OSG context current
@@ -304,7 +312,10 @@ ItemView::osg_init ()
   m_osg_opengl_ctx->setShareContext (QOpenGLContext::currentContext ());
   Q_ASSERT (m_osg_opengl_ctx->create ());
 
-  m_osg_viewer = new osgViewer::Viewer;
+  m_osg_viewer        = new osgViewer::Viewer;
+  m_osg_window_handle = m_osg_viewer->setUpViewerAsEmbeddedInWindow (0, 0,
+                                                                     width (),
+                                                                     height ());
 
   osg::Light * light = m_osg_viewer->getLight ();
   light->setAmbient (osg::Vec4 (.2, .2, .2, .2));
@@ -336,6 +347,11 @@ ItemView::osg_init ()
 QSGNode *
 ItemView::updatePaintNode (QSGNode *, QQuickItem::UpdatePaintNodeData *)
 {
+#if DEBUG_RENDERING
+  static QElapsedTimer call_timer;
+  call_timer.restart ();
+#endif
+
   if (!m_osg_initialized)
     {
       osg_init ();
@@ -385,6 +401,12 @@ ItemView::updatePaintNode (QSGNode *, QQuickItem::UpdatePaintNodeData *)
     }
 
   m_geometry_node.markDirty (QSGGeometryNode::DirtyMaterial);
+
+#if DEBUG_RENDERING
+  qDebug ("updatePaintNode() done in %lld us", call_timer.nsecsElapsed () /
+          1000);
+#endif
+
   return &m_geometry_node;
 }
 
