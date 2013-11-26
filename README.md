@@ -10,14 +10,13 @@ Repository structure
 	- git-hooks/  -- useful git hooks to use when working on this project;
 	- src/        -- the source three;
 	- submodules/ -- contains KinectRecorder, a dependency to support .kinvideo files.
-	- releases/   -- contains complete source archives of previous releases
 
 Dependencies
 =====
 
-- Qt 5.1 (OpenGL, Quick; Widgets for deprecated 'widgets' branch)
-- Qt 3D (forked for this project: https://gitorious.org/~evgeny/qt/qt3d-minor-fixes)
+- Qt 5.1 (OpenGL, Quick, Concurrent)
 - OpenCV
+- OpenSceneGraph
 
 To generate documentation, optional:
 
