@@ -8,4 +8,4 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-add_library(adjuster SHARED ${sources})
+add_library(adjuster STATIC ${sources})
