@@ -66,10 +66,11 @@ main (int argc, char * argv[])
 static void
 register_qml_types ()
 {
+  qRegisterMetaType<as::Sequence::ptr> ();
+
   qmlRegisterType<as::Sequence> ("arstudio", 1, 0, "Sequence");
   qmlRegisterType<as::Scenegraph> ("arstudio", 1, 0, "Scenegraph");
   qmlRegisterType<as::Repository> ("arstudio", 1, 0, "Repository");
-  qmlRegisterType<as::RepositoryNode> ("arstudio", 1, 0, "RepositoryNode");
   qmlRegisterType<as::ItemView> ("arstudio", 1, 0, "ItemView");
   qmlRegisterType<as::VideoHelper> ("arstudio", 1, 0, "VideoHelper");
   qmlRegisterType<as::VideoPipeline> ("arstudio", 1, 0, "VideoPipeline");

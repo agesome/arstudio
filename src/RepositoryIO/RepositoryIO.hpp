@@ -7,7 +7,6 @@
 #include <QList>
 #include <QtDebug>
 
-#include <RepositoryNode.hpp>
 #include <Bitmap.hpp>
 #include <Camera.hpp>
 #include <Point3D.hpp>
@@ -17,10 +16,10 @@ namespace arstudio {
 namespace io {
 bool
 serialize_to_file (const QString & path,
-                   QList<RepositoryNode *> & nodes);
+                   QList<Sequence::ptr> & nodes);
 bool
 deserialize_from_file (const QString & path,
-                       QList<RepositoryNode *> & nodes);
+                       QList<Sequence::ptr> &nodes);
 }
 }
 

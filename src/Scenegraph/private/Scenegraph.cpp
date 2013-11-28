@@ -16,6 +16,7 @@ Scenegraph::make (QObject * parent)
 void
 Scenegraph::add_sequence (Sequence * seq)
 {
+  Q_ASSERT (seq);
   m_sequences.push_back (seq);
   for (int frame : seq->items ().keys ())
     m_frames.insert (frame);

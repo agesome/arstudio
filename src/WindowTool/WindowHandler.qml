@@ -94,7 +94,7 @@ RowLayout {
                 }
 
                 onCheckedChanged: {
-                    var sequence = model.nodes[styleData.row].ptr
+                    var sequence = model.nodes[styleData.row]
                     if (checked)
                         scenegraph.add_sequence(sequence)
                     else

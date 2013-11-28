@@ -5,22 +5,23 @@ Item::~Item ()
 {
 }
 
-Sequence::Sequence (ItemType type, QObject * parent)
-  : QObject (parent),
-  m_type (type)
+Sequence::Sequence (ItemType type, const QString & name, QObject * parent)
+  : QObject (parent)
+  , m_type (type)
+  , m_name (name)
 {
 }
 
 Sequence::Sequence (QObject * parent)
-  : QObject (parent),
-  m_type (Sequence::Invalid)
+  : QObject (parent)
+  , m_type (Sequence::Invalid)
 {
 }
 
 Sequence::ptr
-Sequence::make (Sequence::ItemType type)
+Sequence::make (Sequence::ItemType type, const QString & name)
 {
-  return QSharedPointer<Sequence> (new Sequence (type));
+  return QSharedPointer<Sequence> (new Sequence (type, name));
 }
 
 void
@@ -42,6 +43,12 @@ Sequence::ItemType
 Sequence::type () const
 {
   return m_type;
+}
+
+const QString
+Sequence::name () const
+{
+  return m_name;
 }
 
 const Item::ptr

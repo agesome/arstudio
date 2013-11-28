@@ -49,7 +49,6 @@ set(arstudio_headers
     Sequence/Camera.hpp
     Sequence/Point3D.hpp
     Repository/Repository.hpp
-    Repository/RepositoryNode.hpp
     Scenegraph/Scenegraph.hpp
     Scenegraph/ScenegraphAggregator.hpp
     VideoHelper/VideoHelper.hpp
@@ -73,7 +72,6 @@ set(arstudio_moc_headers
     VideoHelper/VideoHelper.hpp
     Config/Config.hpp
     BitmapView/BitmapView.hpp
-    Repository/RepositoryNode.hpp
 )
 
 set(resource_files

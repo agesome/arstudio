@@ -4,9 +4,13 @@ namespace arstudio {
 Repository::Repository (QObject * parent)
   : QAbstractListModel (parent)
 {
-  connect (this, &Repository::append_node_signal,
-           this, &Repository::append_node_slot,
-           Qt::QueuedConnection);
+  /*
+   * add_sequence gets called from Logger, which in turn is called by algotihms
+   * running in the processing thread; some GUI-related calls, however, need
+   * to be done in the GUI (main) thread, so we use a signal
+   */
+  connect (this, &Repository::add_sequence, this,
+           &Repository::add_sequence_slot, Qt::QueuedConnection);
 }
 
 Repository::~Repository ()
@@ -29,76 +33,75 @@ Repository::nodelist_count (NodeListProperty * list)
   Repository * r = qobject_cast<Repository *> (list->object);
 
   Q_ASSERT (r);
-  return r->m_nodes.count ();
+  return r->m_sequences.count ();
 }
 
-RepositoryNode *
+Sequence *
 Repository::nodelist_at (NodeListProperty * list, int i)
 {
   Repository * r = qobject_cast<Repository *> (list->object);
 
   Q_ASSERT (r);
 
-  RepositoryNode * n = r->m_nodes.at (i);
-  QQmlEngine::setObjectOwnership (n, QQmlEngine::CppOwnership);
-  return n;
+  Sequence::ptr s = r->m_sequences.at (i);
+  QQmlEngine::setObjectOwnership (s.data (), QQmlEngine::CppOwnership);
+  return s.data ();
 }
 
 QVariant
 Repository::data (const QModelIndex & index, int role) const
 {
-  RepositoryNode * n = m_nodes[index.row ()];
+  Sequence::ptr s = m_sequences[index.row ()];
 
   if (role == NameRole)
-    return n->name ();
+    return s->name ();
   else if (role == TypeRole)
-    return n->type ();
+    return s->type ();
   return QVariant ();
 }
 
 int
 Repository::rowCount (const QModelIndex &) const
 {
-  return m_nodes.count ();
+  return m_sequences.count ();
 }
 
 void
 Repository::add_item (const Item::ptr item, int frame,
                       Sequence::ItemType type,
-                      const QString & node_name)
+                      const QString & sequence_name)
 {
-  Sequence::ptr s;
+  Sequence::ptr sequence;
 
-  for (RepositoryNode * m : m_nodes)
-    if (m->name () == node_name)
+  for (Sequence::ptr sp : m_sequences)
+    if (sp->name () == sequence_name)
       {
-        s = m->shared_ptr ();
+        sequence = sp;
         break;
       }
-  if (!s)
+  // no sequence with requested name, need to create one
+  if (!sequence)
     {
-      s = Sequence::make (type);
-      append_node_signal (new RepositoryNode (node_name, s));
+      sequence = Sequence::make (type, sequence_name);
+      add_sequence (sequence);
     }
-  s->add_item (frame, item);
+  sequence->add_item (frame, item);
 }
 
 Repository::NodeListProperty
 Repository::nodes ()
 {
-  return NodeListProperty (this,
-                           nullptr,
-                           this->nodelist_count,
+  return NodeListProperty (this, nullptr, this->nodelist_count,
                            this->nodelist_at);
 }
 
 void
-Repository::append_node_slot (RepositoryNode * node)
+Repository::add_sequence_slot (Sequence::ptr sequence)
 {
   int position = rowCount ();
 
   beginInsertRows (QModelIndex (), position, position);
-  m_nodes << node;
+  m_sequences << sequence;
   endInsertRows ();
   nodes_changed ();
 }
@@ -108,9 +111,7 @@ Repository::clear ()
 {
   removing_all_nodes ();
   beginResetModel ();
-  for (RepositoryNode * n : m_nodes)
-    delete n;
-  m_nodes.clear ();
+  m_sequences.clear ();
   nodes_changed ();
   endResetModel ();
 }
@@ -118,12 +119,12 @@ Repository::clear ()
 void
 Repository::dump_contents (const QString & filename)
 {
-  io::serialize_to_file (filename, m_nodes);
+  io::serialize_to_file (filename, m_sequences);
 }
 
 void
 Repository::populate_from_file (const QString &filename)
 {
-  io::deserialize_from_file (filename, m_nodes);
+  io::deserialize_from_file (filename, m_sequences);
 }
 }
