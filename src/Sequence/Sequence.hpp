@@ -64,5 +64,4 @@ signals:
   void items_changed ();
 };
 }
-
 #endif // SEQUENCE_H

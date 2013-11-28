@@ -10,6 +10,8 @@
 #include <QSGSimpleTextureNode>
 #include <QFile>
 
+#include <fontconfig/fontconfig.h>
+
 #include <osgViewer/Viewer>
 #include <osgViewer/Renderer>
 #include <osgGA/OrbitManipulator>
@@ -88,19 +90,18 @@ private:
   void add_camera_path (const Sequence * sequence);
   void show_bitmap (const Bitmap::ptr bitmap);
 
+  void find_font ();
+
   inline osgText::Text *
   show_text (const osg::Vec3 & pos, const QString & text)
   {
     osgText::Text * p = new osgText::Text;
-    //here is a possibility to change font and its resolution.
-    //FIXME: ttf file from resources instead of direct file?
-    // because setFont("://cour.ttf") doesnt work
-    QFile temp;
-    temp.setFileName("://cour.ttf");
-    temp.open(QIODevice::ReadOnly);
-    temp.copy("resources/cour.ttf");
-    p->setFont("resources/cour.ttf");
-    p->setFontResolution(100,100);
+
+    if (!m_fontpath.isNull ())
+      {
+        p->setFont (m_fontpath.toLocal8Bit ().data ());
+        p->setFontResolution (100, 100);
+      }
 
     p->setText (text.toStdString ());
     p->setPosition (pos);
@@ -118,6 +119,7 @@ private:
   bool            m_show_camera_path;
   bool            m_show_item_positions;
   QImage          m_current_bitmap;
+  QString         m_fontpath;
 
   QOpenGLContext * m_qt_opengl_ctx;
   QOpenGLContext * m_osg_opengl_ctx;

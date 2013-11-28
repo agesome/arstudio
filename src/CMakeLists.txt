@@ -86,6 +86,7 @@ endif()
 
 include(FindPkgConfig)
 pkg_check_modules(OSG REQUIRED openscenegraph)
+pkg_check_modules(FONTCONFIG REQUIRED fontconfig)
 
 find_package(Qt5OpenGL REQUIRED)
 find_package(Qt5Quick REQUIRED)
@@ -158,6 +159,7 @@ include_directories(
   ${Qt5Concurrent_INCLUDE_DIRS}
   ${Qt5Widgets_INCLUDE_DIRS}
   ${OSG_INCLUDE_DIRS}
+  ${FONTCONFIG_INCLUDE_DIRS}
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
 )
@@ -215,6 +217,7 @@ target_link_libraries(
   ${OpenCV_LIBS}
   ${LIBMAGIC}
   ${OSG_LIBRARIES}
+  ${FONTCONFIG_LIBRARIES}
   ${Qt5Quick_LIBRARIES}
   ${Qt5OpenGL_LIBRARIES}
   ${Qt5Concurrent_LIBRARIES}

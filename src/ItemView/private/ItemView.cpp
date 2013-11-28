@@ -28,6 +28,8 @@ ItemView::ItemView (QQuickItem * parent)
   , m_size_valid (false)
   , m_osg_initialized (false)
 {
+  find_font ();
+
   m_geometry_node.setGeometry (&m_qt_geometry);
   m_geometry_node.setMaterial (&m_qt_tex_material);
   m_geometry_node.setOpaqueMaterial (&m_qt_opaque_material);
@@ -183,9 +185,9 @@ ItemView::add_camera (const Camera::ptr camera)
     }
 
   //  FIXME: rotation conversion is probably wrong
-  r = osg::Quat (camera->rotation ().x (), osg::Vec3f (1, 0, 0)) +
-      osg::Quat (camera->rotation ().y (), osg::Vec3f (0, 1, 0)) +
-      osg::Quat (camera->rotation ().z (), osg::Vec3f (0, 0, 1));
+  r = osg::Quat (camera->rotation ().x (), osg::Vec3f (1, 0, 0),
+                 camera->rotation ().y (), osg::Vec3f (0, 1, 0),
+                 camera->rotation ().z (), osg::Vec3f (0, 0, 1));
 
   c->setRotation (r);
 
@@ -245,6 +247,36 @@ ItemView::show_bitmap (const Bitmap::ptr bitmap)
                                                    m_current_bitmap.height ()),
                                            QRectF (0, 0, 1, 1));
   m_size_valid = false;
+}
+
+void
+ItemView::find_font ()
+{
+  if (!FcInit ())
+    return;
+
+  FcConfig  * config  = FcConfigGetCurrent ();
+  FcPattern * pattern = nullptr, * match = nullptr;
+  FcResult    result;
+  FcChar8   * filename;
+
+  pattern = FcPatternBuild (NULL,
+                            FC_SPACING, FcTypeInteger, FC_MONO,
+                            FC_CHAR_WIDTH, FcTypeInteger, FC_WIDTH_NORMAL,
+                            FC_WEIGHT, FcTypeInteger, FC_WEIGHT_NORMAL,
+                            FC_SCALABLE, FcTypeBool, FcTrue,
+                            NULL);
+  if (!pattern)
+    goto leave;
+
+  match = FcFontMatch (config, pattern, &result);
+  FcPatternGetString (match, FC_FILE, 0, &filename);
+  m_fontpath = QString (reinterpret_cast<char *> (filename));
+  qDebug ("ItemView: found font: %s", filename);
+
+leave:
+  FcPatternDestroy (pattern);
+  FcPatternDestroy (match);
 }
 
 void

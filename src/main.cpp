@@ -31,6 +31,8 @@ main (int argc, char * argv[])
   QApplication          application (argc, argv);
   QQmlApplicationEngine engine;
 
+  register_qml_types ();
+
   repository = as::Repository::make ();
   config     = as::Config::make ();
 
@@ -52,7 +54,6 @@ main (int argc, char * argv[])
   QApplication::setApplicationName ("arstudio");
   QApplication::setOrganizationName ("CVTeam");
 
-  register_qml_types ();
   engine.setBaseUrl (QUrl ("qrc:///"));
   engine.addImportPath ("qrc:/");
   engine.rootContext ()->setContextProperty ("g_Repository",
@@ -66,7 +67,7 @@ main (int argc, char * argv[])
 static void
 register_qml_types ()
 {
-  qRegisterMetaType<as::Sequence::ptr> ();
+  qRegisterMetaType<arstudio::Sequence::ptr> ("Sequence::ptr");
 
   qmlRegisterType<as::Sequence> ("arstudio", 1, 0, "Sequence");
   qmlRegisterType<as::Scenegraph> ("arstudio", 1, 0, "Scenegraph");
