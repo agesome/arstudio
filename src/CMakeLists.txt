@@ -49,7 +49,6 @@ set(arstudio_headers
     Sequence/Camera.hpp
     Sequence/Point3D.hpp
     Repository/Repository.hpp
-    Repository/RepositoryNode.hpp
     Scenegraph/Scenegraph.hpp
     Scenegraph/ScenegraphAggregator.hpp
     VideoHelper/VideoHelper.hpp
@@ -73,7 +72,6 @@ set(arstudio_moc_headers
     VideoHelper/VideoHelper.hpp
     Config/Config.hpp
     BitmapView/BitmapView.hpp
-    Repository/RepositoryNode.hpp
 )
 
 set(resource_files
@@ -211,7 +209,9 @@ add_executable(arstudio
 target_link_libraries(
   arstudio
   kinectCapture
+  -Wl,--whole-archive
   ${ALGORITHMS}
+  -Wl,--no-whole-archive
   ${OpenCV_LIBS}
   ${LIBMAGIC}
   ${OSG_LIBRARIES}

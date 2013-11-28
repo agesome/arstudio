@@ -103,7 +103,7 @@ serialize_cloud (QDataStream &stream, const Item::ptr &i)
 
 bool
 serialize_to_file (const QString & path,
-                   QList<RepositoryNode *> & nodes)
+                   QList<Sequence::ptr> &nodes)
 {
   QFile output (path);
 
@@ -118,15 +118,15 @@ serialize_to_file (const QString & path,
   stream.writeRawData (reinterpret_cast<const char *> (&fh),
                        sizeof(FileHeader));
 
-  for (const RepositoryNode * n : nodes)
+  for (const Sequence::ptr n : nodes)
     {
       nh.type  = n->type ();
-      nh.count = n->shared_ptr ()->items ().count ();
+      nh.count = n->items ().count ();
       stream.writeRawData (reinterpret_cast<const char *> (&nh),
                            sizeof(NodeHeader));
       stream << n->name ();
 
-      serialize_sequence (stream, n->shared_ptr ());
+      serialize_sequence (stream, n);
     }
 
   qDebug ("Success. File size %lld bytes", output.size ());
@@ -137,7 +137,7 @@ serialize_to_file (const QString & path,
 
 bool
 deserialize_from_file (const QString &path,
-                       QList<RepositoryNode *> &nodes)
+                       QList<Sequence::ptr> &nodes)
 {
   QFile input (path);
 
@@ -166,9 +166,10 @@ deserialize_from_file (const QString &path,
     {
       stream.readRawData (reinterpret_cast<char *> (&nh), sizeof(NodeHeader));
       stream >> name;
-      sequence = Sequence::make (static_cast<Sequence::ItemType> (nh.type));
+      sequence =
+        Sequence::make (static_cast<Sequence::ItemType> (nh.type), name);
       deserialize_sequence (stream, sequence, nh.count);
-      nodes.append (new RepositoryNode (name, sequence));
+      nodes.append (sequence);
     }
 
   qDebug () << "Deserialized successfully";

@@ -8,7 +8,6 @@
 #include <QQmlEngine>
 #include <QQmlListProperty>
 
-#include <RepositoryNode.hpp>
 #include <RepositoryIO.hpp>
 
 namespace arstudio {
@@ -24,11 +23,11 @@ namespace arstudio {
 class Repository : public QAbstractListModel
 {
   Q_OBJECT
-  Q_PROPERTY (QQmlListProperty<arstudio::RepositoryNode> nodes READ nodes
+  Q_PROPERTY (QQmlListProperty<arstudio::Sequence> nodes READ nodes
               NOTIFY nodes_changed)
 public:
   typedef QSharedPointer<Repository> ptr;
-  typedef QQmlListProperty<arstudio::RepositoryNode> NodeListProperty;
+  typedef QQmlListProperty<arstudio::Sequence> NodeListProperty;
 
   enum NodeRoles
   {
@@ -49,13 +48,6 @@ public:
   int rowCount (const QModelIndex & parent = QModelIndex ()) const;
 
   /**
-   * @brief Add a sequence to the list by it's Sequence::ptr
-   * @param sequence the pointer
-   * @param node_name name under which to store the sequence
-   */
-  void add_sequence (const Sequence::ptr sequence, const QString & node_name);
-
-  /**
    * @brief Add an item to already stored sequence
    *
    * If specified sequence does not exist, it is created
@@ -63,20 +55,20 @@ public:
    * @param item the item to store
    * @param frame the frame to which this item corresponds
    * @param type type of the item
-   * @param node_name name of the destination sequence
+   * @param sequence_name name of the destination sequence
    */
   void add_item (const Item::ptr item, int frame, Sequence::ItemType type,
-                 const QString & node_name);
+                 const QString & sequence_name);
 
   NodeListProperty nodes ();
 protected:
   QHash<int, QByteArray> roleNames () const;
 private:
   Q_DISABLE_COPY (Repository)
-  QList<RepositoryNode *> m_nodes;
+  QList<Sequence::ptr> m_sequences;
 
   static int nodelist_count (NodeListProperty *);
-  static arstudio::RepositoryNode * nodelist_at (NodeListProperty *, int);
+  static arstudio::Sequence * nodelist_at (NodeListProperty *, int);
 
   /*
    * add_item ends up being called from the processing thread,
@@ -85,10 +77,10 @@ private:
    */
 signals:
   void removing_all_nodes ();
-  void append_node_signal (RepositoryNode * node);
+  void add_sequence (Sequence::ptr sequence);
   void nodes_changed ();
 private slots:
-  void append_node_slot (RepositoryNode * node);
+  void add_sequence_slot (Sequence::ptr sequence);
 public slots:
   void clear ();
   void dump_contents (const QString & filename);

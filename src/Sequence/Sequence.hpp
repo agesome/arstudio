@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QSharedPointer>
 #include <QMap>
+#include <QMutex>
+#include <QString>
 
 namespace arstudio {
 /**
@@ -25,16 +27,17 @@ class Sequence : public QObject
 {
   Q_OBJECT
                         Q_ENUMS (ItemType)
+  Q_PROPERTY (ItemType type READ type CONSTANT)
 public:
   typedef QSharedPointer<Sequence> ptr;
   typedef QMap<int, Item::ptr> FrameMap;
 
   enum ItemType { Invalid = 0, Bitmap, Camera, Point, PointCloud };
 
-  Sequence (ItemType, QObject * parent = nullptr);
+  Sequence (ItemType, const QString &, QObject * parent = nullptr);
   Sequence (QObject * parent = nullptr);
 
-  static ptr make (ItemType);
+  static ptr make (ItemType, const QString &);
 
   /**
    * @brief Add an item for a specific frame
@@ -48,11 +51,15 @@ public:
   const FrameMap & items () const;
 
   ItemType type () const;
+
+  const QString name () const;
 private:
   Q_DISABLE_COPY (Sequence)
 
   const ItemType m_type; //< type of items stored
-  FrameMap m_items;  //< map of items to frames
+  FrameMap       m_items; //< map of items to frames
+  mutable QMutex m_framemap_mutex;
+  const QString  m_name;
 signals:
   void items_changed ();
 };
