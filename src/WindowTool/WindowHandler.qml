@@ -54,12 +54,14 @@ RowLayout {
                 id: cameraPathCheckbox
                 text: "Show Camera Path"
                 checked: true
+                visible: itemView.scenegraph.locked_to === Scenegraph.NORMAL
             }
 
             CheckBox {
                 id: itemPositionsCheckbox
                 text: "Show Item Positions"
                 checked: true
+                visible: itemView.scenegraph.locked_to === Scenegraph.NORMAL
             }
         }
     }
