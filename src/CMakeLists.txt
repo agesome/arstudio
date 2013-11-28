@@ -211,7 +211,9 @@ add_executable(arstudio
 target_link_libraries(
   arstudio
   kinectCapture
+  -Wl,--whole-archive
   ${ALGORITHMS}
+  -Wl,--no-whole-archive
   ${OpenCV_LIBS}
   ${LIBMAGIC}
   ${OSG_LIBRARIES}
