@@ -1,10 +1,11 @@
-<!DOCTYPE RCC><RCC version="1.0">
-<qresource>
-	<file>camera-photo.png</file>
-	<file>emblem-photos.png</file>
-	<file>media-skip-forward.png</file>
-	<file>media-skip-backward.png</file>
-	<file>media-playback-start.png</file>
-	<file>media-playback-stop.png</file>
-</qresource>
+<RCC>
+    <qresource prefix="/">
+        <file>camera-photo.png</file>
+        <file>emblem-photos.png</file>
+        <file>media-skip-forward.png</file>
+        <file>media-skip-backward.png</file>
+        <file>media-playback-start.png</file>
+        <file>media-playback-stop.png</file>
+        <file>cour.ttf</file>
+    </qresource>
 </RCC>

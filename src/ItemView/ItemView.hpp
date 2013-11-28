@@ -8,6 +8,7 @@
 #include <QSGTextureMaterial>
 #include <QSGOpaqueTextureMaterial>
 #include <QSGSimpleTextureNode>
+#include <QFile>
 
 #include <osgViewer/Viewer>
 #include <osgViewer/Renderer>
@@ -91,6 +92,15 @@ private:
   show_text (const osg::Vec3 & pos, const QString & text)
   {
     osgText::Text * p = new osgText::Text;
+    //here is a possibility to change font and its resolution.
+    //FIXME: ttf file from resources instead of direct file?
+    // because setFont("://cour.ttf") doesnt work
+    QFile temp;
+    temp.setFileName("://cour.ttf");
+    temp.open(QIODevice::ReadOnly);
+    temp.copy("resources/cour.ttf");
+    p->setFont("resources/cour.ttf");
+    p->setFontResolution(100,100);
 
     p->setText (text.toStdString ());
     p->setPosition (pos);
