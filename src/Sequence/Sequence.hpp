@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QSharedPointer>
 #include <QMap>
+#include <QMutex>
 
 namespace arstudio {
 /**
@@ -52,7 +53,8 @@ private:
   Q_DISABLE_COPY (Sequence)
 
   const ItemType m_type; //< type of items stored
-  FrameMap m_items;  //< map of items to frames
+  FrameMap       m_items; //< map of items to frames
+  mutable QMutex m_framemap_mutex;
 signals:
   void items_changed ();
 };

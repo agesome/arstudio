@@ -1,8 +1,9 @@
 #include <Sequence.hpp>
 
 namespace arstudio {
-
-Item::~Item() {}
+Item::~Item ()
+{
+}
 
 Sequence::Sequence (ItemType type, QObject * parent)
   : QObject (parent),
@@ -25,7 +26,9 @@ Sequence::make (Sequence::ItemType type)
 void
 Sequence::add_item (int frame, const Item::ptr item_ptr)
 {
+  m_framemap_mutex.lock ();
   m_items.insert (frame, item_ptr);
+  m_framemap_mutex.unlock ();
   items_changed ();
 }
 
@@ -44,6 +47,11 @@ Sequence::type () const
 const Item::ptr
 Sequence::item_for_frame (int frame) const
 {
-  return m_items.value (frame);
+  Item::ptr rv;
+
+  m_framemap_mutex.lock ();
+  rv = m_items.value (frame);
+  m_framemap_mutex.unlock ();
+  return rv;
 }
 }
