@@ -6,6 +6,5 @@
         <file>media-skip-backward.png</file>
         <file>media-playback-start.png</file>
         <file>media-playback-stop.png</file>
-        <file>cour.ttf</file>
     </qresource>
 </RCC>

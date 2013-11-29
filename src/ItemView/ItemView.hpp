@@ -5,9 +5,8 @@
 #include <QQuickItem>
 #include <QQuickWindow>
 #include <QOpenGLContext>
-#include <QSGTextureMaterial>
-#include <QSGOpaqueTextureMaterial>
 #include <QSGSimpleTextureNode>
+#include <QOpenGLFramebufferObject>
 #include <QFile>
 
 #include <fontconfig/fontconfig.h>
@@ -15,7 +14,6 @@
 #include <osgViewer/Viewer>
 #include <osgViewer/Renderer>
 #include <osgGA/OrbitManipulator>
-#include <osg/Texture2D>
 #include <osg/ShapeDrawable>
 #include <osg/Geometry>
 #include <osg/LineWidth>
@@ -80,7 +78,7 @@ protected:
   void mouseMoveEvent (QMouseEvent * event);
   void mousePressEvent (QMouseEvent * event);
   void mouseReleaseEvent (QMouseEvent * event);
-  void geometryChanged (const QRectF &ng, const QRectF &og);
+  void geometryChanged (const QRectF &new_geom, const QRectF &old_geom);
 private:
   void osg_init ();
   void osg_paint ();
@@ -100,7 +98,7 @@ private:
     if (!m_fontpath.isNull ())
       {
         p->setFont (m_fontpath.toLocal8Bit ().data ());
-        p->setFontResolution (100, 100);
+        p->setFontResolution (200, 200);
       }
 
     p->setText (text.toStdString ());
@@ -124,17 +122,12 @@ private:
   QOpenGLContext * m_qt_opengl_ctx;
   QOpenGLContext * m_osg_opengl_ctx;
 
-  QSGGeometryNode          m_geometry_node;
-  QSGTexture             * m_qt_texture;
-  QSGTextureMaterial       m_qt_tex_material;
-  QSGOpaqueTextureMaterial m_qt_opaque_material;
-  QSGGeometry              m_qt_geometry;
+  QSGSimpleTextureNode       m_texturenode;
+  QOpenGLFramebufferObject * m_fbo;
 
   osg::ref_ptr<osgViewer::Viewer>       m_osg_viewer;
-  osg::ref_ptr<osg::Texture2D>          m_osg_texture;
   osg::ref_ptr<osgGA::OrbitManipulator> m_osg_orbit;
   osg::ref_ptr<osg::Group>              m_osg_scene;
-  osg::Texture::TextureObject         * m_osg_texture_object;
   osgViewer::GraphicsWindowEmbedded   * m_osg_window_handle;
 
   bool m_size_valid;

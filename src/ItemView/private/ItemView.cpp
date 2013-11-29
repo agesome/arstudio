@@ -21,22 +21,17 @@ ItemView::ItemView (QQuickItem * parent)
   , m_show_item_positions (true)
   , m_qt_opengl_ctx (nullptr)
   , m_osg_opengl_ctx (nullptr)
-  , m_qt_texture (nullptr)
-  , m_qt_geometry (QSGGeometry::defaultAttributes_TexturedPoint2D (), 4)
-  , m_osg_texture_object (nullptr)
+  , m_fbo (nullptr)
   , m_osg_window_handle (nullptr)
   , m_size_valid (false)
   , m_osg_initialized (false)
 {
   find_font ();
 
-  m_geometry_node.setGeometry (&m_qt_geometry);
-  m_geometry_node.setMaterial (&m_qt_tex_material);
-  m_geometry_node.setOpaqueMaterial (&m_qt_opaque_material);
-
   setFlag (ItemHasContents);
   setAntialiasing (true);
   setAcceptedMouseButtons (Qt::MouseButton::LeftButton);
+  m_texturenode.setFlag (QSGSimpleTextureNode::OwnedByParent, false);
 
   // we want to redraw when: a) there may be new sequences for current frame
   // and b) when the frame index changes
@@ -46,9 +41,6 @@ ItemView::ItemView (QQuickItem * parent)
   connect (ScenegraphAggregator::instance (),
            &ScenegraphAggregator::change_frame,
            this, &ItemView::change_frame);
-
-  // prevent the Qt Scenegraph from trying to delete our node
-  m_geometry_node.setFlag (QSGGeometryNode::OwnedByParent, false);
 }
 
 ItemView::~ItemView ()
@@ -79,8 +71,6 @@ ItemView::osg_paint ()
   if (!m_size_valid)
     {
       m_osg_window_handle->resized (0, 0, width (), height ());
-      m_osg_texture->setTextureSize (width (), height ());
-      m_osg_texture->dirtyTextureObject ();
 
       osg::Camera * c = m_osg_viewer->getCamera ();
 
@@ -96,6 +86,16 @@ ItemView::osg_paint ()
 
       rs->setCameraRequiresSetUp (true);
       rs->setFrameBufferObject (NULL);
+
+      if (m_fbo)
+        delete m_fbo;
+
+      QOpenGLFramebufferObjectFormat fmt;
+      fmt.setAttachment (QOpenGLFramebufferObject::CombinedDepthStencil);
+      fmt.setSamples (4);
+      m_fbo = new QOpenGLFramebufferObject (QSize (width (), height ()), fmt);
+
+      m_size_valid = true;
     }
 
   // save Qt context, make OSG context current
@@ -103,21 +103,20 @@ ItemView::osg_paint ()
   m_qt_opengl_ctx->doneCurrent ();
   m_osg_opengl_ctx->makeCurrent (window ());
 
+  m_fbo->bind ();
+
   if (!m_osg_viewer->isRealized ())
     m_osg_viewer->realize ();
 
   // actual OSG rendering happens here
   m_osg_viewer->frame ();
 
+  m_fbo->release ();
+
   // restore Qt context
   m_osg_opengl_ctx->doneCurrent ();
   m_qt_opengl_ctx->makeCurrent (window ());
 
-  if (!m_size_valid)
-    QSGGeometry::updateTexturedRectGeometry (&m_qt_geometry,
-                                             QRectF (0, 0, width (),
-                                                     height ()),
-                                             QRectF (0, 1, 1, -1));
 #if DEBUG_RENDERING
   qDebug ("paint() done in %lld us", call_timer.nsecsElapsed () / 1000);
 #endif
@@ -241,11 +240,6 @@ ItemView::show_bitmap (const Bitmap::ptr bitmap)
   m_current_bitmap = bitmap->get ().scaled (width (), height (),
                                             Qt::KeepAspectRatio,
                                             Qt::SmoothTransformation);
-  QSGGeometry::updateTexturedRectGeometry (&m_qt_geometry,
-                                           QRectF (0, 0,
-                                                   m_current_bitmap.width (),
-                                                   m_current_bitmap.height ()),
-                                           QRectF (0, 0, 1, 1));
   m_size_valid = false;
 }
 
@@ -332,7 +326,6 @@ void
 ItemView::change_frame (int frame)
 {
   m_current_frame = frame;
-  m_size_valid    = false;
   update ();
 }
 
@@ -344,7 +337,8 @@ ItemView::osg_init ()
   m_osg_opengl_ctx->setShareContext (QOpenGLContext::currentContext ());
   Q_ASSERT (m_osg_opengl_ctx->create ());
 
-  m_osg_viewer        = new osgViewer::Viewer;
+  m_osg_viewer = new osgViewer::Viewer;
+  m_osg_viewer->setThreadingModel (osgViewer::Viewer::SingleThreaded);
   m_osg_window_handle = m_osg_viewer->setUpViewerAsEmbeddedInWindow (0, 0,
                                                                      width (),
                                                                      height ());
@@ -353,16 +347,8 @@ ItemView::osg_init ()
   light->setAmbient (osg::Vec4 (.2, .2, .2, .2));
 
   osg::Camera * camera = m_osg_viewer->getCamera ();
-  camera->setRenderTargetImplementation (osg::Camera::FRAME_BUFFER_OBJECT);
   // background color for whatever is rendered with OSG
   camera->setClearColor (osg::Vec4 (.05, .05, .05, 1.0));
-
-  m_osg_texture = new osg::Texture2D;
-  m_osg_texture->setInternalFormat (GL_RGBA);
-  m_osg_texture->setFilter (osg::Texture2D::MIN_FILTER, osg::Texture2D::LINEAR);
-  m_osg_texture->setFilter (osg::Texture2D::MAG_FILTER, osg::Texture2D::LINEAR);
-
-  camera->attach (osg::Camera::COLOR_BUFFER, m_osg_texture.get ());
 
   m_osg_orbit = new osgGA::OrbitManipulator;
   m_osg_viewer->setCameraManipulator (m_osg_orbit.get ());
@@ -404,42 +390,16 @@ ItemView::updatePaintNode (QSGNode *, QQuickItem::UpdatePaintNodeData *)
       osg_paint ();
     }
 
-  // this is done on first run to create a texture of correct size and also
-  // on eash resize of this item to re-create the texture
-  if (!m_size_valid)
-    {
-      if (m_qt_texture)
-        delete m_qt_texture;
-
-      if (m_scenegraph->locked_to () == Scenegraph::BITMAP)
-        m_qt_texture = window ()->createTextureFromImage (m_current_bitmap);
-      else
-        {
-          unsigned int ctx_id =
-            m_osg_viewer->getCamera ()->getGraphicsContext ()
-            ->getState ()->getContextID ();
-          m_osg_texture_object = m_osg_texture->getTextureObject (ctx_id);
-          Q_ASSERT (m_osg_texture_object);
-
-          m_qt_texture = window ()->createTextureFromId (
-            m_osg_texture_object->id (),
-            QSize (width (),
-                   height ()));
-        }
-
-      m_qt_tex_material.setTexture (m_qt_texture);
-      m_qt_opaque_material.setTexture (m_qt_texture);
-      m_size_valid = true;
-    }
-
-  m_geometry_node.markDirty (QSGGeometryNode::DirtyMaterial);
+  m_texturenode.setTexture (window ()->createTextureFromImage (
+                              m_fbo->toImage ()));
+  m_texturenode.markDirty (QSGSimpleTextureNode::DirtyForceUpdate);
 
 #if DEBUG_RENDERING
   qDebug ("updatePaintNode() done in %lld us", call_timer.nsecsElapsed () /
           1000);
 #endif
 
-  return &m_geometry_node;
+  return &m_texturenode;
 }
 
 void
@@ -490,13 +450,13 @@ ItemView::mouseReleaseEvent (QMouseEvent * event)
 }
 
 void
-ItemView::geometryChanged (const QRectF &ng, const QRectF &og)
+ItemView::geometryChanged (const QRectF &new_geom, const QRectF &old_geom)
 {
-  QQuickItem::geometryChanged (ng, og);
+  QQuickItem::geometryChanged (new_geom, old_geom);
 
-  if (ng == og)
+  if (new_geom == old_geom)
     return;
-  // force the texture to be re-initialized with correct size;
-  m_size_valid = false;
+
+  m_texturenode.setRect (new_geom);
 }
 }
