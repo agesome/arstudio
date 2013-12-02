@@ -88,6 +88,10 @@ ItemView::osg_paint ()
       fmt.setAttachment (QOpenGLFramebufferObject::CombinedDepthStencil);
       m_fbo = new QOpenGLFramebufferObject (QSize (width (), height ()), fmt);
 
+      m_texturenode.setTexture (window ()->createTextureFromId (m_fbo->texture (),
+                                                                QSize (width (),
+                                                                       height ())));
+
       m_size_valid = true;
     }
 
@@ -378,8 +382,6 @@ ItemView::updatePaintNode (QSGNode *, QQuickItem::UpdatePaintNodeData *)
       osg_paint ();
     }
 
-  m_texturenode.setTexture (window ()->createTextureFromImage (
-                              m_fbo->toImage ()));
   m_texturenode.markDirty (QSGSimpleTextureNode::DirtyForceUpdate);
 
 #if DEBUG_RENDERING
