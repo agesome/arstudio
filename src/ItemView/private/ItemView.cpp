@@ -458,5 +458,6 @@ ItemView::geometryChanged (const QRectF &new_geom, const QRectF &old_geom)
     return;
 
   m_texturenode.setRect (new_geom);
+  m_size_valid = false;
 }
 }
