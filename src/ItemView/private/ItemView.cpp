@@ -70,29 +70,19 @@ ItemView::osg_paint ()
   // viewer/camera setup on item resize
   if (!m_size_valid)
     {
-      m_osg_window_handle->resized (0, 0, width (), height ());
-
       osg::Camera * c = m_osg_viewer->getCamera ();
 
-      c->setRenderingCache (nullptr);
+      m_osg_window_handle->resized (0, 0, width (), height ());
       c->setViewport (0, 0, width (), height ());
       c->setProjectionMatrixAsPerspective (30.0f,
                                            width () / height (), 1.0f,
                                            10000.0f);
-
-      auto r =
-        static_cast<osgViewer::Renderer *> (c->getRenderer ());
-      osgUtil::RenderStage * rs = r->getSceneView (0)->getRenderStage ();
-
-      rs->setCameraRequiresSetUp (true);
-      rs->setFrameBufferObject (NULL);
-
       if (m_fbo)
         delete m_fbo;
 
       QOpenGLFramebufferObjectFormat fmt;
       fmt.setAttachment (QOpenGLFramebufferObject::CombinedDepthStencil);
-      fmt.setSamples (4);
+      fmt.setSamples (8);
       m_fbo = new QOpenGLFramebufferObject (QSize (width (), height ()), fmt);
 
       m_size_valid = true;
