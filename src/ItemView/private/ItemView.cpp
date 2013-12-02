@@ -46,6 +46,7 @@ ItemView::~ItemView ()
   if (ScenegraphAggregator::instance ())
     ScenegraphAggregator::instance ()->remove_scenegraph (m_scenegraph.data ());
 
+
   if (m_fbo)
     delete m_fbo;
   if (m_osg_opengl_ctx)
@@ -160,6 +161,8 @@ ItemView::updatePaintNode (QSGNode *, QQuickItem::UpdatePaintNodeData *)
 
   update_scene ();
 
+  QSGTexture * new_texture = nullptr;
+
   if (m_scenegraph->locked_to () != Scenegraph::BITMAP)
     {
       if (!m_current_bitmap.isNull ())
@@ -170,10 +173,19 @@ ItemView::updatePaintNode (QSGNode *, QQuickItem::UpdatePaintNodeData *)
         }
 
       osg_paint ();
+      new_texture = window ()->createTextureFromImage (m_fbo->toImage ());
+      m_texturenode.setRect (0, 0, width (), height ());
+    }
+  else
+    {
+      QImage scaled = m_current_bitmap.scaled (width (), height (),
+                                               Qt::KeepAspectRatio,
+                                               Qt::SmoothTransformation);
+      new_texture = window ()->createTextureFromImage (scaled);
+      m_texturenode.setRect (0, 0, scaled.width (), scaled.height ());
     }
 
-  m_texturenode.setTexture (window ()->createTextureFromImage (
-                              m_fbo->toImage ()));
+  m_texturenode.setTexture (new_texture);
   m_texturenode.markDirty (QSGSimpleTextureNode::DirtyForceUpdate);
 
 #if DEBUG_RENDERING
@@ -299,10 +311,7 @@ ItemView::add_camera_path (const Sequence * sequence)
 void
 ItemView::show_bitmap (const Bitmap::ptr bitmap)
 {
-  m_current_bitmap = bitmap->get ().scaled (width (), height (),
-                                            Qt::KeepAspectRatio,
-                                            Qt::SmoothTransformation);
-  m_size_valid = false;
+  m_current_bitmap = bitmap->get ();
 }
 
 void
