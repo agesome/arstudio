@@ -112,23 +112,27 @@ private:
   void create_axis ();
 
   Scenegraph::ptr m_scenegraph;
-  osg::Geode    * m_sequence_node;
   int             m_current_frame;
   bool            m_show_camera_path;
   bool            m_show_item_positions;
   QImage          m_current_bitmap;
   QString         m_fontpath;
 
-  QOpenGLContext * m_qt_opengl_ctx;
   QOpenGLContext * m_osg_opengl_ctx;
 
   QSGSimpleTextureNode       m_texturenode;
   QOpenGLFramebufferObject * m_fbo;
 
-  osg::ref_ptr<osgViewer::Viewer>       m_osg_viewer;
-  osg::ref_ptr<osgGA::OrbitManipulator> m_osg_orbit;
-  osg::ref_ptr<osg::Group>              m_osg_scene;
-  osgViewer::GraphicsWindowEmbedded   * m_osg_window_handle;
+  osg::ref_ptr<osgViewer::Viewer>                 m_osg_viewer;
+  osg::ref_ptr<osgGA::OrbitManipulator>           m_osg_orbit;
+  osg::ref_ptr<osg::Group>                        m_osg_scene;
+  osg::ref_ptr<osgViewer::GraphicsWindowEmbedded> m_osg_window_handle;
+  /*
+   * we will not delete this in the destructor, should be deleted internally by
+   * OSG since osg::Geode derives Referenced; TODO: verify?
+   */
+  osg::Geode * m_sequence_node;
+
 
   bool m_size_valid;
   bool m_osg_initialized;

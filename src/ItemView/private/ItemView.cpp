@@ -15,14 +15,12 @@ qvec2osg (const QVector3D & v)
 ItemView::ItemView (QQuickItem * parent)
   : QQuickItem (parent)
   , m_scenegraph (Scenegraph::make ())
-  , m_sequence_node (nullptr)
   , m_current_frame (1)
   , m_show_camera_path (true)
   , m_show_item_positions (true)
-  , m_qt_opengl_ctx (nullptr)
   , m_osg_opengl_ctx (nullptr)
   , m_fbo (nullptr)
-  , m_osg_window_handle (nullptr)
+  , m_sequence_node (nullptr)
   , m_size_valid (false)
   , m_osg_initialized (false)
 {
@@ -37,10 +35,10 @@ ItemView::ItemView (QQuickItem * parent)
   // and b) when the frame index changes
   ScenegraphAggregator::instance ()->add_scenegraph (m_scenegraph.data ());
   connect (m_scenegraph.data (), &Scenegraph::sequences_changed,
-           this, &ItemView::update);
+           this, &ItemView::update, Qt::QueuedConnection);
   connect (ScenegraphAggregator::instance (),
            &ScenegraphAggregator::change_frame,
-           this, &ItemView::change_frame);
+           this, &ItemView::change_frame, Qt::QueuedConnection);
 }
 
 ItemView::~ItemView ()
@@ -48,6 +46,10 @@ ItemView::~ItemView ()
   if (ScenegraphAggregator::instance ())
     ScenegraphAggregator::instance ()->remove_scenegraph (m_scenegraph.data ());
 
+  if (m_fbo)
+    delete m_fbo;
+  if (m_osg_opengl_ctx)
+    delete m_osg_opengl_ctx;
 }
 
 Scenegraph *
@@ -68,7 +70,7 @@ ItemView::osg_paint ()
 #endif
 
   // save Qt context, make OSG context current
-  m_qt_opengl_ctx = QOpenGLContext::currentContext ();
+  QOpenGLContext * qt_context = QOpenGLContext::currentContext ();
   Q_ASSERT (m_osg_opengl_ctx->makeCurrent (window ()));
 
   // viewer/camera setup on item resize
@@ -101,7 +103,7 @@ ItemView::osg_paint ()
   Q_ASSERT (m_fbo->release ());
 
   // restore Qt context
-  Q_ASSERT (m_qt_opengl_ctx->makeCurrent (window ()));
+  Q_ASSERT (qt_context->makeCurrent (window ()));
 
 #if DEBUG_RENDERING
   qDebug ("paint() done in %lld us", call_timer.nsecsElapsed () / 1000);
