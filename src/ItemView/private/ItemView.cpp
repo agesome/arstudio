@@ -29,7 +29,6 @@ ItemView::ItemView (QQuickItem * parent)
   find_font ();
 
   setFlag (ItemHasContents);
-  setAntialiasing (true);
   setAcceptedMouseButtons (Qt::MouseButton::LeftButton);
   m_texturenode.setFlag (QSGSimpleTextureNode::OwnedByParent, false);
 
@@ -67,6 +66,11 @@ ItemView::osg_paint ()
   call_timer.restart ();
 #endif
 
+  // save Qt context, make OSG context current
+  m_qt_opengl_ctx = QOpenGLContext::currentContext ();
+  m_qt_opengl_ctx->doneCurrent ();
+  Q_ASSERT (m_osg_opengl_ctx->makeCurrent (window ()));
+
   // viewer/camera setup on item resize
   if (!m_size_valid)
     {
@@ -82,18 +86,12 @@ ItemView::osg_paint ()
 
       QOpenGLFramebufferObjectFormat fmt;
       fmt.setAttachment (QOpenGLFramebufferObject::CombinedDepthStencil);
-      fmt.setSamples (8);
       m_fbo = new QOpenGLFramebufferObject (QSize (width (), height ()), fmt);
 
       m_size_valid = true;
     }
 
-  // save Qt context, make OSG context current
-  m_qt_opengl_ctx = QOpenGLContext::currentContext ();
-  m_qt_opengl_ctx->doneCurrent ();
-  m_osg_opengl_ctx->makeCurrent (window ());
-
-  m_fbo->bind ();
+  Q_ASSERT (m_fbo->bind ());
 
   if (!m_osg_viewer->isRealized ())
     m_osg_viewer->realize ();
@@ -101,11 +99,11 @@ ItemView::osg_paint ()
   // actual OSG rendering happens here
   m_osg_viewer->frame ();
 
-  m_fbo->release ();
+  Q_ASSERT (m_fbo->release ());
 
   // restore Qt context
   m_osg_opengl_ctx->doneCurrent ();
-  m_qt_opengl_ctx->makeCurrent (window ());
+  Q_ASSERT (m_qt_opengl_ctx->makeCurrent (window ()));
 
 #if DEBUG_RENDERING
   qDebug ("paint() done in %lld us", call_timer.nsecsElapsed () / 1000);
