@@ -28,6 +28,7 @@ ItemView::ItemView (QQuickItem * parent)
 {
   find_font ();
 
+  setAntialiasing (true);
   setFlag (ItemHasContents);
   setAcceptedMouseButtons (Qt::MouseButton::LeftButton);
   m_texturenode.setFlag (QSGSimpleTextureNode::OwnedByParent, false);
@@ -68,7 +69,6 @@ ItemView::osg_paint ()
 
   // save Qt context, make OSG context current
   m_qt_opengl_ctx = QOpenGLContext::currentContext ();
-  m_qt_opengl_ctx->doneCurrent ();
   Q_ASSERT (m_osg_opengl_ctx->makeCurrent (window ()));
 
   // viewer/camera setup on item resize
@@ -86,32 +86,100 @@ ItemView::osg_paint ()
 
       QOpenGLFramebufferObjectFormat fmt;
       fmt.setAttachment (QOpenGLFramebufferObject::CombinedDepthStencil);
+      fmt.setSamples (4);
       m_fbo = new QOpenGLFramebufferObject (QSize (width (), height ()), fmt);
-
-      m_texturenode.setTexture (window ()->createTextureFromId (m_fbo->texture (),
-                                                                QSize (width (),
-                                                                       height ())));
 
       m_size_valid = true;
     }
 
   Q_ASSERT (m_fbo->bind ());
 
-  if (!m_osg_viewer->isRealized ())
-    m_osg_viewer->realize ();
-
   // actual OSG rendering happens here
   m_osg_viewer->frame ();
 
+  m_osg_opengl_ctx->swapBuffers (window ());
   Q_ASSERT (m_fbo->release ());
 
   // restore Qt context
-  m_osg_opengl_ctx->doneCurrent ();
   Q_ASSERT (m_qt_opengl_ctx->makeCurrent (window ()));
 
 #if DEBUG_RENDERING
   qDebug ("paint() done in %lld us", call_timer.nsecsElapsed () / 1000);
 #endif
+}
+
+void
+ItemView::osg_init ()
+{
+  // create a separate OpenGL context for OSG
+  m_osg_opengl_ctx = new QOpenGLContext;
+  m_osg_opengl_ctx->setShareContext (QOpenGLContext::currentContext ());
+  m_osg_opengl_ctx->setFormat (window ()->format ());
+  Q_ASSERT (m_osg_opengl_ctx->create ());
+
+  m_osg_viewer = new osgViewer::Viewer;
+  m_osg_viewer->setThreadingModel (osgViewer::Viewer::SingleThreaded);
+  m_osg_window_handle = m_osg_viewer->setUpViewerAsEmbeddedInWindow (0, 0,
+                                                                     width (),
+                                                                     height ());
+
+  osg::Light * light = m_osg_viewer->getLight ();
+  light->setAmbient (osg::Vec4 (.2, .2, .2, .2));
+
+  osg::Camera * camera = m_osg_viewer->getCamera ();
+  // background color for whatever is rendered with OSG
+  camera->setClearColor (osg::Vec4 (.05, .05, .05, 1.0));
+
+  m_osg_orbit = new osgGA::OrbitManipulator;
+  m_osg_viewer->setCameraManipulator (m_osg_orbit.get ());
+  m_osg_orbit->setHomePosition (osg::Vec3 (3, 0, 3), osg::Vec3 (0, 0, 0),
+                                osg::Vec3 (0, 0, 1));
+  m_osg_viewer->home ();
+
+  m_osg_scene = new osg::Group;
+  m_osg_viewer->setSceneData (m_osg_scene.get ());
+
+  create_axis ();
+}
+
+QSGNode *
+ItemView::updatePaintNode (QSGNode *, QQuickItem::UpdatePaintNodeData *)
+{
+#if DEBUG_RENDERING
+  static QElapsedTimer call_timer;
+  call_timer.restart ();
+#endif
+
+  if (!m_osg_initialized)
+    {
+      osg_init ();
+      m_osg_initialized = true;
+    }
+
+  update_scene ();
+
+  if (m_scenegraph->locked_to () != Scenegraph::BITMAP)
+    {
+      if (!m_current_bitmap.isNull ())
+        {
+          // nullify
+          m_current_bitmap = QImage ();
+          m_size_valid     = false;
+        }
+
+      osg_paint ();
+    }
+
+  m_texturenode.setTexture (window ()->createTextureFromImage (
+                              m_fbo->toImage ()));
+  m_texturenode.markDirty (QSGSimpleTextureNode::DirtyForceUpdate);
+
+#if DEBUG_RENDERING
+  qDebug ("updatePaintNode() done in %lld us", call_timer.nsecsElapsed () /
+          1000);
+#endif
+
+  return &m_texturenode;
 }
 
 void
@@ -319,77 +387,6 @@ ItemView::change_frame (int frame)
 {
   m_current_frame = frame;
   update ();
-}
-
-void
-ItemView::osg_init ()
-{
-  // create a separate OpenGL context for OSG
-  m_osg_opengl_ctx = new QOpenGLContext;
-  m_osg_opengl_ctx->setShareContext (QOpenGLContext::currentContext ());
-  Q_ASSERT (m_osg_opengl_ctx->create ());
-
-  m_osg_viewer = new osgViewer::Viewer;
-  m_osg_viewer->setThreadingModel (osgViewer::Viewer::SingleThreaded);
-  m_osg_window_handle = m_osg_viewer->setUpViewerAsEmbeddedInWindow (0, 0,
-                                                                     width (),
-                                                                     height ());
-
-  osg::Light * light = m_osg_viewer->getLight ();
-  light->setAmbient (osg::Vec4 (.2, .2, .2, .2));
-
-  osg::Camera * camera = m_osg_viewer->getCamera ();
-  // background color for whatever is rendered with OSG
-  camera->setClearColor (osg::Vec4 (.05, .05, .05, 1.0));
-
-  m_osg_orbit = new osgGA::OrbitManipulator;
-  m_osg_viewer->setCameraManipulator (m_osg_orbit.get ());
-  m_osg_orbit->setHomePosition (osg::Vec3 (3, 0, 3), osg::Vec3 (0, 0, 0),
-                                osg::Vec3 (0, 0, 1));
-  m_osg_viewer->home ();
-
-  m_osg_scene = new osg::Group;
-  m_osg_viewer->setSceneData (m_osg_scene.get ());
-
-  create_axis ();
-}
-
-QSGNode *
-ItemView::updatePaintNode (QSGNode *, QQuickItem::UpdatePaintNodeData *)
-{
-#if DEBUG_RENDERING
-  static QElapsedTimer call_timer;
-  call_timer.restart ();
-#endif
-
-  if (!m_osg_initialized)
-    {
-      osg_init ();
-      m_osg_initialized = true;
-    }
-
-  update_scene ();
-
-  if (m_scenegraph->locked_to () != Scenegraph::BITMAP)
-    {
-      if (!m_current_bitmap.isNull ())
-        {
-          // nullify
-          m_current_bitmap = QImage ();
-          m_size_valid     = false;
-        }
-
-      osg_paint ();
-    }
-
-  m_texturenode.markDirty (QSGSimpleTextureNode::DirtyForceUpdate);
-
-#if DEBUG_RENDERING
-  qDebug ("updatePaintNode() done in %lld us", call_timer.nsecsElapsed () /
-          1000);
-#endif
-
-  return &m_texturenode;
 }
 
 void
