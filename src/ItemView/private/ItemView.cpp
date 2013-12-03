@@ -47,6 +47,7 @@ ItemView::~ItemView ()
     ScenegraphAggregator::instance ()->remove_scenegraph (m_scenegraph.data ());
 
 
+
   if (m_fbo)
     delete m_fbo;
   if (m_osg_opengl_ctx)
@@ -403,47 +404,46 @@ ItemView::change_frame (int frame)
 void
 ItemView::wheelEvent (QWheelEvent * event)
 {
-  const double d  = m_osg_orbit->getDistance ();
-  const double dx = event->angleDelta ().y () / 240.0;
+  osgGA::GUIEventAdapter::ScrollingMotion motion;
 
-  m_osg_orbit->setDistance (d - dx);
-  update ();
+  motion = event->angleDelta ().y () < 0 ? osgGA::GUIEventAdapter::SCROLL_UP :
+           osgGA::GUIEventAdapter::SCROLL_DOWN;
+
+  m_osg_window_handle->getEventQueue ()->mouseScroll (motion);
   event->accept ();
+  update ();
 }
 
 void
 ItemView::mouseMoveEvent (QMouseEvent * event)
 {
-  if (m_mouse_buttons & Qt::MouseButton::LeftButton)
-    {
-      static double elevation = 0;
-
-      QPoint dp      = m_mouse_pos - event->pos ();
-      double de      = (double) dp.y () / (double) window ()->height ();
-      double dh      = (double) dp.x () / (double) window ()->width ();
-      double heading = m_osg_orbit->getHeading () + dh;
-
-      elevation -= de;
-      m_osg_orbit->setElevation (elevation);
-      m_osg_orbit->setHeading (heading);
-      update ();
-    }
-  m_mouse_pos = event->pos ();
+  m_osg_window_handle->getEventQueue ()->mouseMotion (event->x (), event->y ());
   event->accept ();
+  update ();
 }
 
 void
 ItemView::mousePressEvent (QMouseEvent * event)
 {
-  m_mouse_buttons = event->buttons ();
-  m_mouse_pos     = event->pos ();
+  auto eq = m_osg_window_handle->getEventQueue ();
+
+  /*
+   * we only accept left mouse button for now
+   */
+  eq->mouseButtonPress (event->x (), event->y (),
+                        osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON);
+
   event->accept ();
+  update ();
 }
 
 void
 ItemView::mouseReleaseEvent (QMouseEvent * event)
 {
-  m_mouse_buttons = event->buttons ();
+  auto eq = m_osg_window_handle->getEventQueue ();
+
+  eq->mouseButtonRelease (event->x (), event->y (),
+                          osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON);
   event->accept ();
 }
 
