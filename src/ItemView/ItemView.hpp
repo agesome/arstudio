@@ -1,19 +1,20 @@
 #ifndef ITEMVIEW_HPP
 #define ITEMVIEW_HPP
 
-#include <QElapsedTimer>
 #include <QQuickItem>
 #include <QQuickWindow>
 #include <QOpenGLContext>
-#include <QSGSimpleTextureNode>
 #include <QOpenGLFramebufferObject>
+#include <QSGSimpleTextureNode>
 #include <QFile>
+#include <QElapsedTimer>
 
 #include <fontconfig/fontconfig.h>
 
 #include <osgViewer/Viewer>
 #include <osgViewer/Renderer>
 #include <osgGA/OrbitManipulator>
+#include <osgGA/FirstPersonManipulator>
 #include <osg/ShapeDrawable>
 #include <osg/Geometry>
 #include <osg/LineWidth>
@@ -26,6 +27,101 @@
 #include <Bitmap.hpp>
 
 namespace arstudio {
+class KeyboardCameraManipulator : public osgGA::FirstPersonManipulator
+{
+public:
+  KeyboardCameraManipulator (int flags)
+    : osgGA::FirstPersonManipulator (flags)
+    , m_forward (0.0)
+    , m_leftright (0.0)
+    , m_updown (0.0)
+  {
+  }
+
+  void
+  setVelocity (const double &velocity)
+  {
+    _maxVelocity = velocity;
+  }
+
+protected:
+  bool
+  handleKeyDown (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &)
+  {
+    switch (ea.getKey ())
+      {
+      case Qt::Key_W:
+        m_forward = _maxVelocity;
+        break;
+
+      case Qt::Key_S:
+        m_forward = -_maxVelocity;
+        break;
+
+      case Qt::Key_A:
+        m_leftright = -_maxVelocity;
+        break;
+
+      case Qt::Key_D:
+        m_leftright = _maxVelocity;
+        break;
+
+      case Qt::Key_Shift:
+        m_updown = _maxVelocity;
+        break;
+
+      case Qt::Key_Control:
+        m_updown = -_maxVelocity;
+        break;
+
+      case Qt::Key_Space:
+        home (0);
+
+      default: return false;
+      }
+    return true;
+  }
+
+  bool
+  handleKeyUp (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &)
+  {
+    switch (ea.getKey ())
+      {
+      case Qt::Key_W:
+      case Qt::Key_S:
+        m_forward = 0.0;
+        break;
+
+      case Qt::Key_A:
+      case Qt::Key_D:
+        m_leftright = 0.0;
+        break;
+
+      case Qt::Key_Shift:
+      case Qt::Key_Control:
+        m_updown = 0.0;
+        break;
+
+      default: return false;
+      }
+    return true;
+  }
+
+  bool
+  handleFrame (const osgGA::GUIEventAdapter &, osgGA::GUIActionAdapter &)
+  {
+    moveForward (m_forward);
+    moveRight (m_leftright);
+    moveUp (m_updown);
+    return true;
+  }
+
+private:
+  double m_forward;
+  double m_leftright;
+  double m_updown;
+};
+
 class ItemView : public QQuickItem
 {
   Q_OBJECT
@@ -78,6 +174,8 @@ protected:
   void mouseMoveEvent (QMouseEvent * event);
   void mousePressEvent (QMouseEvent * event);
   void mouseReleaseEvent (QMouseEvent * event);
+  void keyPressEvent (QKeyEvent * event);
+  void keyReleaseEvent (QKeyEvent * event);
   void geometryChanged (const QRectF &new_geom, const QRectF &old_geom);
 private:
   void osg_init ();
@@ -125,6 +223,7 @@ private:
 
   osg::ref_ptr<osgViewer::Viewer>                 m_osg_viewer;
   osg::ref_ptr<osgGA::OrbitManipulator>           m_osg_orbit;
+  osg::ref_ptr<KeyboardCameraManipulator>         m_osg_firstperson;
   osg::ref_ptr<osg::Group>                        m_osg_scene;
   osg::ref_ptr<osgViewer::GraphicsWindowEmbedded> m_osg_window_handle;
   /*

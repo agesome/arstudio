@@ -44,6 +44,7 @@ RowLayout {
 
         ItemView {
             id: itemView
+            focus: true
             anchors.fill: parent
             show_camera_path: cameraPathCheckbox.checked
             show_item_positions: itemPositionsCheckbox.checked

@@ -48,6 +48,7 @@ ItemView::~ItemView ()
 
 
 
+
   if (m_fbo)
     delete m_fbo;
   if (m_osg_opengl_ctx)
@@ -135,9 +136,16 @@ ItemView::osg_init ()
   camera->setClearColor (osg::Vec4 (.05, .05, .05, 1.0));
 
   m_osg_orbit = new osgGA::OrbitManipulator;
-  m_osg_viewer->setCameraManipulator (m_osg_orbit.get ());
-  m_osg_orbit->setHomePosition (osg::Vec3 (3, 0, 3), osg::Vec3 (0, 0, 0),
-                                osg::Vec3 (0, 0, 1));
+
+  {
+    constexpr int flags = KeyboardCameraManipulator::UPDATE_MODEL_SIZE;
+    m_osg_firstperson = new KeyboardCameraManipulator (flags);
+    m_osg_firstperson->setVelocity (0.05);
+  }
+
+  m_osg_viewer->setCameraManipulator (m_osg_firstperson.get ());
+  m_osg_firstperson->setHomePosition (osg::Vec3 (3, 0, 3), osg::Vec3 (0, 0, 0),
+                                      osg::Vec3 (0, 0, 1));
   m_osg_viewer->home ();
 
   m_osg_scene = new osg::Group;
@@ -445,6 +453,25 @@ ItemView::mouseReleaseEvent (QMouseEvent * event)
   eq->mouseButtonRelease (event->x (), event->y (),
                           osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON);
   event->accept ();
+}
+
+void
+ItemView::keyPressEvent (QKeyEvent * event)
+{
+  /*
+   * this is later handled in KeyboardCameraManipulator
+   */
+  m_osg_window_handle->getEventQueue ()->keyPress (event->key ());
+  event->accept ();
+  update ();
+}
+
+void
+ItemView::keyReleaseEvent (QKeyEvent * event)
+{
+  m_osg_window_handle->getEventQueue ()->keyRelease (event->key ());
+  event->accept ();
+  update ();
 }
 
 void
