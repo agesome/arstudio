@@ -18,6 +18,7 @@ ItemView::ItemView (QQuickItem * parent)
   , m_current_frame (1)
   , m_show_camera_path (true)
   , m_show_item_positions (true)
+  , m_first_person_mode (false)
   , m_osg_opengl_ctx (nullptr)
   , m_fbo (nullptr)
   , m_sequence_node (nullptr)
@@ -71,6 +72,18 @@ ItemView::osg_paint ()
   static QElapsedTimer call_timer;
   call_timer.restart ();
 #endif
+
+  //check camera mode
+  if(m_osg_viewer->getCameraManipulator() == m_osg_orbit.get () && m_first_person_mode)
+    {
+      osg::Matrixd mat = m_osg_orbit->getMatrix();
+      m_osg_firstperson->setByMatrix(mat);
+      m_osg_viewer->setCameraManipulator (m_osg_firstperson.get ());
+    }
+  if(m_osg_viewer->getCameraManipulator() == m_osg_firstperson.get() && !m_first_person_mode)
+    {
+      m_osg_viewer->setCameraManipulator (m_osg_orbit.get ());
+    }
 
   // save Qt context, make OSG context current
   QOpenGLContext * qt_context = QOpenGLContext::currentContext ();
@@ -136,16 +149,18 @@ ItemView::osg_init ()
   camera->setClearColor (osg::Vec4 (.05, .05, .05, 1.0));
 
   m_osg_orbit = new osgGA::OrbitManipulator;
+  constexpr int flags = KeyboardCameraManipulator::UPDATE_MODEL_SIZE;
+  m_osg_firstperson = new KeyboardCameraManipulator (flags);
+  m_osg_firstperson->setVelocity (0.05);
 
-  {
-    constexpr int flags = KeyboardCameraManipulator::UPDATE_MODEL_SIZE;
-    m_osg_firstperson = new KeyboardCameraManipulator (flags);
-    m_osg_firstperson->setVelocity (0.05);
-  }
-
-  m_osg_viewer->setCameraManipulator (m_osg_firstperson.get ());
   m_osg_firstperson->setHomePosition (osg::Vec3 (3, 0, 3), osg::Vec3 (0, 0, 0),
                                       osg::Vec3 (0, 0, 1));
+
+  m_osg_orbit->setHomePosition (osg::Vec3 (3, 0, 3), osg::Vec3 (0, 0, 0),
+                                osg::Vec3 (0, 0, 1));
+
+  m_osg_viewer->setCameraManipulator (m_osg_orbit.get());
+
   m_osg_viewer->home ();
 
   m_osg_scene = new osg::Group;

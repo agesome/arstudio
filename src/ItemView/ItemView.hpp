@@ -132,6 +132,9 @@ class ItemView : public QQuickItem
   Q_PROPERTY (bool show_item_positions READ show_item_positions
               WRITE set_show_item_positions
               NOTIFY show_item_positions_changed)
+  Q_PROPERTY (bool first_person_mode READ first_person_mode
+             WRITE set_first_person_mode
+              NOTIFY first_person_mode_changed)
 public:
   ItemView (QQuickItem * parent = nullptr);
   ~ItemView ();
@@ -164,9 +167,23 @@ public:
     update ();
   }
 
+
+  inline bool
+  first_person_mode()
+  {
+    return m_first_person_mode;
+  }
+  inline void
+  set_first_person_mode(bool v)
+  {
+    m_first_person_mode = v;
+    update();
+  }
+
 signals:
   void show_camera_path_changed ();
   void show_item_positions_changed ();
+  void first_person_mode_changed();
 
 protected:
   QSGNode * updatePaintNode (QSGNode *, UpdatePaintNodeData *);
@@ -213,6 +230,7 @@ private:
   int             m_current_frame;
   bool            m_show_camera_path;
   bool            m_show_item_positions;
+  bool            m_first_person_mode;
   QImage          m_current_bitmap;
   QString         m_fontpath;
 

@@ -48,9 +48,11 @@ RowLayout {
             anchors.fill: parent
             show_camera_path: cameraPathCheckbox.checked
             show_item_positions: itemPositionsCheckbox.checked
+            first_person_mode: firstPersonModeCheckBox.checked
         }
 
         ColumnLayout {
+            id: clayout
             CheckBox {
                 id: cameraPathCheckbox
                 text: "Show Camera Path"
@@ -65,6 +67,12 @@ RowLayout {
                 visible: itemView.scenegraph.locked_to === Scenegraph.NORMAL
             }
         }
+            CheckBox {
+                id: firstPersonModeCheckBox
+                anchors.left: clayout.right
+                text: "First Person Mode"
+                visible: itemView.scenegraph.locked_to === Scenegraph.NORMAL
+            }
     }
 
     TableView {
