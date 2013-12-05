@@ -47,9 +47,6 @@ ItemView::~ItemView ()
   if (ScenegraphAggregator::instance ())
     ScenegraphAggregator::instance ()->remove_scenegraph (m_scenegraph.data ());
 
-
-
-
   if (m_fbo)
     delete m_fbo;
   if (m_osg_opengl_ctx)
@@ -66,7 +63,7 @@ ItemView::scenegraph ()
 }
 
 void
-ItemView::osg_paint ()
+ItemView::osg_render ()
 {
 #if DEBUG_RENDERING
   static QElapsedTimer call_timer;
@@ -74,16 +71,16 @@ ItemView::osg_paint ()
 #endif
 
   //check camera mode
-  if(m_osg_viewer->getCameraManipulator() == m_osg_orbit.get () && m_first_person_mode)
+  if (m_osg_viewer->getCameraManipulator () == m_osg_orbit.get () &&
+      m_first_person_mode)
     {
-      osg::Matrixd mat = m_osg_orbit->getMatrix();
-      m_osg_firstperson->setByMatrix(mat);
+      osg::Matrixd mat = m_osg_orbit->getMatrix ();
+      m_osg_firstperson->setByMatrix (mat);
       m_osg_viewer->setCameraManipulator (m_osg_firstperson.get ());
     }
-  if(m_osg_viewer->getCameraManipulator() == m_osg_firstperson.get() && !m_first_person_mode)
-    {
-      m_osg_viewer->setCameraManipulator (m_osg_orbit.get ());
-    }
+  if (m_osg_viewer->getCameraManipulator () == m_osg_firstperson.get () &&
+      !m_first_person_mode)
+    m_osg_viewer->setCameraManipulator (m_osg_orbit.get ());
 
   // save Qt context, make OSG context current
   QOpenGLContext * qt_context = QOpenGLContext::currentContext ();
@@ -159,11 +156,13 @@ ItemView::osg_init ()
   m_osg_orbit->setHomePosition (osg::Vec3 (3, 0, 3), osg::Vec3 (0, 0, 0),
                                 osg::Vec3 (0, 0, 1));
 
-  m_osg_viewer->setCameraManipulator (m_osg_orbit.get());
+  m_osg_viewer->setCameraManipulator (m_osg_orbit.get ());
 
   m_osg_viewer->home ();
 
-  m_osg_scene = new osg::Group;
+  m_osg_scene     = new osg::Group;
+  m_sequence_node = new osg::Geode;
+  m_osg_scene->addChild (m_sequence_node);
   m_osg_viewer->setSceneData (m_osg_scene.get ());
 
   create_axis ();
@@ -196,7 +195,7 @@ ItemView::updatePaintNode (QSGNode *, QQuickItem::UpdatePaintNodeData *)
           m_size_valid     = false;
         }
 
-      osg_paint ();
+      osg_render ();
       new_texture = window ()->createTextureFromImage (m_fbo->toImage ());
       m_texturenode.setRect (0, 0, width (), height ());
     }
@@ -228,10 +227,7 @@ ItemView::update_scene ()
   call_timer.restart ();
 #endif
 
-  if (m_sequence_node)
-    m_osg_scene->removeChild (m_sequence_node);
-  m_sequence_node = new osg::Geode;
-  m_osg_scene->addChild (m_sequence_node);
+  m_sequence_node->removeDrawables (0, m_sequence_node->getNumDrawables ());
 
   for (const Sequence * seq : m_scenegraph->sequences ())
     {

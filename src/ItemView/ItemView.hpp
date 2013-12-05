@@ -133,7 +133,7 @@ class ItemView : public QQuickItem
               WRITE set_show_item_positions
               NOTIFY show_item_positions_changed)
   Q_PROPERTY (bool first_person_mode READ first_person_mode
-             WRITE set_first_person_mode
+              WRITE set_first_person_mode
               NOTIFY first_person_mode_changed)
 public:
   ItemView (QQuickItem * parent = nullptr);
@@ -169,21 +169,21 @@ public:
 
 
   inline bool
-  first_person_mode()
+  first_person_mode ()
   {
     return m_first_person_mode;
   }
   inline void
-  set_first_person_mode(bool v)
+  set_first_person_mode (bool v)
   {
     m_first_person_mode = v;
-    update();
+    update ();
   }
 
 signals:
   void show_camera_path_changed ();
   void show_item_positions_changed ();
-  void first_person_mode_changed();
+  void first_person_mode_changed ();
 
 protected:
   QSGNode * updatePaintNode (QSGNode *, UpdatePaintNodeData *);
@@ -196,7 +196,7 @@ protected:
   void geometryChanged (const QRectF &new_geom, const QRectF &old_geom);
 private:
   void osg_init ();
-  void osg_paint ();
+  void osg_render ();
   void update_scene ();
 
   void add_camera (const Camera::ptr camera);
