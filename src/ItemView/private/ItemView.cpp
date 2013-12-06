@@ -47,6 +47,7 @@ ItemView::~ItemView ()
   if (ScenegraphAggregator::instance ())
     ScenegraphAggregator::instance ()->remove_scenegraph (m_scenegraph.data ());
 
+
   if (m_fbo)
     delete m_fbo;
   if (m_osg_opengl_ctx)
@@ -490,10 +491,10 @@ ItemView::geometryChanged (const QRectF &new_geom, const QRectF &old_geom)
 {
   QQuickItem::geometryChanged (new_geom, old_geom);
 
-  if (new_geom == old_geom)
-    return;
-
-  m_texturenode.setRect (new_geom);
-  m_size_valid = false;
+  if (new_geom.size () != old_geom.size ())
+    {
+      m_size_valid = false;
+      update ();
+    }
 }
 }
