@@ -54,6 +54,7 @@ ItemView::~ItemView ()
     ScenegraphAggregator::instance ()->remove_scenegraph (m_scenegraph.data ());
 
 
+
   if (m_fbo)
     delete m_fbo;
   if (m_osg_opengl_ctx)
@@ -148,6 +149,8 @@ ItemView::osg_init ()
 
   m_osg_orbit->setHomePosition (osg::Vec3 (3, 0, 3), osg::Vec3 (0, 0, 0),
                                 osg::Vec3 (0, 0, 1));
+  // stop spinning when releasing LMB while moving the mouse
+  m_osg_orbit->setAllowThrow (false);
 
   m_osg_viewer->setCameraManipulator (m_osg_orbit.get ());
   m_osg_viewer->home ();
