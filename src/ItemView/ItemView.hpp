@@ -196,7 +196,6 @@ protected:
   void geometryChanged (const QRectF &new_geom, const QRectF &old_geom);
 private:
   void osg_init ();
-  void osg_render ();
   void update_scene ();
 
   void add_camera (const Camera::ptr camera);
@@ -224,6 +223,20 @@ private:
     return p;
   }
 
+  inline void
+  enable_osg_context (bool enable)
+  {
+    static QOpenGLContext * qt_context = nullptr;
+
+    if (enable)
+      {
+        qt_context = QOpenGLContext::currentContext ();
+        Q_ASSERT (m_osg_opengl_ctx->makeCurrent (m_window));
+      }
+    else if (qt_context)
+      Q_ASSERT (qt_context->makeCurrent (m_window));
+  }
+
   void create_axis ();
 
   Scenegraph::ptr m_scenegraph;
@@ -235,8 +248,9 @@ private:
   QString         m_fontpath;
 
   QOpenGLContext * m_osg_opengl_ctx;
+  QQuickWindow   * m_window;
 
-  QSGSimpleTextureNode       m_texturenode;
+  QSGSimpleTextureNode     * m_texturenode;
   QOpenGLFramebufferObject * m_fbo;
 
   osg::ref_ptr<osgViewer::Viewer>                 m_osg_viewer;
@@ -258,6 +272,9 @@ private:
   QPoint           m_mouse_pos;
 private slots:
   void change_frame (int frame);
+  void change_item_type ();
+  void window_set (QQuickWindow * window);
+  void osg_render ();
 };
 }
 
