@@ -5,6 +5,7 @@
 #include <QQuickWindow>
 #include <QOpenGLContext>
 #include <QOpenGLFramebufferObject>
+#include <QOpenGLFunctions>
 #include <QSGSimpleTextureNode>
 #include <QFile>
 #include <QElapsedTimer>
@@ -146,12 +147,14 @@ public:
   {
     return m_show_camera_path;
   }
+
   inline void
   set_show_camera_path (bool v)
   {
     m_show_camera_path = v;
     show_camera_path_changed ();
-    update ();
+    if (m_osg_initialized)
+      update_scene ();
   }
 
   inline bool
@@ -159,14 +162,15 @@ public:
   {
     return m_show_item_positions;
   }
+
   inline void
   set_show_item_positions (bool v)
   {
     m_show_item_positions = v;
     show_item_positions_changed ();
-    update ();
+    if (m_osg_initialized)
+      update_scene ();
   }
-
 
   inline bool
   first_person_mode ()
@@ -177,13 +181,9 @@ public:
   set_first_person_mode (bool v)
   {
     m_first_person_mode = v;
+    first_person_mode_changed ();
     update ();
   }
-
-signals:
-  void show_camera_path_changed ();
-  void show_item_positions_changed ();
-  void first_person_mode_changed ();
 
 protected:
   QSGNode * updatePaintNode (QSGNode *, UpdatePaintNodeData *);
@@ -194,15 +194,16 @@ protected:
   void keyPressEvent (QKeyEvent * event);
   void keyReleaseEvent (QKeyEvent * event);
   void geometryChanged (const QRectF &new_geom, const QRectF &old_geom);
+
 private:
   void osg_init ();
-  void update_scene ();
 
   void add_camera (const Camera::ptr camera);
   void add_camera_path (const Sequence * sequence);
   void show_bitmap (const Bitmap::ptr bitmap);
 
   void find_font ();
+  void create_axis ();
 
   inline osgText::Text *
   show_text (const osg::Vec3 & pos, const QString & text)
@@ -237,21 +238,23 @@ private:
       Q_ASSERT (qt_context->makeCurrent (m_window));
   }
 
-  void create_axis ();
-
   Scenegraph::ptr m_scenegraph;
   int             m_current_frame;
-  bool            m_show_camera_path;
-  bool            m_show_item_positions;
-  bool            m_first_person_mode;
   QImage          m_current_bitmap;
-  QString         m_fontpath;
 
-  QOpenGLContext * m_osg_opengl_ctx;
-  QQuickWindow   * m_window;
+  static QString m_fontpath;
 
+  bool m_show_camera_path;
+  bool m_show_item_positions;
+  bool m_first_person_mode;
+  bool m_size_valid;
+  bool m_osg_initialized;
+
+  QOpenGLContext           * m_osg_opengl_ctx;
+  QQuickWindow             * m_window;
   QSGSimpleTextureNode     * m_texturenode;
   QOpenGLFramebufferObject * m_fbo;
+  QOpenGLFramebufferObject * m_display_fbo;
 
   osg::ref_ptr<osgViewer::Viewer>                 m_osg_viewer;
   osg::ref_ptr<osgGA::OrbitManipulator>           m_osg_orbit;
@@ -264,17 +267,17 @@ private:
    */
   osg::Geode * m_sequence_node;
 
-
-  bool m_size_valid;
-  bool m_osg_initialized;
-
-  Qt::MouseButtons m_mouse_buttons;
-  QPoint           m_mouse_pos;
 private slots:
   void change_frame (int frame);
   void change_item_type ();
   void window_set (QQuickWindow * window);
   void osg_render ();
+  void update_scene ();
+
+signals:
+  void show_camera_path_changed ();
+  void show_item_positions_changed ();
+  void first_person_mode_changed ();
 };
 }
 

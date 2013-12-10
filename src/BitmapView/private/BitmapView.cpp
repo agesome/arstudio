@@ -31,10 +31,7 @@ BitmapView::updatePaintNode (QSGNode * node, UpdatePaintNodeData *)
 
   old_texture = n->texture ();
   if (old_texture)
-    {
-      n->setTexture (nullptr);
-      delete old_texture;
-    }
+    delete old_texture;
 
   scaled = m_image.scaled (w, h, Qt::KeepAspectRatio,
                            Qt::SmoothTransformation);

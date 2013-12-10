@@ -12,6 +12,8 @@ qvec2osg (const QVector3D & v)
 }
 }
 
+QString ItemView::m_fontpath;
+
 ItemView::ItemView (QQuickItem * parent)
   : QQuickItem (parent)
   , m_scenegraph (Scenegraph::make ())
@@ -19,24 +21,28 @@ ItemView::ItemView (QQuickItem * parent)
   , m_show_camera_path (true)
   , m_show_item_positions (true)
   , m_first_person_mode (false)
-  , m_osg_opengl_ctx (nullptr)
-  , m_texturenode (nullptr)
-  , m_fbo (nullptr)
-  , m_sequence_node (nullptr)
   , m_size_valid (false)
   , m_osg_initialized (false)
+  , m_osg_opengl_ctx (nullptr)
+  , m_window (nullptr)
+  , m_texturenode (nullptr)
+  , m_fbo (nullptr)
+  , m_display_fbo (nullptr)
+  , m_sequence_node (nullptr)
 {
-  find_font ();
+  if (m_fontpath.isNull ())
+    find_font ();
 
-//  setAntialiasing (true);
   setFlag (ItemHasContents);
   setAcceptedMouseButtons (Qt::MouseButton::LeftButton);
 
   // we want to redraw when: a) there may be new sequences for current frame
   // and b) when the frame index changes
   ScenegraphAggregator::instance ()->add_scenegraph (m_scenegraph.data ());
+
   connect (m_scenegraph.data (), &Scenegraph::sequences_changed,
-           this, &ItemView::update, Qt::QueuedConnection);
+           this, &ItemView::update_scene, Qt::QueuedConnection);
+
   connect (m_scenegraph.data (), &Scenegraph::locked_to_changed,
            this, &ItemView::change_item_type);
 
@@ -54,9 +60,10 @@ ItemView::~ItemView ()
     ScenegraphAggregator::instance ()->remove_scenegraph (m_scenegraph.data ());
 
 
-
   if (m_fbo)
     delete m_fbo;
+  if (m_display_fbo)
+    delete m_display_fbo;
   if (m_osg_opengl_ctx)
     delete m_osg_opengl_ctx;
 }
@@ -112,6 +119,9 @@ ItemView::osg_render ()
   Q_ASSERT (m_fbo->bindDefault ());
   enable_osg_context (false);
 
+  // need to blit to non-antialiased FBO for this to work
+  QOpenGLFramebufferObject::blitFramebuffer (m_display_fbo, m_fbo);
+
 #if DEBUG_RENDERING
   qDebug ("paint() done in %lld us", call_timer.nsecsElapsed () / 1000);
 #endif
@@ -161,6 +171,11 @@ ItemView::osg_init ()
   m_osg_viewer->setSceneData (m_osg_scene.get ());
 
   create_axis ();
+
+  // check to see if multisampling is supported
+  QOpenGLFunctions f (QOpenGLContext::currentContext ());
+  if (f.hasOpenGLFeature (QOpenGLFunctions::Multisample))
+    setAntialiasing (true);
 }
 
 QSGNode *
@@ -183,8 +198,6 @@ ItemView::updatePaintNode (QSGNode *, QQuickItem::UpdatePaintNodeData *)
       m_texturenode->setFiltering (QSGTexture::Linear);
     }
 
-  update_scene ();
-
   QSGTexture * p = nullptr;
 
   if (m_scenegraph->locked_to () == Scenegraph::BITMAP)
@@ -201,16 +214,30 @@ ItemView::updatePaintNode (QSGNode *, QQuickItem::UpdatePaintNodeData *)
       if (m_fbo)
         delete m_fbo;
 
-      enable_osg_context (true);
       QOpenGLFramebufferObjectFormat format;
       format.setAttachment (QOpenGLFramebufferObject::CombinedDepthStencil);
-      //      fmt.setSamples (4);
+
+      enable_osg_context (true);
+      if (antialiasing ())
+        format.setSamples (16);
       m_fbo = new QOpenGLFramebufferObject (boundingRect ().size ().toSize (),
                                             format);
       enable_osg_context (false);
 
-      p = m_window->createTextureFromId (m_fbo->texture (), m_fbo->size (),
-                                         QQuickWindow::TextureHasAlphaChannel);
+      /*
+       * QOpenGLFramebufferObject documentation suggests that if we want to
+       * use it as a texture and have multisampling, we must use a second FB
+       * without multisampling and blit to it (done in rendering code)
+       */
+      format.setSamples (0);
+      m_display_fbo = new QOpenGLFramebufferObject (m_fbo->size (), format);
+
+      p = m_window->createTextureFromId (m_display_fbo->texture (),
+                                         m_display_fbo->size ());
+
+      /*
+       * Rendered texture appers to be upside down, so we invert it
+       */
       QRectF rect = boundingRect ();
       rect.setTop (rect.bottom ());
       rect.setBottom (boundingRect ().top ());
@@ -265,6 +292,7 @@ ItemView::update_scene ()
 #if DEBUG_RENDERING
   qDebug ("update_scene() done in %lld us", call_timer.nsecsElapsed () / 1000);
 #endif
+  update ();
 }
 
 void
@@ -429,7 +457,7 @@ void
 ItemView::change_frame (int frame)
 {
   m_current_frame = frame;
-  update ();
+  update_scene ();
 }
 
 void
@@ -437,7 +465,7 @@ ItemView::change_item_type ()
 {
   // force texture node to be re-assigned to m_fbo->texture();
   m_size_valid = false;
-  update ();
+  update_scene ();
 }
 
 void
