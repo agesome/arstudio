@@ -60,6 +60,7 @@ ItemView::~ItemView ()
     ScenegraphAggregator::instance ()->remove_scenegraph (m_scenegraph.data ());
 
 
+
   if (m_fbo)
     delete m_fbo;
   if (m_display_fbo)
@@ -98,7 +99,8 @@ ItemView::osg_render ()
     m_osg_viewer->setCameraManipulator (m_osg_orbit.get ());
 
   enable_osg_context (true);
-  Q_ASSERT (m_fbo->bind ());
+  if (!m_fbo->bind ())
+    qFatal ("Failed to bind FBO!");
 
   // viewer/camera setup on item resize
   if (!m_size_valid)
@@ -116,7 +118,8 @@ ItemView::osg_render ()
   // actual OSG rendering happens here
   m_osg_viewer->frame ();
 
-  Q_ASSERT (m_fbo->bindDefault ());
+  if (!m_fbo->bindDefault ())
+    qFatal ("Failed to release FBO!");
   enable_osg_context (false);
 
   // need to blit to non-antialiased FBO for this to work
@@ -134,7 +137,8 @@ ItemView::osg_init ()
   m_osg_opengl_ctx = new QOpenGLContext;
   m_osg_opengl_ctx->setShareContext (QOpenGLContext::currentContext ());
   m_osg_opengl_ctx->setFormat (window ()->format ());
-  Q_ASSERT (m_osg_opengl_ctx->create ());
+  if (!m_osg_opengl_ctx->create ())
+    qFatal ("Failed to create OSG OpenGL context!");
 
   m_osg_viewer = new osgViewer::Viewer;
   m_osg_viewer->setThreadingModel (osgViewer::Viewer::SingleThreaded);

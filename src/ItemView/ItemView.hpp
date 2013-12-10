@@ -232,10 +232,12 @@ private:
     if (enable)
       {
         qt_context = QOpenGLContext::currentContext ();
-        Q_ASSERT (m_osg_opengl_ctx->makeCurrent (m_window));
+        if (!m_osg_opengl_ctx->makeCurrent (m_window))
+          qFatal ("Failed to enable OSG OpenGL context!");
       }
     else if (qt_context)
-      Q_ASSERT (qt_context->makeCurrent (m_window));
+      if (!qt_context->makeCurrent (m_window))
+        qFatal ("Failed to restore Qt OpenGL context!");
   }
 
   Scenegraph::ptr m_scenegraph;
