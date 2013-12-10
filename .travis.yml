@@ -6,6 +6,8 @@ before_install:
   - sudo add-apt-repository --yes ppa:beineri/opt-qt511
   - sudo add-apt-repository --yes ppa:limparissoft/opencv-ppa
   - sudo mv travis-ci/trusty.list /etc/apt/sources.list.d/trusty.list
+  - sudo gpg --recv-keys 3B4FE6ACC0B21F32
+  - sudo gpg --export 3B4FE6ACC0B21F32 | apt-key add -
   - sudo apt-get update -qq
 install:
   - sudo apt-get install cmake qt51base qt51quickcontrols opencv libmagic1 libmagic-dev
