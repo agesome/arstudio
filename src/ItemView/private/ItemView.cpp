@@ -61,6 +61,7 @@ ItemView::~ItemView ()
 
 
 
+
   if (m_fbo)
     delete m_fbo;
   if (m_display_fbo)
@@ -177,9 +178,10 @@ ItemView::osg_init ()
   create_axis ();
 
   // check to see if multisampling is supported
-  QOpenGLFunctions f (QOpenGLContext::currentContext ());
-  if (f.hasOpenGLFeature (QOpenGLFunctions::Multisample))
-    setAntialiasing (true);
+  //FIXME: failed to bind FBO when uncommented - on noveau
+//  QOpenGLFunctions f (QOpenGLContext::currentContext ());
+//  if (f.hasOpenGLFeature (QOpenGLFunctions::Multisample))
+//    setAntialiasing (true);
 }
 
 QSGNode *

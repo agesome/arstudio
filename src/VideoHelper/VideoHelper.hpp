@@ -5,6 +5,7 @@
 #include <QFileInfo>
 #include <QSharedPointer>
 #include <QUrl>
+#include <QSettings>
 
 #include <opencv2/highgui/highgui.hpp>
 
@@ -29,6 +30,7 @@ class VideoHelper : public QObject
   Q_PROPERTY (bool status READ status NOTIFY status_changed)
 public:
   VideoHelper (QObject * parent = nullptr);
+  ~VideoHelper ();
 
   /**
    * @brief Set the location of the video file to work with
@@ -53,7 +55,8 @@ private:
   QSharedPointer<IVideoSource> m_video_source;
   QString                      m_file_basename;
   QUrl                         m_source_file;
-  bool                         m_status;
+  QSettings                    settings;
+  bool                         m_status; // is it still necessary?
   int                          m_frame_count;
 
   bool load_file (const QString &);
