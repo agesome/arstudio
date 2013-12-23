@@ -9,13 +9,10 @@ VideoHelper::VideoHelper (QObject * parent)
   m_frame_count (0)
 {
   m_source_file =
-    QUrl (settings.value ("ProcessingDialog/lastSelectedFile",
+    QUrl (settings.value ("VideoHelper/lastSelectedFile",
                           "~").toString ());
   if (m_source_file.toString () != "~")
-    {
-      load_file (m_source_file.toString ());
-      m_status = true;
-    }
+    m_status = load_file (m_source_file.toString ());
   frame_count_changed ();
   basename_changed ();
   status_changed ();
@@ -23,7 +20,7 @@ VideoHelper::VideoHelper (QObject * parent)
 
 VideoHelper::~VideoHelper ()
 {
-  settings.setValue ("ProcessingDialog/lastSelectedFile", m_source_file);
+  settings.setValue ("VideoHelper/lastSelectedFile", m_source_file);
 }
 
 bool
