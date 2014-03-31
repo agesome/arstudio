@@ -19,7 +19,7 @@ namespace arstudio {
  */
 class Config : public QAbstractListModel
 {
-  Q_PROPERTY (QStringList list READ get_algo_list)
+  Q_PROPERTY (QStringList list READ get_algo_list CONSTANT)
   Q_OBJECT
 public:
   typedef QSharedPointer <Config> ptr;

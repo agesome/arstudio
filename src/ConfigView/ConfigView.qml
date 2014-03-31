@@ -34,18 +34,17 @@ ColumnLayout {
     RowLayout{
         ComboBox {
             id: algoChecker
-            width: tableview.width - defaultButton.width
             model: g_Config.list
-            anchors.right: defaultButton.left
+            Layout.fillWidth: true
             onCurrentTextChanged: g_Config.set_algo(currentText)
-            Button {
-                id: defaultButton
-                anchors.left: algoChecker.right
-                anchors.verticalCenter: algoChecker.verticalCenter
-                text: "Load default settings"
-                onClicked: g_Config.load_defaults()
-            }
         }
+        Button {
+            id: defaultButton
+            anchors.left: algoChecker.right
+            anchors.verticalCenter: algoChecker.verticalCenter
+            text: "Load default settings"
+            onClicked: g_Config.load_defaults()
+            }
     }
 
     Component {
