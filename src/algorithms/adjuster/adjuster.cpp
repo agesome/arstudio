@@ -54,17 +54,17 @@ ImageAdjusterAlgorithm::~ImageAdjusterAlgorithm ()
 bool
 ImageAdjusterAlgorithm::create ()
 {
-  type = config->get ("adjuster.type").toString ().toStdString ();
+  type = config->get ("adjuster", "type").toString ().toStdString ();
   if (type == "brightness")
     {
       BrightnessAdjuster * v = new BrightnessAdjuster ();
-      v->brightness = config->get ("adjuster.brightness").toDouble ();
+      v->brightness = config->get ("adjuster", "brightness").toDouble ();
       adjuster      = v;
     }
   else if (type == "contrast")
     {
       ContrastAdjuster * v = new ContrastAdjuster ();
-      v->contrast = config->get ("adjuster.contrast").toDouble ();
+      v->contrast = config->get ("adjuster", "contrast").toDouble ();
       adjuster    = v;
     }
   else
@@ -85,8 +85,8 @@ ImageAdjusterAlgorithm::run (const Mat & image, const Mat &, int frame_index)
   as::Logger & l = as::Logger::instance ();
 
   qDebug ("frame %d out of %d, %d frames per iteration", frame_index,
-          config->get ("internal.total_frames").toInt (),
-          config->get ("adjuster.frames_per_iteration").toInt ());
+          config->get ("internal", "total_frames").toInt (),
+          config->get ("adjuster", "frames_per_iteration").toInt ());
 
   l.log_image (result, type);
   return true;

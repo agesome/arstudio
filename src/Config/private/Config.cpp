@@ -1,10 +1,20 @@
 #include <Config.hpp>
 #include <QtDebug>
+#include <QSettings>
 
 namespace arstudio {
 Config::Config (QObject * parent)
   : QAbstractListModel (parent)
 {
+}
+
+Config::~Config()
+{
+  QStringList list = m_settings.keys();
+  for(int i=0; i< m_settings.size(); i++)
+  {
+    delete m_settings[list.at(i)];
+  }
 }
 
 Config::ptr
@@ -25,10 +35,17 @@ Config::roleNames () const
 QVariant
 Config::data (const QModelIndex & index, int role) const
 {
-  if (role == PathRole)
-    return m_settings.keys ().at (index.row ());
-  else if (role == ValueRole)
-    return m_settings.values ().at (index.row ());
+  const QString key_name = m_settings[m_current_algo]->allKeys ().at (index.row());
+
+  switch (role)
+    {
+    case PathRole:
+      return key_name;
+    case ValueRole:
+      return m_settings[m_current_algo]->value (key_name);
+    default:
+      break;
+    }
 
   return QVariant ();
 }
@@ -36,81 +53,106 @@ Config::data (const QModelIndex & index, int role) const
 int
 Config::rowCount (const QModelIndex &) const
 {
-  return m_settings.count ();
+  return m_settings[m_current_algo]->allKeys ().count ();
+}
+
+QStringList
+Config::get_algo_list ()
+{
+  QStringList list = m_settings.keys ();
+  return list.toSet ().toList ();
 }
 
 bool
-Config::import_xml (const QString & path)
+Config::import_ini (const QString & path, const QString & algo)
 {
-  QXmlStreamReader xml;
-  QFile            xml_file (path);
-  QStringList      prefix;
+  QFile ini_file (path);
 
-  if (!xml_file.open (QIODevice::ReadOnly | QIODevice::Text))
+  if (!ini_file.open (QIODevice::ReadOnly | QIODevice::Text))
     return false;
-  xml.setDevice (&xml_file);
-
-  while (!xml.atEnd ())
-    {
-      switch (xml.readNext ())
-        {
-        case QXmlStreamReader::Characters:
-          if (xml.isWhitespace ())
-            continue;
-          beginInsertRows (QModelIndex (), rowCount (), rowCount ());
-          m_settings.insert (prefix.join ('.'), xml.text ().toString ());
-          endInsertRows ();
-          break;
-
-        case QXmlStreamReader::StartElement:
-          prefix << xml.name ().toString ();
-          break;
-
-        case QXmlStreamReader::EndElement:
-          prefix.pop_back ();
-          break;
-
-        default:
-          break;
-        }
-    }
-
-  return !xml.hasError ();
+  QSettings * temp = new QSettings (ini_file.fileName (), QSettings::IniFormat);
+  m_settings.insert (algo, temp);
+  m_current_algo = algo;
+  return true;
 }
+
 
 void
 Config::import_directory (const QString &path)
 {
+  m_algo_folder = QDir(path);
   QDir d (path);
 
   if (!d.exists ())
     return;
   for (QString subdir : d.entryList (QDir::Dirs | QDir::NoDotAndDotDot))
-    import_xml (d.absolutePath () + QDir::separator () + subdir
-                + QDir::separator () + "settings.xml");
+    import_ini (d.absolutePath () + QDir::separator () + subdir
+                + QDir::separator () + "settings.ini", subdir);
 }
 
 QVariant
-Config::get (const QString &path)
+Config::get (const QString & algo, const QString &path)
 {
-  return m_settings[path];
+  //crutch to avoid internal algorithm in tableview
+  if(algo == "internal")
+    {
+      return m_internal_settings[path];
+    }
+
+  return m_settings[algo]->value (path);
 }
 
 void
 Config::set (int row, const QVariant & value)
 {
-  m_settings[m_settings.keys ().at (row)] = value;
+  m_settings[m_current_algo]->setValue(m_settings[m_current_algo]->allKeys ().at (row), value);
 }
 
 void
-Config::set (const QString &key, const QVariant &value)
+Config::set (const QString & algo, const QString & key, const QVariant &value)
 {
-  bool is_new = !m_settings.contains (key);
+  bool is_new = !m_settings.contains (algo);
 
+  //crutch to avoid internal algorithm in tableview
+  if(algo == "internal")
+    {
+      m_internal_settings[key] = value;
+      return;
+    }
   if (is_new)
-    beginInsertRows (QModelIndex (), rowCount (), rowCount ());
-  m_settings[key] = value;
+    {
+      beginInsertRows (QModelIndex (), rowCount (), rowCount ());
+      QSettings *temp = new QSettings ();
+      m_settings.insert (algo, temp);
+    }
+  m_settings[algo]->setValue (key, value);
   if (is_new)
     endInsertRows ();
 }
+
+void
+Config::set_algo (const QString & algo)
+{
+  beginResetModel ();
+  m_current_algo = algo;
+  endResetModel ();
+}
+
+void
+Config::load_defaults ()
+{
+  //QSettings works directly with ini-file so any changes made to QSettings will be saved to default.ini
+  beginResetModel ();
+  QFile file (m_algo_folder.absolutePath () + QDir::separator () + m_current_algo + QDir::separator () + "default.ini");
+  QSettings *temp = new QSettings (file.fileName (), QSettings::IniFormat);
+  QStringList list = m_settings[m_current_algo]->allKeys ();
+  int count = m_settings[m_current_algo]->allKeys ().count ();
+  for (int i = 0; i < count; i++)
+    {
+      m_settings[m_current_algo]->setValue (list.at (i), temp->value (list.at (i)));
+    }
+  endResetModel ();
+  delete temp;
+}
+
 }

@@ -32,7 +32,7 @@ VideoPipeline::set_running (bool v)
       // this way, all algorithms can optionally find out how many frames there are
       // this should not be a parameter of process_frame(), because some algorithms
       // may not want this
-      m_config->set ("internal.total_frames", to_process);
+      m_config->set ("internal", "total_frames", to_process);
       QtConcurrent::run (this, &VideoPipeline::processing_thread, to_process);
     }
 }
