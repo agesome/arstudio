@@ -1,6 +1,7 @@
 import QtQuick 2.1
 import QtQuick.Controls 1.0
 import QtQuick.Layouts 1.0
+import QtQuick.Controls.Styles 1.1
 
 /**
   This component is a simple viewer for Config, using it as the
@@ -27,11 +28,13 @@ ColumnLayout {
             title: "Value"
             role: "value"
             delegate: rectfield
-            width: tableview.width * 0.35
+            width: tableview.width * 0.39
         }
     }
 
-    RowLayout{
+    RowLayout {
+        Layout.fillWidth: true
+
         ComboBox {
             id: algoChecker
             model: g_Config.list
@@ -40,47 +43,48 @@ ColumnLayout {
         }
         Button {
             id: defaultButton
-            anchors.left: algoChecker.right
-            anchors.verticalCenter: algoChecker.verticalCenter
             text: "Load default settings"
             onClicked: g_Config.load_defaults()
-            }
+        }
     }
 
     Component {
         id: rectfield
-        Rectangle {
-            property bool textChanged: false
 
-            id: rect
-            color: textChanged ? "yellow" : "white"
-
+        RowLayout {
+            id: delegateLayout
             TextField {
+
                 id: field
-                width: rect.width
-                height: rect.height
                 text: styleData.value
                 visible: true
+
+                Layout.maximumHeight: delegateLayout.height
+                Layout.fillWidth: true
+
                 Keys.onPressed: {
                     if(event.key === Qt.Key_Return || event.key === Qt.Key_Enter)
                     {
                         g_Config.set(styleData.row, field.text)
-                        rect.textChanged = false
+                        textColor = "green"
+                    }
+                    else if (event.key >= Qt.Key_0 && event.key <= Qt.Key_Z)
+                    {
+                        textColor = "red"
                     }
                 }
             }
 
             Button {
                 id: button
-                anchors.left: field.right
-                height: field.height
-                width: 25
                 text: "S"
+                Layout.maximumHeight: delegateLayout.height
+                Layout.maximumWidth: delegateLayout.height
+
                 onClicked: {
                     g_Config.set(styleData.row, field.text)
                     parent.textChanged = false
                 }
-
             }
         }
     }
