@@ -89,10 +89,10 @@ RowLayout {
                 anchors.fill: parent
                 text: styleData.value
                 enabled: {
-                    if (!scenegraph || model.nodes.length === 0)
+                    if (!scenegraph || g_Repository.nodes.length === 0)
                         return false
 
-                    var type = model.nodes[styleData.row].type
+                    var type = g_Repository.nodes[styleData.row].type
                     if (scenegraph.locked_to === Scenegraph.BITMAP)
                         return (type === Sequence.Bitmap)
                                 && (styleData.row === exclusiveSequenceIndex)
@@ -103,7 +103,7 @@ RowLayout {
                 }
 
                 onCheckedChanged: {
-                    var sequence = model.nodes[styleData.row]
+                    var sequence = g_Repository.nodes[styleData.row]
                     if (checked)
                         scenegraph.add_sequence(sequence)
                     else
